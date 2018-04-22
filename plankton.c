@@ -80,3 +80,38 @@ void pln_draw_rectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint
 #endif
 }
 
+
+void pln_fill_rectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t colour)
+{
+#ifdef PLN_HAS_LL_BITMAP
+    if (x1 > x2) {
+        swap(x1, x2);
+    }
+
+    if (y1 > y2) {
+        swap(y1, y2);
+    }
+
+    /* Hardware support for blitting bitmap. */
+    uint16_t width = (x2 - x1);
+    uint16_t height = (y2 - y1);
+    uint32_t size = width * height;
+    uint16_t bitmap[size];
+
+    for (uint32_t i = 0; i <= size; i++) {
+        bitmap[i] = colour;
+    }
+
+    pln_ll_put_bitmap(x1, y1, width, height, &bitmap);
+#else
+    for (uint16_t yi = y1; yi <= y2; yi++) {
+#ifdef PLN_HAS_LL_HLINE
+        /* Hardware support for horizontal line. */
+        pln_ll_draw_hline(x1, yi, x2, yi, colour);
+#else
+        /* Software line drawing. */
+        pln_draw_line(x1, yi, x2, yi, colour);
+#endif
+    }
+#endif
+}
