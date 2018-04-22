@@ -62,3 +62,21 @@ void pln_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t 
 	}
 }
 
+void pln_draw_rectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t colour)
+{
+#ifdef PLN_HAS_LL_HLINE
+    pln_ll_draw_hline(x1, y1, x2, y1, colour);
+    pln_ll_draw_hline(x1, y2, x2, y2, colour);
+#else
+    pln_draw_line(x1, y1, x2, y1, colour);
+    pln_draw_line(x1, y2, x2, y2, colour);
+#endif
+#ifdef PLN_HAS_LL_VLINE
+    pln_ll_draw_vline(x1, y2, x1, y1, colour);
+    pln_ll_draw_vline(x2, y1, x2, y2, colour);
+#else
+    pln_draw_line(x1, y2, x1, y1, colour);
+    pln_draw_line(x2, y1, x2, y2, colour);
+#endif
+}
+
