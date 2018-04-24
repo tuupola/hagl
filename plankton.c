@@ -35,31 +35,31 @@ void pln_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t 
     int16_t err;
     int16_t e2;
 
-	dx = ABS(x2 - x1);
-	sx = x1 < x2 ? 1 : -1;
-	dy = ABS(y2 - y1);
-	sy = y1 < y2 ? 1 : -1;
-	err = (dx > dy ? dx : -dy) / 2;
+    dx = ABS(x2 - x1);
+    sx = x1 < x2 ? 1 : -1;
+    dy = ABS(y2 - y1);
+    sy = y1 < y2 ? 1 : -1;
+    err = (dx > dy ? dx : -dy) / 2;
 
-	while (1) {
-		pln_ll_put_pixel(x1, y1, colour);
+    while (1) {
+        pln_ll_put_pixel(x1, y1, colour);
 
-		if (x1 == x2 && y1 == y2) {
+        if (x1 == x2 && y1 == y2) {
             break;
         };
 
-		e2 = err;
+        e2 = err;
 
-		if (e2 > -dx) {
-			err -= dy;
-			x1 += sx;
-		}
+        if (e2 > -dx) {
+            err -= dy;
+            x1 += sx;
+        }
 
-		if (e2 < dy) {
-			err += dx;
-			y1 += sy;
-		}
-	}
+        if (e2 < dy) {
+            err += dx;
+            y1 += sy;
+        }
+    }
 }
 
 void pln_draw_rectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t colour)
@@ -92,7 +92,6 @@ void pln_fill_rectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint
         swap(y1, y2);
     }
 
-    /* Hardware support for blitting bitmap. */
     uint16_t width = (x2 - x1);
     uint16_t height = (y2 - y1);
     uint32_t size = width * height;
