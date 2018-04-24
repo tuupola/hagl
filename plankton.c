@@ -1,8 +1,11 @@
 #include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
 
 #include "esp_log.h"
 
 #include "plankton.h"
+#include "font8x8.h"
 
 #define swap(x,y) do \
     { unsigned char swap_temp[sizeof(x) == sizeof(y) ? (signed)sizeof(x) : -1]; \
@@ -101,6 +104,9 @@ void pln_fill_rectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint
         bitmap[i] = colour;
     }
 
+    // ESP_LOGD(TAG, "PLN...");
+    // ESP_LOG_BUFFER_HEXDUMP(TAG, bitmap, size, ESP_LOG_INFO);
+
     pln_ll_put_bitmap(x1, y1, width, height, &bitmap);
 #else
     for (uint16_t yi = y1; yi <= y2; yi++) {
@@ -114,3 +120,27 @@ void pln_fill_rectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint
     }
 #endif
 }
+
+void pln_put_char(char ascii, uint16_t x1, uint16_t y1, uint16_t colour)
+{
+    uint8_t *font = font8x8_basic[(uint8_t)ascii];
+    uint16_t bitmap[8][8];
+    uint16_t *ptr = &bitmap[0][0];
+
+    int x,y;
+    int set;
+    int mask;
+    for (x=0; x < 8; x++) {
+        for (y=0; y < 8; y++) {
+            set = font[x] & 1 << y;
+            if (set) {
+                *(ptr++) = colour;
+            } else {
+                *(ptr++) = 0x0000;
+            }
+        }
+    }
+
+    pln_ll_put_bitmap(x1, y1, 8, 8, &bitmap);
+}
+
