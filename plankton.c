@@ -7,29 +7,44 @@
 #include "plankton.h"
 #include "font8x8.h"
 
-#define swap(x,y) do \
+#define swap(x, y) do \
     { unsigned char swap_temp[sizeof(x) == sizeof(y) ? (signed)sizeof(x) : -1]; \
         memcpy(swap_temp,&y,sizeof(x)); \
         memcpy(&y,&x,       sizeof(x)); \
         memcpy(&x,swap_temp,sizeof(x)); \
     } while (0)
 
-#define PLN_HAS_LL_HLINE /* TODO, these should come from config. */
-#define PLN_HAS_LL_VLINE
-#define PLN_HAS_LL_BITMAP
+// #define PLN_HAS_LL_HLINE /* TODO, these should come from config. */
+// #define PLN_HAS_LL_VLINE
+// #define PLN_HAS_LL_BITMAP
 
 static const char *TAG = "plankton";
 
-void pln_put_pixel(uint16_t x1, uint16_t y1, uint16_t colour)
+void pln_put_pixel(uint16_t x1, uint16_t y1, uint16_t color)
 {
     if((x1 < 320) && (y1 < 240)) {
-        pln_ll_put_pixel(x1, y1, colour);
+        pln_ll_put_pixel(x1, y1, color);
     }
 }
 
-/* https://github.com/jb55/bresenham-line.c/blob/master/bresenham_line.c */
+void pln_hline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color) {
+#ifdef PLN_HAS_LL_HLINE
+    pln_ll_draw_hline(x0, y0, width, color);
+#else
+    pln_line(x0, y0, x0 + width, y0, color);
+#endif
+}
 
-void pln_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t colour)
+void pln_vline(uint16_t x0, uint16_t y0, uint16_t height, uint16_t color) {
+#ifdef PLN_HAS_LL_HLINE
+    pln_ll_draw_vline(x0, y0, width, color);
+#else
+    pln_line(x0, y0, x0, y0 + height, color);
+#endif
+}
+
+/* https://github.com/jb55/bresenham-line.c/blob/master/bresenham_line.c */
+void pln_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
 {
 	int16_t dx;
     int16_t sx;
@@ -45,7 +60,7 @@ void pln_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t 
     err = (dx > dy ? dx : -dy) / 2;
 
     while (1) {
-        pln_ll_put_pixel(x1, y1, colour);
+        pln_put_pixel(x1, y1, color);
 
         if (x1 == x2 && y1 == y2) {
             break;
@@ -65,63 +80,28 @@ void pln_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t 
     }
 }
 
-void pln_draw_rectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t colour)
+void pln_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
-#ifdef PLN_HAS_LL_HLINE
-    pln_ll_draw_hline(x1, y1, x2, y1, colour);
-    pln_ll_draw_hline(x1, y2, x2, y2, colour);
-#else
-    pln_draw_line(x1, y1, x2, y1, colour);
-    pln_draw_line(x1, y2, x2, y2, colour);
-#endif
-#ifdef PLN_HAS_LL_VLINE
-    pln_ll_draw_vline(x1, y2, x1, y1, colour);
-    pln_ll_draw_vline(x2, y1, x2, y2, colour);
-#else
-    pln_draw_line(x1, y2, x1, y1, colour);
-    pln_draw_line(x2, y1, x2, y2, colour);
-#endif
+    uint16_t width = ABS(x0 - x1);
+    uint16_t height = ABS(y0 - y1);
+
+    pln_hline(x0, y0, width, color);
+    pln_hline(x0, y1, width, color);
+    pln_vline(x0, y0, height, color);
+    pln_vline(x1, y0, height, color);
 }
 
-
-void pln_fill_rectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t colour)
+void pln_fillrectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
-#ifdef PLN_HAS_LL_BITMAP
-    if (x1 > x2) {
-        swap(x1, x2);
+    uint16_t width = ABS(x0 - x1);
+    uint16_t height = ABS(y0 - y1);
+
+    for(uint16_t i = 0; i < height; i++) {
+        pln_hline(x0, y0 + i, width, color);
     }
-
-    if (y1 > y2) {
-        swap(y1, y2);
-    }
-
-    uint16_t width = (x2 - x1);
-    uint16_t height = (y2 - y1);
-    uint32_t size = width * height;
-    uint16_t bitmap[size];
-
-    for (uint32_t i = 0; i <= size; i++) {
-        bitmap[i] = colour;
-    }
-
-    // ESP_LOGD(TAG, "PLN...");
-    // ESP_LOG_BUFFER_HEXDUMP(TAG, bitmap, size, ESP_LOG_INFO);
-
-    pln_ll_put_bitmap(x1, y1, width, height, &bitmap);
-#else
-    for (uint16_t yi = y1; yi <= y2; yi++) {
-#ifdef PLN_HAS_LL_HLINE
-        /* Hardware support for horizontal line. */
-        pln_ll_draw_hline(x1, yi, x2, yi, colour);
-#else
-        /* Software line drawing. */
-        pln_draw_line(x1, yi, x2, yi, colour);
-#endif
-    }
-#endif
 }
 
-void pln_put_char(char ascii, uint16_t x1, uint16_t y1, uint16_t colour)
+void pln_put_char(char ascii, uint16_t x1, uint16_t y1, uint16_t color)
 {
     uint8_t *font = font8x8_basic[(uint8_t)ascii];
     uint16_t bitmap[8][8];
@@ -134,7 +114,7 @@ void pln_put_char(char ascii, uint16_t x1, uint16_t y1, uint16_t colour)
         for (y=0; y < 8; y++) {
             set = font[x] & 1 << y;
             if (set) {
-                *(ptr++) = colour;
+                *(ptr++) = color;
             } else {
                 *(ptr++) = 0x0000;
             }
@@ -143,4 +123,25 @@ void pln_put_char(char ascii, uint16_t x1, uint16_t y1, uint16_t colour)
 
     pln_ll_put_bitmap(x1, y1, 8, 8, &bitmap);
 }
+
+void pln_put_text(char *str, uint16_t x1, uint16_t y1, uint16_t color)
+{
+    char temp;
+
+    do {
+        temp = *str++;
+
+        if (13 == temp || 10 == temp) {
+            x1 = 0;
+            y1 += 8;
+        } else {
+            pln_put_char(temp, x1, y1, color);
+            x1 += 8;
+        }
+    } while (*str != 0);
+}
+
+void pln_put_bitmap(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, uint16_t *bitmap) {
+    pln_ll_put_bitmap(x0, y0, w, h, bitmap);
+};
 
