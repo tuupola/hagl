@@ -37,9 +37,7 @@ static const char *TAG = "plankton";
 
 void pod_putpixel(uint16_t x1, uint16_t y1, uint16_t color)
 {
-    if((x1 < 320) && (y1 < 240)) {
-        pod_ll_putpixel(x1, y1, color);
-    }
+    pod_ll_putpixel(x1, y1, color);
 }
 
 void pod_hline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color) {
@@ -61,7 +59,7 @@ void pod_vline(uint16_t x0, uint16_t y0, uint16_t height, uint16_t color) {
 /* https://github.com/jb55/bresenham-line.c/blob/master/bresenham_line.c */
 void pod_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
 {
-	int16_t dx;
+    int16_t dx;
     int16_t sx;
     int16_t dy;
     int16_t sy;
