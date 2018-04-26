@@ -44,6 +44,7 @@ We can calculate the offset within the framebuffer of a pixel located at
 Coordinates (x,y) by pitch * y + (depth / 8) * x
 
 */
+
 #include <stdlib.h>
 #include <stdint.h>
 
