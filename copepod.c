@@ -26,11 +26,8 @@ SOFTWARE.
 #include <ctype.h>
 #include <stdlib.h>
 
+#include "config.h"
 #include "copepod.h"
-
-// #define POD_HAS_LL_HLINE /* TODO, these should come from config. */
-// #define POD_HAS_LL_VLINE
-// #define POD_HAS_LL_BITMAP
 
 void pod_putpixel(uint16_t x1, uint16_t y1, uint16_t color)
 {
@@ -47,7 +44,7 @@ void pod_hline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color) {
 
 void pod_vline(uint16_t x0, uint16_t y0, uint16_t height, uint16_t color) {
 #ifdef POD_HAS_LL_VLINE
-    pod_ll_vline(x0, y0, width, color);
+    pod_ll_vline(x0, y0, height, color);
 #else
     pod_line(x0, y0, x0, y0 + height, color);
 #endif
@@ -114,14 +111,12 @@ void pod_fillrectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint1
 /* https://www.geeksforgeeks.org/pass-2d-array-parameter-c/ */
 void pod_putchar(char ascii, uint16_t x1, uint16_t y1, uint16_t color, char font[128][8])
 {
+    bool set;
     uint16_t bitmap[8][8];
     uint16_t *ptr = &bitmap[0][0];
 
-    int x,y;
-    int set;
-    int mask;
-    for (x=0; x < 8; x++) {
-        for (y=0; y < 8; y++) {
+    for (uint8_t x = 0; x < 8; x++) {
+        for (uint8_t y = 0; y < 8; y++) {
             set = font[(uint8_t)ascii][x] & 1 << y;
             if (set) {
                 *(ptr++) = color;
@@ -131,7 +126,7 @@ void pod_putchar(char ascii, uint16_t x1, uint16_t y1, uint16_t color, char font
         }
     }
 
-    pod_ll_blit(x1, y1, 8, 8, &bitmap);
+    pod_blit(x1, y1, 8, 8, &bitmap);
 }
 
 void pod_puttext(char *str, uint16_t x1, uint16_t y1, uint16_t color, char font[128][8])
@@ -152,6 +147,10 @@ void pod_puttext(char *str, uint16_t x1, uint16_t y1, uint16_t color, char font[
 }
 
 void pod_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, uint16_t *source) {
+#ifdef POD_HAS_LL_BLIT
     pod_ll_blit(x0, y0, w, h, source);
+#else
+    /* TODO: Use pdo_putpixel() to write to framebuffer. */
+#endif
 };
 
