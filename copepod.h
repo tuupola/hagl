@@ -35,6 +35,8 @@ SOFTWARE.
         memcpy(&x,swap_temp,sizeof(x)); \
     } while (0)
 
+extern char g_font;
+
 /* This is the only mandatory which low level driver must provide. */
 extern void pod_ll_putpixel(uint16_t x0, uint16_t y0, uint16_t color);
 
@@ -43,8 +45,8 @@ extern void pod_ll_hline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t colo
 extern void pod_ll_vline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color);
 
 void pod_putpixel(uint16_t x0, uint16_t y0, uint16_t color);
-void pod_putchar(char ascii, uint16_t x0, uint16_t y0, uint16_t color);
-void pod_puttext(char *str, uint16_t x0, uint16_t y0, uint16_t color);
+void pod_putchar(char ascii, uint16_t x0, uint16_t y0, uint16_t color, char font[128][8]);
+void pod_puttext(char *str, uint16_t x0, uint16_t y0, uint16_t color, char font[128][8]);
 void pod_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, uint16_t *source);
 
 void pod_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
