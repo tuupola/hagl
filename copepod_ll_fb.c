@@ -29,23 +29,23 @@ SOFTWARE.
 
 void pod_ll_putpixel(uint16_t x0, uint16_t y0, uint16_t color)
 {
-    uint16_t *ptr = g_fb.buffer + g_fb.pitch * y0 + g_fb.bpp * x0;
+    uint16_t *ptr = POD_FB.buffer + POD_FB.pitch * y0 + POD_FB.bpp * x0;
 
-    if((x0 < g_fb.width) && (y0 < g_fb.height)) {
+    if((x0 < POD_FB.width) && (y0 < POD_FB.height)) {
     	*ptr = color;
     }
 }
 
 void pod_ll_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, uint16_t *bitmap)
 {
-    uint16_t *dstptr = g_fb.buffer + g_fb.pitch * y0 + g_fb.bpp * x0;
+    uint16_t *dstptr = POD_FB.buffer + POD_FB.pitch * y0 + POD_FB.bpp * x0;
     uint16_t *srcptr = bitmap;
 
     for (uint16_t y = 0; y < h; y++) {
         for (uint16_t x = 0; x < w; x++) {
             *(dstptr++) = *(srcptr++);
         }
-        dstptr += g_fb.pitch / g_fb.bpp - w;
+        dstptr += POD_FB.pitch / POD_FB.bpp - w;
     }
 }
 
@@ -68,5 +68,5 @@ void pod_ll_vline(uint16_t x1, uint16_t y1, uint16_t height, uint16_t color)
         ((uint16_t *)bitmap)[i] = color;
     }
 
-    pod_ll_blit(x1, y1, height, 1, &bitmap);
+    pod_ll_blit(x1, y1, 1, height, &bitmap);
 }

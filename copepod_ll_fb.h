@@ -23,15 +23,17 @@ SOFTWARE.
 */
 
 #include <stdint.h>
-#include "driver/spi_master.h"
+
 #include "framebuffer.h"
 #include "ili9341.h"
 
-// #define PLN_HAS_LL_HLINE
-// #define PLN_HAS_LL_VLINE
+#define POD_FB  (g_fb) /* Name of the global variable holding framebuffer. */
 
-extern spi_device_handle_t g_spi;
-extern framebuffer_t g_fb;
+#define POD_HAS_LL_BLIT
+#define POD_HAS_LL_HLINE
+#define POD_HAS_LL_VLINE
+
+extern framebuffer_t POD_FB;
 
 void pod_ll_putpixel(uint16_t x1, uint16_t y1, uint16_t color);
 void pod_ll_blit(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, uint16_t *bitmap);
