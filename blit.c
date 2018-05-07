@@ -22,23 +22,19 @@ SOFTWARE.
 
 */
 
-#include <stdint.h>
+#include "blit.h"
+#include "framebuffer.h"
 
-#ifndef _FRAMEBUFFER_H
-#define _FRAMEBUFFER_H
+void blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, framebuffer_t *src, framebuffer_t *dst)
+{
+    uint16_t *dstptr = dst->buffer + dst->pitch * y0 + dst->bpp * x0;
+    uint16_t *srcptr = src->buffer;
 
-typedef struct {
-    uint16_t width;
-    uint16_t height;
-    uint16_t pitch; /* Bytes per row. */
-    uint8_t depth; /* Number of bits per pixel. */
-    uint8_t bpp; /* Number of bytest per pixel. */
-    uint32_t size; /* Size in bytes. */
-    uint8_t *buffer;
-} framebuffer_t;
-
-typedef framebuffer_t bitmap_t;
-
-void framebuffer_init(framebuffer_t *fb);
-
-#endif
+    for (uint16_t y = 0; y < h; y++) {
+        for (uint16_t x = 0; x < w; x++) {
+             *(dstptr++) = *(srcptr++);
+        }
+        dstptr += dst->pitch / dst->bpp - w;
+        srcptr += src->pitch / src->bpp - w;
+    }
+}

@@ -24,6 +24,7 @@ SOFTWARE.
 
 #include <string.h>
 
+#include "blit.h"
 #include "copepod.h"
 #include "copepod_hal_fb.h"
 
@@ -36,17 +37,9 @@ void pod_hal_putpixel(uint16_t x0, uint16_t y0, uint16_t color)
     }
 }
 
-void pod_hal_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, uint16_t *bitmap)
+void pod_hal_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, framebuffer_t *src)
 {
-    uint16_t *dstptr = POD_FB.buffer + POD_FB.pitch * y0 + POD_FB.bpp * x0;
-    uint16_t *srcptr = bitmap;
-
-    for (uint16_t y = 0; y < h; y++) {
-        for (uint16_t x = 0; x < w; x++) {
-            *(dstptr++) = *(srcptr++);
-        }
-        dstptr += POD_FB.pitch / POD_FB.bpp - w;
-    }
+    blit(x0, y0, w, h, src, &POD_FB);
 }
 
 void pod_hal_hline(uint16_t x1, uint16_t y1, uint16_t width, uint16_t color)

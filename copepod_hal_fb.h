@@ -36,6 +36,6 @@ SOFTWARE.
 extern framebuffer_t POD_FB;
 
 void pod_hal_putpixel(uint16_t x1, uint16_t y1, uint16_t color);
-void pod_hal_blit(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, uint16_t *bitmap);
+void pod_hal_blit(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, framebuffer_t *src);
 void pod_hal_hline(uint16_t x1, uint16_t y1, uint16_t w, uint16_t color);
 void pod_hal_vline(uint16_t x1, uint16_t y1, uint16_t h, uint16_t color);

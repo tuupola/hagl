@@ -24,21 +24,6 @@ SOFTWARE.
 
 #include <stdint.h>
 
-#ifndef _FRAMEBUFFER_H
-#define _FRAMEBUFFER_H
+#include "framebuffer.h"
 
-typedef struct {
-    uint16_t width;
-    uint16_t height;
-    uint16_t pitch; /* Bytes per row. */
-    uint8_t depth; /* Number of bits per pixel. */
-    uint8_t bpp; /* Number of bytest per pixel. */
-    uint32_t size; /* Size in bytes. */
-    uint8_t *buffer;
-} framebuffer_t;
-
-typedef framebuffer_t bitmap_t;
-
-void framebuffer_init(framebuffer_t *fb);
-
-#endif
+void blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, framebuffer_t *src, framebuffer_t *dst);

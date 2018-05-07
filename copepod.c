@@ -27,9 +27,11 @@ SOFTWARE.
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "bitmap.h"
+#include "blit.h"
 #include "config.h"
 #include "copepod.h"
-
+#include "framebuffer.h"
 
 /*
  * Puts a pixel RGB565 color. This is the only mandatory function HAL must
@@ -154,8 +156,15 @@ void pod_fillrectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint1
 void pod_putchar(char ascii, uint16_t x1, uint16_t y1, uint16_t color, char font[128][8])
 {
     bool set;
-    uint16_t bitmap[8][8];
-    uint16_t *ptr = &bitmap[0][0];
+    bitmap_t bitmap = {
+        .width = 8,
+        .height = 8,
+        .depth = 16,
+    };
+
+    bitmap_init(&bitmap);
+
+    uint16_t *ptr = bitmap.buffer;
 
     for (uint8_t x = 0; x < 8; x++) {
         for (uint8_t y = 0; y < 8; y++) {
@@ -204,7 +213,7 @@ void pod_puttext(char *str, uint16_t x1, uint16_t y1, uint16_t color, char font[
  * TODO: Handle transparency. Fallback to putpixel if HAL blit is not available.
  */
 
-void pod_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, uint16_t *source) {
+void pod_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source) {
 #ifdef POD_HAS_HAL_BLIT
     pod_hal_blit(x0, y0, w, h, source);
 #else

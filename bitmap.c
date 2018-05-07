@@ -22,23 +22,13 @@ SOFTWARE.
 
 */
 
-#include <stdint.h>
+#include "bitmap.h"
+#include "framebuffer.h"
 
-#ifndef _FRAMEBUFFER_H
-#define _FRAMEBUFFER_H
-
-typedef struct {
-    uint16_t width;
-    uint16_t height;
-    uint16_t pitch; /* Bytes per row. */
-    uint8_t depth; /* Number of bits per pixel. */
-    uint8_t bpp; /* Number of bytest per pixel. */
-    uint32_t size; /* Size in bytes. */
-    uint8_t *buffer;
-} framebuffer_t;
-
-typedef framebuffer_t bitmap_t;
-
-void framebuffer_init(framebuffer_t *fb);
-
-#endif
+/*
+ * Bitmap is just an alias for framebuffer.
+ */
+void bitmap_init(bitmap_t *bitmap)
+{
+    framebuffer_init(bitmap);
+}
