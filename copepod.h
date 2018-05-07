@@ -25,6 +25,9 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#include "framebuffer.h"
+#include "color.h"
+
 #define RGB565(R, G, B) (uint16_t)(((R & 0xf8) << 8) | ((G & 0xfc) << 3) | ((B & 0xf8) >> 3))
 #define ABS(x)          ((x) > 0 ? (x) : -(x))
 
@@ -38,11 +41,11 @@ SOFTWARE.
 extern char g_font;
 
 /* This is the only mandatory which low level driver must provide. */
-extern void pod_ll_putpixel(uint16_t x0, uint16_t y0, uint16_t color);
+extern void pod_hal_putpixel(uint16_t x0, uint16_t y0, uint16_t color);
 
-extern void pod_ll_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, uint16_t *source);
-extern void pod_ll_hline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color);
-extern void pod_ll_vline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color);
+extern void pod_hal_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, uint16_t *source);
+extern void pod_hal_hline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color);
+extern void pod_hal_vline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color);
 
 void pod_putpixel(uint16_t x0, uint16_t y0, uint16_t color);
 void pod_putchar(char ascii, uint16_t x0, uint16_t y0, uint16_t color, char font[128][8]);

@@ -25,31 +25,56 @@ SOFTWARE.
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "config.h"
 #include "copepod.h"
 
+
+/*
+ * Puts a pixel RGB565 color. This is the only mandatory function HAL must
+ * support.
+ *
+ * TODO: Coordinates checking.
+ */
 void pod_putpixel(uint16_t x1, uint16_t y1, uint16_t color)
 {
-    pod_ll_putpixel(x1, y1, color);
+    pod_hal_putpixel(x1, y1, color);
 }
 
+/*
+ * Draw a vertical line with given RGB565 color. If HAL supports it uses
+ * hardware hline drawing. If not falls back to vanilla line drawing.
+ *
+ * TODO: Coordinates checking.
+ */
 void pod_hline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color) {
-#ifdef POD_HAS_LL_HLINE
-    pod_ll_hline(x0, y0, width, color);
+#ifdef POD_HAS_HAL_HLINE
+    pod_hal_hline(x0, y0, width, color);
 #else
     pod_line(x0, y0, x0 + width, y0, color);
 #endif
 }
 
+/*
+ * Draw a vertical line with given RGB565 color. If HAL supports it uses
+ * hardware vline drawing. If not falls back to vanilla line drawing.
+ *
+ * TODO: Coordinates checking.
+ */
 void pod_vline(uint16_t x0, uint16_t y0, uint16_t height, uint16_t color) {
-#ifdef POD_HAS_LL_VLINE
-    pod_ll_vline(x0, y0, height, color);
+#ifdef POD_HAS_HAL_VLINE
+    pod_hal_vline(x0, y0, height, color);
 #else
     pod_line(x0, y0, x0, y0 + height, color);
 #endif
 }
 
+/*
+ * Draw a line using Bresenham's algorithm with given RGB565 color.
+ *
+ * TODO: Coordinates checking.
+ */
 /* https://github.com/jb55/bresenham-line.c/blob/master/bresenham_line.c */
 void pod_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
 {
@@ -87,6 +112,11 @@ void pod_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color
     }
 }
 
+/*
+ * Draw a rectangle with given RGB565 color.
+ *
+ * TODO: Coordinates checking.
+ */
 void pod_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
     uint16_t width = ABS(x0 - x1);
@@ -98,6 +128,11 @@ void pod_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t 
     pod_vline(x1, y0, height, color);
 }
 
+/*
+ * Draw a filled rectangle with given RGB565 color.
+ *
+ * TODO: Coordinates checking.
+ */
 void pod_fillrectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
     uint16_t width = ABS(x0 - x1);
@@ -107,6 +142,13 @@ void pod_fillrectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint1
         pod_hline(x0, y0 + i, width, color);
     }
 }
+
+/*
+ * Write a single character. Currently supporst only 8x8 fonts which must
+ * be the https://github.com/dhepper/font8x8 format.
+ *
+ * TODO: Different fonts sizes. Transparency support.
+ */
 
 /* https://www.geeksforgeeks.org/pass-2d-array-parameter-c/ */
 void pod_putchar(char ascii, uint16_t x1, uint16_t y1, uint16_t color, char font[128][8])
@@ -129,6 +171,14 @@ void pod_putchar(char ascii, uint16_t x1, uint16_t y1, uint16_t color, char font
     pod_blit(x1, y1, 8, 8, &bitmap);
 }
 
+/*
+ * Write a string of text by calling pod_putchar() repeadetly. CR and LF
+ * continue from the next line. Currently supporst only 8x8 fonts which
+ * must be the https://github.com/dhepper/font8x8 format.
+ *
+ * TODO: Different fonts sizes.
+ */
+
 void pod_puttext(char *str, uint16_t x1, uint16_t y1, uint16_t color, char font[128][8])
 {
     char temp;
@@ -146,9 +196,17 @@ void pod_puttext(char *str, uint16_t x1, uint16_t y1, uint16_t color, char font[
     } while (*str != 0);
 }
 
+/*
+ * Blits a bitmap to a destination hardcoded in the HAL driver. Destination
+ * parameter is left out intentionally to keep the API simpler. If you need
+ * configurable source and destination see the file blit.c.
+ *
+ * TODO: Handle transparency. Fallback to putpixel if HAL blit is not available.
+ */
+
 void pod_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, uint16_t *source) {
-#ifdef POD_HAS_LL_BLIT
-    pod_ll_blit(x0, y0, w, h, source);
+#ifdef POD_HAS_HAL_BLIT
+    pod_hal_blit(x0, y0, w, h, source);
 #else
     /* TODO: Use pdo_putpixel() to write to framebuffer. */
 #endif

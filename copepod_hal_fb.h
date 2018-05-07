@@ -29,13 +29,13 @@ SOFTWARE.
 
 #define POD_FB  (g_fb) /* Name of the global variable holding framebuffer. */
 
-#define POD_HAS_LL_BLIT
-#define POD_HAS_LL_HLINE
-#define POD_HAS_LL_VLINE
+#define POD_HAS_HAL_BLIT
+#define POD_HAS_HAL_HLINE
+#define POD_HAS_HAL_VLINE
 
 extern framebuffer_t POD_FB;
 
-void pod_ll_putpixel(uint16_t x1, uint16_t y1, uint16_t color);
-void pod_ll_blit(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, uint16_t *bitmap);
-void pod_ll_hline(uint16_t x1, uint16_t y1, uint16_t w, uint16_t color);
-void pod_ll_vline(uint16_t x1, uint16_t y1, uint16_t h, uint16_t color);
+void pod_hal_putpixel(uint16_t x1, uint16_t y1, uint16_t color);
+void pod_hal_blit(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, uint16_t *bitmap);
+void pod_hal_hline(uint16_t x1, uint16_t y1, uint16_t w, uint16_t color);
+void pod_hal_vline(uint16_t x1, uint16_t y1, uint16_t h, uint16_t color);
