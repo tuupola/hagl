@@ -49,6 +49,7 @@ extern void pod_hal_putpixel(uint16_t x0, uint16_t y0, uint16_t color);
 extern void pod_hal_blit(uint16_t x0, uint16_t y0, bitmap_t *source);
 extern void pod_hal_hline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color);
 extern void pod_hal_vline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color);
+extern void pod_hal_init();
 
 void pod_putpixel(uint16_t x0, uint16_t y0, uint16_t color);
 void pod_putchar(char ascii, uint16_t x0, uint16_t y0, uint16_t color, char font[128][8]);
@@ -62,5 +63,6 @@ void pod_vline(uint16_t x0, uint16_t y0, uint16_t height, uint16_t color);
 
 void pod_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
 void pod_fillrectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
+void pod_init();
 
 #endif /* _COPEPOD_H */

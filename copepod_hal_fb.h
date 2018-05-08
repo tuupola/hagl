@@ -28,20 +28,25 @@ SOFTWARE.
 #include <stdint.h>
 
 #include "bitmap.h"
-#include "ili9341.h"
+//#include "ili9341.h"
 
-#define POD_FB  (g_fb) /* Name of the global variable holding framebuffer. */
+//#define POD_FB  (g_fb) /* Name of the global variable holding framebuffer. */
+
+#define FRAMEBUFFER_WIDTH   320
+#define FRAMEBUFFER_HEIGHT  240
 
 #define POD_HAS_HAL_BLIT
 #define POD_HAS_HAL_SCALE_BLIT
 #define POD_HAS_HAL_HLINE
 #define POD_HAS_HAL_VLINE
+#define POD_HAS_HAL_INIT
 
-extern framebuffer_t POD_FB;
+//extern framebuffer_t POD_FB;
 
+void pod_hal_init(void);
 void pod_hal_putpixel(uint16_t x1, uint16_t y1, uint16_t color);
-void pod_hal_blit(uint16_t x1, uint16_t y1, bitmap_t *source);
-void pod_hal_scale_blit(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, bitmap_t *source);
+void pod_hal_blit(uint16_t x1, uint16_t y1, bitmap_t *src);
+void pod_hal_scale_blit(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, bitmap_t *src);
 void pod_hal_hline(uint16_t x1, uint16_t y1, uint16_t w, uint16_t color);
 void pod_hal_vline(uint16_t x1, uint16_t y1, uint16_t h, uint16_t color);
 

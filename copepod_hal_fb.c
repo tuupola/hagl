@@ -26,25 +26,39 @@ SOFTWARE.
 
 #include "blit.h"
 #include "copepod.h"
+#include "framebuffer.h"
 #include "copepod_hal_fb.h"
+
+framebuffer_t g_fb = {
+    .width = FRAMEBUFFER_WIDTH,
+    .height =FRAMEBUFFER_HEIGHT,
+    .depth = 16,
+};
+
+//void* pod_hal_init(void)
+void pod_hal_init(void)
+{
+    framebuffer_init(&g_fb);
+    //return &g_fb;
+}
 
 void pod_hal_putpixel(uint16_t x0, uint16_t y0, uint16_t color)
 {
-    uint16_t *ptr = POD_FB.buffer + POD_FB.pitch * y0 + POD_FB.bpp * x0;
+    uint16_t *ptr = g_fb.buffer + g_fb.pitch * y0 + g_fb.bpp * x0;
 
-    if((x0 < POD_FB.width) && (y0 < POD_FB.height)) {
+    if((x0 < g_fb.width) && (y0 < g_fb.height)) {
     	*ptr = color;
     }
 }
 
 void pod_hal_blit(uint16_t x0, uint16_t y0, bitmap_t *src)
 {
-    blit(x0, y0, src, &POD_FB);
+    blit(x0, y0, src, &g_fb);
 }
 
 void pod_hal_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *src)
 {
-    scale_blit(x0, y0, w, h, src, &POD_FB);
+    scale_blit(x0, y0, w, h, src, &g_fb);
 }
 
 void pod_hal_hline(uint16_t x1, uint16_t y1, uint16_t width, uint16_t color)
