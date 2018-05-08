@@ -222,3 +222,11 @@ void pod_blit(uint16_t x0, uint16_t y0, bitmap_t *source) {
 #endif
 };
 
+void pod_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source) {
+#ifdef POD_HAS_HAL_SCALE_BLIT
+    pod_hal_scale_blit(x0, y0, w, h, source);
+#else
+    /* TODO: Use pdo_putpixel() to write to framebuffer. */
+#endif
+};
+
