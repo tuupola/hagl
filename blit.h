@@ -30,5 +30,6 @@ SOFTWARE.
 #include "bitmap.h"
 
 void blit(uint16_t x0, uint16_t y0, bitmap_t *src, bitmap_t *dst);
+void scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h,bitmap_t *src, bitmap_t *dst);
 
 #endif /* _BLIT_H */
