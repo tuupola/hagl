@@ -178,6 +178,7 @@ void pod_putchar(char ascii, uint16_t x1, uint16_t y1, uint16_t color, char font
     }
 
     pod_blit(x1, y1, 8, 8, &bitmap);
+    bitmap_destroy(&bitmap);
 }
 
 /*

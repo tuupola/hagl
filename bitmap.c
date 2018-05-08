@@ -32,3 +32,8 @@ void bitmap_init(bitmap_t *bitmap)
 {
     framebuffer_init(bitmap);
 }
+
+void bitmap_destroy(bitmap_t *bitmap)
+{
+    framebuffer_destroy(bitmap);
+}
