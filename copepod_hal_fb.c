@@ -37,9 +37,9 @@ void pod_hal_putpixel(uint16_t x0, uint16_t y0, uint16_t color)
     }
 }
 
-void pod_hal_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, framebuffer_t *src)
+void pod_hal_blit(uint16_t x0, uint16_t y0, bitmap_t *src)
 {
-    blit(x0, y0, w, h, src, &POD_FB);
+    blit(x0, y0, src, &POD_FB);
 }
 
 void pod_hal_hline(uint16_t x1, uint16_t y1, uint16_t width, uint16_t color)
@@ -50,7 +50,7 @@ void pod_hal_hline(uint16_t x1, uint16_t y1, uint16_t width, uint16_t color)
         ((uint16_t *)bitmap)[i] = color;
     }
 
-    pod_hal_blit(x1, y1, width, 1, &bitmap);
+    pod_hal_blit(x1, y1, &bitmap);
 }
 
 void pod_hal_vline(uint16_t x1, uint16_t y1, uint16_t height, uint16_t color)
@@ -61,5 +61,5 @@ void pod_hal_vline(uint16_t x1, uint16_t y1, uint16_t height, uint16_t color)
         ((uint16_t *)bitmap)[i] = color;
     }
 
-    pod_hal_blit(x1, y1, 1, height, &bitmap);
+    pod_hal_blit(x1, y1, &bitmap);
 }

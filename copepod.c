@@ -177,7 +177,7 @@ void pod_putchar(char ascii, uint16_t x1, uint16_t y1, uint16_t color, char font
         }
     }
 
-    pod_blit(x1, y1, 8, 8, &bitmap);
+    pod_blit(x1, y1, &bitmap);
     bitmap_destroy(&bitmap);
 }
 
@@ -214,9 +214,9 @@ void pod_puttext(char *str, uint16_t x1, uint16_t y1, uint16_t color, char font[
  * TODO: Handle transparency. Fallback to putpixel if HAL blit is not available.
  */
 
-void pod_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source) {
+void pod_blit(uint16_t x0, uint16_t y0, bitmap_t *source) {
 #ifdef POD_HAS_HAL_BLIT
-    pod_hal_blit(x0, y0, w, h, source);
+    pod_hal_blit(x0, y0, source);
 #else
     /* TODO: Use pdo_putpixel() to write to framebuffer. */
 #endif

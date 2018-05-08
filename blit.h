@@ -27,8 +27,8 @@ SOFTWARE.
 
 #include <stdint.h>
 
-#include "framebuffer.h"
+#include "bitmap.h"
 
-void blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, framebuffer_t *src, framebuffer_t *dst);
+void blit(uint16_t x0, uint16_t y0, bitmap_t *src, bitmap_t *dst);
 
 #endif /* _BLIT_H */

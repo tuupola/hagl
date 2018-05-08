@@ -25,8 +25,10 @@ SOFTWARE.
 #include "blit.h"
 #include "framebuffer.h"
 
-void blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, framebuffer_t *src, framebuffer_t *dst)
+void blit(uint16_t x0, uint16_t y0, framebuffer_t *src, framebuffer_t *dst)
 {
+    uint16_t w = src->width;
+    uint16_t h = src->height;
     uint16_t *dstptr = dst->buffer + dst->pitch * y0 + dst->bpp * x0;
     uint16_t *srcptr = src->buffer;
 

@@ -62,3 +62,8 @@ void framebuffer_init(framebuffer_t *fb)
     //uint16_t *buffer = heap_caps_malloc(fb->size, MALLOC_CAP_DMA);
     fb->buffer = buffer;
 }
+
+void framebuffer_destroy(framebuffer_t *fb)
+{
+    free(fb->buffer);
+}
