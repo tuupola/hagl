@@ -23,6 +23,9 @@ SOFTWARE.
 
 */
 
+#ifndef _COPEPOD_H
+#define _COPEPOD_H
+
 #include <stdint.h>
 
 #include "framebuffer.h"
@@ -61,3 +64,4 @@ void pod_vline(uint16_t x0, uint16_t y0, uint16_t height, uint16_t color);
 void pod_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
 void pod_fillrectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
 
+#endif /* _COPEPOD_H */

@@ -30,5 +30,6 @@ SOFTWARE.
 typedef framebuffer_t bitmap_t;
 
 void bitmap_init(bitmap_t *bitmap);
+void bitmap_destroy(bitmap_t *bitmap);
 
-#endif
+#endif /* _BITMAP_H */

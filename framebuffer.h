@@ -40,5 +40,6 @@ typedef struct {
 typedef framebuffer_t bitmap_t;
 
 void framebuffer_init(framebuffer_t *fb);
+void framebuffer_destroy(framebuffer_t *fb);
 
-#endif
+#endif /* _FRAMEBUFFER_H */

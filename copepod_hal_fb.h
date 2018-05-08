@@ -22,6 +22,9 @@ SOFTWARE.
 
 */
 
+#ifndef _COPEPOD_HAL_FB_H
+#define _COPEPOD_HAL_FB_H
+
 #include <stdint.h>
 
 #include "framebuffer.h"
@@ -39,3 +42,5 @@ void pod_hal_putpixel(uint16_t x1, uint16_t y1, uint16_t color);
 void pod_hal_blit(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, framebuffer_t *src);
 void pod_hal_hline(uint16_t x1, uint16_t y1, uint16_t w, uint16_t color);
 void pod_hal_vline(uint16_t x1, uint16_t y1, uint16_t h, uint16_t color);
+
+#endif /* _COPEPOD_HAL_FB_H */
