@@ -53,7 +53,7 @@ void pod_hal_init(void)
  */
 void pod_hal_flush(void)
 {
-    ili9431_bitmap(g_spi, 0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, g_fb.buffer);
+    ili9431_bitmap(g_spi, 0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, (uint16_t *) g_fb.buffer);
 }
 
 /*
@@ -63,7 +63,7 @@ void pod_hal_flush(void)
  */
 void pod_hal_putpixel(uint16_t x0, uint16_t y0, uint16_t color)
 {
-    uint16_t *ptr = g_fb.buffer + g_fb.pitch * y0 + (g_fb.depth / 8) * x0;
+    uint16_t *ptr = (uint16_t *) (g_fb.buffer + g_fb.pitch * y0 + (g_fb.depth / 8) * x0);
 
     if((x0 < g_fb.width) && (y0 < g_fb.height)) {
     	*ptr = color;

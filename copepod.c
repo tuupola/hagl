@@ -164,7 +164,7 @@ void pod_putchar(char ascii, uint16_t x1, uint16_t y1, uint16_t color, char font
 
     bitmap_init(&bitmap);
 
-    uint16_t *ptr = bitmap.buffer;
+    uint16_t *ptr = (uint16_t *) bitmap.buffer;
 
     for (uint8_t x = 0; x < 8; x++) {
         for (uint8_t y = 0; y < 8; y++) {
