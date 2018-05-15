@@ -23,11 +23,12 @@ SOFTWARE.
 */
 
 #include <string.h>
+#include <ili9341.h>
 
 #include "blit.h"
 #include "copepod.h"
 #include "framebuffer.h"
-#include "copepod_hal_fb.h"
+#include "esp-ili9341-framebuffer.h"
 
 framebuffer_t g_fb = {
     .width = FRAMEBUFFER_WIDTH,
@@ -35,13 +36,31 @@ framebuffer_t g_fb = {
     .depth = 16,
 };
 
-//void* pod_hal_init(void)
+spi_device_handle_t g_spi;
+
+/*
+ * Initializes the ILI9341 + framebuffer HAL.
+ */
 void pod_hal_init(void)
 {
+    spi_master_init(&g_spi);
+    ili9341_init(&g_spi);
     framebuffer_init(&g_fb);
-    //return &g_fb;
 }
 
+/*
+ * Flushes the framebuffer contents to the actual display.
+ */
+void pod_hal_flush(void)
+{
+    ili9431_bitmap(g_spi, 0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, g_fb.buffer);
+}
+
+/*
+ * Putpixel function. This is the only mandatory function which HAL
+ * must implement for copepod to be able to draw graphical primitives.
+ * This version draws to a framebuffer.
+ */
 void pod_hal_putpixel(uint16_t x0, uint16_t y0, uint16_t color)
 {
     uint16_t *ptr = g_fb.buffer + g_fb.pitch * y0 + g_fb.bpp * x0;
@@ -51,16 +70,26 @@ void pod_hal_putpixel(uint16_t x0, uint16_t y0, uint16_t color)
     }
 }
 
+/*
+ * Blit the source bitmap to the framebuffer.
+ */
 void pod_hal_blit(uint16_t x0, uint16_t y0, bitmap_t *src)
 {
     blit(x0, y0, src, &g_fb);
 }
 
+/*
+ * Blit the source bitmap to the framebuffer scaled up or down.
+ * TODO: stretch might be more proper naming?
+ */
 void pod_hal_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *src)
 {
     scale_blit(x0, y0, w, h, src, &g_fb);
 }
 
+/*
+ * Accelerated horizontal line drawing.
+ */
 void pod_hal_hline(uint16_t x1, uint16_t y1, uint16_t width, uint16_t color)
 {
     uint16_t bitmap[width];
@@ -72,6 +101,9 @@ void pod_hal_hline(uint16_t x1, uint16_t y1, uint16_t width, uint16_t color)
     pod_hal_blit(x1, y1, &bitmap);
 }
 
+/*
+ * Accelerated vertical line drawing.
+ */
 void pod_hal_vline(uint16_t x1, uint16_t y1, uint16_t height, uint16_t color)
 {
     uint16_t bitmap[height];

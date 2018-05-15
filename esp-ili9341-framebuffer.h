@@ -22,15 +22,12 @@ SOFTWARE.
 
 */
 
-#ifndef _COPEPOD_HAL_FB_H
-#define _COPEPOD_HAL_FB_H
+#ifndef _ESP_ILI9341_FRAMEBUFFER_H
+#define _ESP_ILI9341_FRAMEBUFFER_H
 
 #include <stdint.h>
 
 #include "bitmap.h"
-//#include "ili9341.h"
-
-//#define POD_FB  (g_fb) /* Name of the global variable holding framebuffer. */
 
 #define FRAMEBUFFER_WIDTH   320
 #define FRAMEBUFFER_HEIGHT  240
@@ -40,14 +37,14 @@ SOFTWARE.
 #define POD_HAS_HAL_HLINE
 #define POD_HAS_HAL_VLINE
 #define POD_HAS_HAL_INIT
-
-//extern framebuffer_t POD_FB;
+#define POD_HAS_HAL_FLUSH
 
 void pod_hal_init(void);
+void pod_hal_flush(void);
 void pod_hal_putpixel(uint16_t x1, uint16_t y1, uint16_t color);
 void pod_hal_blit(uint16_t x1, uint16_t y1, bitmap_t *src);
 void pod_hal_scale_blit(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h, bitmap_t *src);
 void pod_hal_hline(uint16_t x1, uint16_t y1, uint16_t w, uint16_t color);
 void pod_hal_vline(uint16_t x1, uint16_t y1, uint16_t h, uint16_t color);
 
-#endif /* _COPEPOD_HAL_FB_H */
+#endif /* _ESP_ILI9341_FRAMEBUFFER_H */
