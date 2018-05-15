@@ -45,12 +45,13 @@ Coordinates (x,y) by pitch * y + (depth / 8) * x
 
 */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
+#include <assert.h>
 
 #include "framebuffer.h"
-
-static const char *TAG = "framebuffer";
 
 void framebuffer_init(framebuffer_t *fb)
 {
@@ -59,8 +60,10 @@ void framebuffer_init(framebuffer_t *fb)
     fb->size = fb->pitch * fb->height; /* Size in bytes. */
 
     uint16_t *buffer = malloc(fb->size);
-    //uint16_t *buffer = heap_caps_malloc(fb->size, MALLOC_CAP_DMA);
+    assert(buffer != NULL);
+
     fb->buffer = buffer;
+    memset(fb->buffer, 0x00, fb->size);
 }
 
 void framebuffer_destroy(framebuffer_t *fb)
