@@ -146,7 +146,7 @@ void pod_fillrectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint1
 }
 
 /*
- * Write a single character. Currently supporst only 8x8 fonts which must
+ * Write a single character. Currently supports only 8x8 fonts which must
  * be the https://github.com/dhepper/font8x8 format.
  *
  * TODO: Different fonts sizes. Transparency support.
@@ -234,7 +234,13 @@ void pod_init() {
 #ifdef POD_HAS_HAL_INIT
     pod_hal_init();
 #else
+#endif
+};
 
+void pod_flush() {
+#ifdef POD_HAS_HAL_FLUSH
+    pod_hal_flush();
+#else
 #endif
 };
 
