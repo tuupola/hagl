@@ -36,15 +36,15 @@ void blit(uint16_t x0, uint16_t y0, bitmap_t *src, bitmap_t *dst)
 {
     uint16_t w = src->width;
     uint16_t h = src->height;
-    uint16_t *dstptr = dst->buffer + dst->pitch * y0 + dst->bpp * x0;
+    uint16_t *dstptr = dst->buffer + (dst->pitch * y0) + (dst->depth / 8) * x0;
     uint16_t *srcptr = src->buffer;
 
     for (uint16_t y = 0; y < h; y++) {
         for (uint16_t x = 0; x < w; x++) {
              *(dstptr++) = *(srcptr++);
         }
-        dstptr += dst->pitch / dst->bpp - w;
-        //srcptr += src->pitch / src->bpp - w;
+        dstptr += dst->pitch / (dst->depth / 8) - w;
+        //srcptr += src->pitch / (src->depth / 8) - w;
     }
 }
 
@@ -66,7 +66,7 @@ void scale_blit(uint16_t x0, uint16_t y0, uint16_t dstw, uint16_t dsth, bitmap_t
     uint32_t x_ratio = (uint32_t)((srcw << 16) / dstw);
     uint32_t y_ratio = (uint32_t)((srch << 16) / dsth);
 
-    uint16_t *dstptr = dst->buffer + dst->pitch * y0 + dst->bpp * x0;
+    uint16_t *dstptr = dst->buffer + dst->pitch * y0 + (dst->depth / 8) * x0;
     uint16_t *srcptr = src->buffer;
 
     for (uint16_t y = 0; y < dsth; y++) {
@@ -75,6 +75,6 @@ void scale_blit(uint16_t x0, uint16_t y0, uint16_t dstw, uint16_t dsth, bitmap_t
             py = ((y * y_ratio) >> 16);
             *(dstptr++) = srcptr[(uint16_t)((py * srcw) + px)];
         }
-        dstptr += dst->pitch / dst->bpp - dstw;
+        dstptr += dst->pitch / (dst->depth / 8) - dstw;
     }
 }

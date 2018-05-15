@@ -55,9 +55,8 @@ Coordinates (x,y) by pitch * y + (depth / 8) * x
 
 void framebuffer_init(framebuffer_t *fb)
 {
-    fb->bpp = fb->depth / 8; /* Bytes per pixel. */
-    fb->pitch = fb->width * fb->bpp; /* Bytes per row. */
-    fb->size = fb->pitch * fb->height; /* Size in bytes. */
+    fb->pitch = fb->width * (fb->depth / 8);  /* Bytes per row. */
+    fb->size = fb->pitch * fb->height;        /* Size in bytes. */
 
     uint8_t *buffer = malloc(fb->size);
     assert(buffer != NULL);

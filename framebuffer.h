@@ -30,10 +30,9 @@ SOFTWARE.
 typedef struct {
     uint16_t width;
     uint16_t height;
-    uint16_t pitch; /* Bytes per row. */
-    uint8_t depth; /* Number of bits per pixel. */
-    uint8_t bpp; /* Number of bytest per pixel. */
-    uint32_t size; /* Size in bytes. */
+    uint16_t pitch;  /* Bytes per row. */
+    uint8_t depth;   /* Number of bits per pixel. */
+    uint32_t size;   /* Size in bytes. */
     uint8_t *buffer;
 } framebuffer_t;
 

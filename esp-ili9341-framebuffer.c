@@ -63,7 +63,7 @@ void pod_hal_flush(void)
  */
 void pod_hal_putpixel(uint16_t x0, uint16_t y0, uint16_t color)
 {
-    uint16_t *ptr = g_fb.buffer + g_fb.pitch * y0 + g_fb.bpp * x0;
+    uint16_t *ptr = g_fb.buffer + g_fb.pitch * y0 + (g_fb.depth / 8) * x0;
 
     if((x0 < g_fb.width) && (y0 < g_fb.height)) {
     	*ptr = color;
@@ -107,7 +107,7 @@ void pod_hal_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap
 // void pod_hal_vline(uint16_t x1, uint16_t y1, uint16_t height, uint16_t color)
 // {
 //     {
-//     uint16_t *ptr = g_fb.buffer + g_fb.pitch * y0 + g_fb.bpp * x0;
+//     uint16_t *ptr = g_fb.buffer + g_fb.pitch * y0 + (g_fb.depth / 8) * x0;
 
 
 //     for (uint16_t i = 0; i < height; i++) {
