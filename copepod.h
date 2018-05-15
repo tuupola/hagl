@@ -31,8 +31,7 @@ SOFTWARE.
 #include "framebuffer.h"
 #include "color.h"
 
-#define RGB565(R, G, B) (uint16_t)(((R & 0xf8) << 8) | ((G & 0xfc) << 3) | ((B & 0xf8) >> 3))
-#define ABS(x)          ((x) > 0 ? (x) : -(x))
+#define ABS(x)  ((x) > 0 ? (x) : -(x))
 
 #define swap(x, y) do \
     { unsigned char swap_temp[sizeof(x) == sizeof(y) ? (signed)sizeof(x) : -1]; \
@@ -64,5 +63,6 @@ void pod_vline(uint16_t x0, uint16_t y0, uint16_t height, uint16_t color);
 void pod_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
 void pod_fillrectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
 void pod_init();
+void pod_flush();
 
 #endif /* _COPEPOD_H */
