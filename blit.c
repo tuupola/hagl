@@ -27,8 +27,6 @@ SOFTWARE.
 #include "blit.h"
 #include "bitmap.h"
 
-static const char *TAG = "blit";
-
 /*
  * Blit source bitmap to target bitmap. Note that bitmap is just and
  * alias to framebuffer so you can use which ever suits best.
@@ -40,9 +38,6 @@ void blit(uint16_t x0, uint16_t y0, bitmap_t *src, bitmap_t *dst)
     uint16_t h = src->height;
     uint16_t *dstptr = dst->buffer + dst->pitch * y0 + dst->bpp * x0;
     uint16_t *srcptr = src->buffer;
-
-    // ESP_LOGD(TAG, "dst: %p dst->buffer %p", dst, dst->buffer);
-    // ESP_LOG_BUFFER_HEXDUMP(TAG, src->buffer, 8 * 8 * 2, ESP_LOG_DEBUG);
 
     for (uint16_t y = 0; y < h; y++) {
         for (uint16_t x = 0; x < w; x++) {

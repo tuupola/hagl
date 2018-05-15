@@ -59,7 +59,7 @@ void framebuffer_init(framebuffer_t *fb)
     fb->pitch = fb->width * fb->bpp; /* Bytes per row. */
     fb->size = fb->pitch * fb->height; /* Size in bytes. */
 
-    uint16_t *buffer = malloc(fb->size);
+    uint8_t *buffer = malloc(fb->size);
     assert(buffer != NULL);
 
     fb->buffer = buffer;

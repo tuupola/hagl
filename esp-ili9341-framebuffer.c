@@ -90,27 +90,29 @@ void pod_hal_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap
 /*
  * Accelerated horizontal line drawing.
  */
-void pod_hal_hline(uint16_t x1, uint16_t y1, uint16_t width, uint16_t color)
-{
-    uint16_t bitmap[width];
+//void pod_hal_hline(uint16_t x1, uint16_t y1, uint16_t width, uint16_t color)
+// {
+//     uint16_t bitmap[width];
 
-    for (uint16_t i = 0; i < width; i++) {
-        ((uint16_t *)bitmap)[i] = color;
-    }
+//     for (uint16_t i = 0; i < width; i++) {
+//         ((uint16_t *)bitmap)[i] = color;
+//     }
 
-    pod_hal_blit(x1, y1, &bitmap);
-}
+//     pod_hal_blit(x1, y1, &bitmap);
+// }
 
 /*
  * Accelerated vertical line drawing.
  */
-void pod_hal_vline(uint16_t x1, uint16_t y1, uint16_t height, uint16_t color)
-{
-    uint16_t bitmap[height];
+// void pod_hal_vline(uint16_t x1, uint16_t y1, uint16_t height, uint16_t color)
+// {
+//     {
+//     uint16_t *ptr = g_fb.buffer + g_fb.pitch * y0 + g_fb.bpp * x0;
 
-    for (uint16_t i = 0; i < height; i++) {
-        ((uint16_t *)bitmap)[i] = color;
-    }
 
-    pod_hal_blit(x1, y1, &bitmap);
-}
+//     for (uint16_t i = 0; i < height; i++) {
+//         ((uint16_t *)bitmap)[i] = color;
+//     }
+
+//     pod_hal_blit(x1, y1, &bitmap);
+// }
