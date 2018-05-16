@@ -53,7 +53,7 @@ void pod_hal_init(void)
  */
 void pod_hal_flush(void)
 {
-    ili9431_bitmap(g_spi, 0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, (uint16_t *) g_fb.buffer);
+    ili9431_blit(g_spi, 0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, (uint16_t *) g_fb.buffer);
 }
 
 /*
