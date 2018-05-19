@@ -1,0 +1,6 @@
+menu "Copepod configuration"
+
+config HAL_HEADER_FILE
+    string "Header file for the HAL"
+    default "ili9341-framebuffer.h"
+endmenu
