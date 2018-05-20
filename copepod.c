@@ -116,13 +116,25 @@ void pod_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color
 
 /*
  * Draw a rectangle with given RGB565 color.
- *
- * TODO: Coordinates checking.
  */
 void pod_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
-    uint16_t width = ABS(x0 - x1);
-    uint16_t height = ABS(y0 - y1);
+    /* Make sure x0 is smaller than x1. */
+    if (x0 > x1) {
+        x0 = x0 + x1;
+        x1 = x0 - x1;
+        x0 = x0 - x1;
+    }
+
+    /* Make sure y0 is smaller than y1. */
+    if (y0 > y1) {
+        y0 = y0 + y1;
+        y1 = y0 - y1;
+        y0 = y0 - y1;
+    }
+
+    uint16_t width = x1 - x0;
+    uint16_t height = y1 - y0;
 
     pod_hline(x0, y0, width, color);
     pod_hline(x0, y1, width, color);
@@ -137,10 +149,24 @@ void pod_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t 
  */
 void pod_fillrectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
-    uint16_t width = ABS(x0 - x1);
-    uint16_t height = ABS(y0 - y1);
+    /* Make sure x0 is smaller than x1. */
+    if (x0 > x1) {
+        x0 = x0 + x1;
+        x1 = x0 - x1;
+        x0 = x0 - x1;
+    }
 
-    for(uint16_t i = 0; i < height; i++) {
+    /* Make sure y0 is smaller than y1. */
+    if (y0 > y1) {
+        y0 = y0 + y1;
+        y1 = y0 - y1;
+        y0 = y0 - y1;
+    }
+
+    uint16_t width = x1 - x0;
+    uint16_t height = y1 - y0;
+
+    for (uint16_t i = 0; i < height; i++) {
         pod_hline(x0, y0 + i, width, color);
     }
 }
