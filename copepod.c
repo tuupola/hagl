@@ -39,7 +39,7 @@ SOFTWARE.
  *
  * TODO: Coordinates checking.
  */
-void pod_putpixel(uint16_t x1, uint16_t y1, uint16_t color)
+void pod_putpixel(int16_t x1, int16_t y1, uint16_t color)
 {
     pod_hal_putpixel(x1, y1, color);
 }
@@ -78,7 +78,7 @@ void pod_vline(uint16_t x0, uint16_t y0, uint16_t height, uint16_t color) {
  * TODO: Coordinates checking.
  */
 /* https://github.com/jb55/bresenham-line.c/blob/master/bresenham_line.c */
-void pod_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
+void pod_line(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)
 {
     int16_t dx;
     int16_t sx;
