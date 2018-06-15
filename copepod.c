@@ -179,7 +179,7 @@ void pod_fillrectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint1
  */
 
 /* https://www.geeksforgeeks.org/pass-2d-array-parameter-c/ */
-void pod_putchar(char ascii, uint16_t x1, uint16_t y1, uint16_t color, char font[128][8])
+void pod_putchar(char ascii, uint16_t x0, uint16_t y0, uint16_t color, char font[128][8])
 {
     bool set;
     bitmap_t bitmap = {
@@ -203,7 +203,7 @@ void pod_putchar(char ascii, uint16_t x1, uint16_t y1, uint16_t color, char font
         }
     }
 
-    pod_blit(x1, y1, &bitmap);
+    pod_blit(x0, y0, &bitmap);
     bitmap_destroy(&bitmap);
 }
 
@@ -215,7 +215,7 @@ void pod_putchar(char ascii, uint16_t x1, uint16_t y1, uint16_t color, char font
  * TODO: Different fonts sizes.
  */
 
-void pod_puttext(char *str, uint16_t x1, uint16_t y1, uint16_t color, char font[128][8])
+void pod_puttext(char *str, uint16_t x0, uint16_t y0, uint16_t color, char font[128][8])
 {
     char temp;
 
@@ -223,11 +223,11 @@ void pod_puttext(char *str, uint16_t x1, uint16_t y1, uint16_t color, char font[
         temp = *str++;
 
         if (13 == temp || 10 == temp) {
-            x1 = 0;
-            y1 += 8;
+            x0 = 0;
+            y0 += 8;
         } else {
-            pod_putchar(temp, x1, y1, color, font);
-            x1 += 8;
+            pod_putchar(temp, x0, y0, color, font);
+            x0 += 8;
         }
     } while (*str != 0);
 }
