@@ -237,14 +237,22 @@ void pod_puttext(char *str, uint16_t x0, uint16_t y0, uint16_t color, char font[
  * parameter is left out intentionally to keep the API simpler. If you need
  * configurable source and destination see the file blit.c.
  *
- * TODO: Handle transparency. Fallback to putpixel if HAL blit is not available.
+ * TODO: Handle transparency.
  */
 
 void pod_blit(uint16_t x0, uint16_t y0, bitmap_t *source) {
 #ifdef POD_HAS_HAL_BLIT
     pod_hal_blit(x0, y0, source);
 #else
-    /* TODO: Use pdo_putpixel() to write to framebuffer. */
+    uint16_t color;
+    uint16_t *ptr = (uint16_t *) source->buffer;
+
+    for (uint16_t y = 0; y < source->height; y++) {
+        for (uint16_t x = 0; x < source->width; x++) {
+            color = *(ptr++);
+            pod_hal_putpixel(x0 + x, y0 + y, color);
+        }
+    }
 #endif
 };
 
