@@ -46,8 +46,8 @@ extern char g_font;
 extern void pod_hal_putpixel(int16_t x0, int16_t y0, uint16_t color);
 
 extern void pod_hal_blit(uint16_t x0, uint16_t y0, bitmap_t *source);
-extern void pod_hal_hline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color);
-extern void pod_hal_vline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color);
+extern void pod_hal_hline(int16_t x0, int16_t y0, uint16_t width, uint16_t color);
+extern void pod_hal_vline(int16_t x0, int16_t y0, uint16_t width, uint16_t color);
 extern void pod_hal_init();
 extern void pod_hal_flush();
 
@@ -58,8 +58,8 @@ void pod_blit(int16_t x0, int16_t y0, bitmap_t *source);
 void pod_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source);
 
 void pod_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
-void pod_hline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color);
-void pod_vline(uint16_t x0, uint16_t y0, uint16_t height, uint16_t color);
+void pod_hline(int16_t x0, int16_t y0, uint16_t width, uint16_t color);
+void pod_vline(int16_t x0, int16_t y0, uint16_t height, uint16_t color);
 
 void pod_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
 void pod_fillrectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);

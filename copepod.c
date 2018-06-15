@@ -47,10 +47,8 @@ void pod_putpixel(int16_t x1, int16_t y1, uint16_t color)
 /*
  * Draw a vertical line with given RGB565 color. If HAL supports it uses
  * hardware hline drawing. If not falls back to vanilla line drawing.
- *
- * TODO: Coordinates checking.
  */
-void pod_hline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color) {
+void pod_hline(int16_t x0, int16_t y0, uint16_t width, uint16_t color) {
 #ifdef POD_HAS_HAL_HLINE
     pod_hal_hline(x0, y0, width, color);
 #else
@@ -61,10 +59,8 @@ void pod_hline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color) {
 /*
  * Draw a vertical line with given RGB565 color. If HAL supports it uses
  * hardware vline drawing. If not falls back to vanilla line drawing.
- *
- * TODO: Coordinates checking.
  */
-void pod_vline(uint16_t x0, uint16_t y0, uint16_t height, uint16_t color) {
+void pod_vline(int16_t x0, int16_t y0, uint16_t height, uint16_t color) {
 #ifdef POD_HAS_HAL_VLINE
     pod_hal_vline(x0, y0, height, color);
 #else
