@@ -35,8 +35,8 @@ SOFTWARE.
 
 void blit(int16_t x0, int16_t y0, bitmap_t *src, bitmap_t *dst)
 {
-    uint16_t srcw = src->width;
-    uint16_t srch = src->height;
+    int16_t srcw = src->width;
+    int16_t srch = src->height;
     int16_t x1 = 0;
     int16_t y1 = 0;
 
@@ -69,9 +69,14 @@ void blit(int16_t x0, int16_t y0, bitmap_t *src, bitmap_t *dst)
         srch = dst->height - y0;
     }
 
-    uint16_t *dstptr = (uint16_t *) (dst->buffer + (dst->pitch * y0) + (dst->depth / 8) * x0);
-    uint16_t *srcptr = (uint16_t *) src->buffer;
-    //uint16_t *srcptr = (uint16_t *) src->buffer + y1 * src->pitch + x1;;
+   /* Everthing outside viewport, nothing to do. */
+    if ((srcw < 0 ) || (srch < 0))  {
+        return;
+    }
+
+    uint16_t *dstptr = (uint16_t *) (dst->buffer + (dst->pitch * y0) + ((dst->depth / 8) * x0));
+    //uint16_t *srcptr = (uint16_t *) src->buffer;
+    uint16_t *srcptr = (uint16_t *) (src->buffer + (src->pitch * y1) + ((dst->depth / 8) * x1));
 
     for (uint16_t y = 0; y < srch; y++) {
         for (uint16_t x = 0; x < srcw; x++) {

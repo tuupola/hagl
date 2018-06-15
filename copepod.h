@@ -52,9 +52,9 @@ extern void pod_hal_init();
 extern void pod_hal_flush();
 
 void pod_putpixel(uint16_t x0, uint16_t y0, uint16_t color);
-void pod_putchar(char ascii, uint16_t x0, uint16_t y0, uint16_t color, char font[128][8]);
-void pod_puttext(char *str, uint16_t x0, uint16_t y0, uint16_t color, char font[128][8]);
-void pod_blit(uint16_t x0, uint16_t y0, bitmap_t *source);
+void pod_putchar(char ascii, int16_t x0, int16_t y0, uint16_t color, char font[128][8]);
+void pod_puttext(char *str, int16_t x0, int16_t y0, uint16_t color, char font[128][8]);
+void pod_blit(int16_t x0, int16_t y0, bitmap_t *source);
 void pod_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source);
 
 void pod_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);

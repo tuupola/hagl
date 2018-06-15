@@ -179,7 +179,7 @@ void pod_fillrectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint1
  */
 
 /* https://www.geeksforgeeks.org/pass-2d-array-parameter-c/ */
-void pod_putchar(char ascii, uint16_t x0, uint16_t y0, uint16_t color, char font[128][8])
+void pod_putchar(char ascii, int16_t x0, int16_t y0, uint16_t color, char font[128][8])
 {
     bool set;
     bitmap_t bitmap = {
@@ -215,7 +215,7 @@ void pod_putchar(char ascii, uint16_t x0, uint16_t y0, uint16_t color, char font
  * TODO: Different fonts sizes.
  */
 
-void pod_puttext(char *str, uint16_t x0, uint16_t y0, uint16_t color, char font[128][8])
+void pod_puttext(char *str, int16_t x0, int16_t y0, uint16_t color, char font[128][8])
 {
     char temp;
 
@@ -240,7 +240,7 @@ void pod_puttext(char *str, uint16_t x0, uint16_t y0, uint16_t color, char font[
  * TODO: Handle transparency.
  */
 
-void pod_blit(uint16_t x0, uint16_t y0, bitmap_t *source) {
+void pod_blit(int16_t x0, int16_t y0, bitmap_t *source) {
 #ifdef POD_HAS_HAL_BLIT
     pod_hal_blit(x0, y0, source);
 #else
