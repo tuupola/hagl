@@ -42,7 +42,7 @@ SOFTWARE.
 
 extern char g_font;
 
-/* This is the only mandatory which low level driver must provide. */
+/* This is the only mandatory function which HAL must provide. */
 extern void pod_hal_putpixel(int16_t x0, int16_t y0, uint16_t color);
 
 extern void pod_hal_blit(uint16_t x0, uint16_t y0, bitmap_t *source);
@@ -61,8 +61,8 @@ void pod_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
 void pod_hline(int16_t x0, int16_t y0, uint16_t width, uint16_t color);
 void pod_vline(int16_t x0, int16_t y0, uint16_t height, uint16_t color);
 
-void pod_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
-void pod_fillrectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
+void pod_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
+void pod_fillrectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
 void pod_init();
 void pod_flush();
 

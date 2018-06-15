@@ -36,8 +36,6 @@ SOFTWARE.
 /*
  * Puts a pixel RGB565 color. This is the only mandatory function HAL must
  * support.
- *
- * TODO: Coordinates checking.
  */
 void pod_putpixel(int16_t x1, int16_t y1, uint16_t color)
 {
@@ -70,8 +68,6 @@ void pod_vline(int16_t x0, int16_t y0, uint16_t height, uint16_t color) {
 
 /*
  * Draw a line using Bresenham's algorithm with given RGB565 color.
- *
- * TODO: Coordinates checking.
  */
 /* https://github.com/jb55/bresenham-line.c/blob/master/bresenham_line.c */
 void pod_line(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)
@@ -113,7 +109,7 @@ void pod_line(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)
 /*
  * Draw a rectangle with given RGB565 color.
  */
-void pod_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
+void pod_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
@@ -140,10 +136,8 @@ void pod_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t 
 
 /*
  * Draw a filled rectangle with given RGB565 color.
- *
- * TODO: Coordinates checking.
  */
-void pod_fillrectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
+void pod_fillrectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
