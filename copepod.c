@@ -29,8 +29,8 @@ SOFTWARE.
 
 #include "bitmap.h"
 #include "blit.h"
-#include "config.h"
 #include "copepod.h"
+#include "copepod-hal.h"
 #include "framebuffer.h"
 
 /*
@@ -172,13 +172,16 @@ void pod_fillrectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t 
 void pod_putchar(char ascii, int16_t x0, int16_t y0, uint16_t color, char font[128][8])
 {
     bool set;
+    uint8_t buffer[128];
+
     bitmap_t bitmap = {
         .width = 8,
         .height = 8,
         .depth = 16,
+        .pitch = 16,  /* width * (depth / 8) */
+        .size = 128,   /* pitch * height. */
+        .buffer = buffer
     };
-
-    bitmap_init(&bitmap);
 
     uint16_t *ptr = (uint16_t *) bitmap.buffer;
 
@@ -194,7 +197,6 @@ void pod_putchar(char ascii, int16_t x0, int16_t y0, uint16_t color, char font[1
     }
 
     pod_blit(x0, y0, &bitmap);
-    bitmap_destroy(&bitmap);
 }
 
 /*
