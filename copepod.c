@@ -256,6 +256,10 @@ void pod_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *
 #endif
 };
 
+void pod_cls() {
+    pod_fillrectangle(0, 0, FRAMEBUFFER_WIDTH - 1, FRAMEBUFFER_HEIGHT -1, 0x00);
+}
+
 void pod_init() {
 #ifdef POD_HAS_HAL_INIT
     pod_hal_init();

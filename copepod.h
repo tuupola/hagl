@@ -63,6 +63,7 @@ void pod_vline(int16_t x0, int16_t y0, uint16_t height, uint16_t color);
 
 void pod_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
 void pod_fillrectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
+void pod_cls();
 void pod_init();
 void pod_flush();
 
