@@ -260,6 +260,40 @@ void pod_cls() {
     pod_fillrectangle(0, 0, FRAMEBUFFER_WIDTH - 1, FRAMEBUFFER_HEIGHT -1, 0x00);
 }
 
+void pod_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
+    int16_t x = 0;
+    int16_t y = r;
+    int16_t d = 3 - 2 * r;
+
+    while (y >= x) {
+        pod_putpixel(xc+x, yc+y, color);
+        pod_putpixel(xc-x, yc+y, color);
+        pod_putpixel(xc+x, yc-y, color);
+        pod_putpixel(xc-x, yc-y, color);
+        pod_putpixel(xc+y, yc+x, color);
+        pod_putpixel(xc-y, yc+x, color);
+        pod_putpixel(xc+y, yc-x, color);
+        pod_putpixel(xc-y, yc-x, color);
+        x++;
+
+        if (d > 0) {
+            y--;
+            d = d + 4 * (x - y) + 10;
+        } else {
+            d = d + 4 * x + 6;
+        }
+
+        pod_putpixel(xc+x, yc+y, color);
+        pod_putpixel(xc-x, yc+y, color);
+        pod_putpixel(xc+x, yc-y, color);
+        pod_putpixel(xc-x, yc-y, color);
+        pod_putpixel(xc+y, yc+x, color);
+        pod_putpixel(xc-y, yc+x, color);
+        pod_putpixel(xc+y, yc-x, color);
+        pod_putpixel(xc-y, yc-x, color);
+    }
+}
+
 void pod_init() {
 #ifdef POD_HAS_HAL_INIT
     pod_hal_init();
