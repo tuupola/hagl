@@ -300,10 +300,10 @@ void pod_fillcircle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
     int16_t d = 3 - 2 * r;
 
     while (y >= x) {
-        pod_line(x0+x, y0+y, x0-x, y0+y, color);
-        pod_line(x0+x, y0-y, x0-x, y0-y, color);
-        pod_line(x0+y, y0+x, x0-y, y0+x, color);
-        pod_line(x0+y, y0-x, x0-y, y0-x, color);
+        pod_hline(x0-x, y0+y, x * 2 , color);
+        pod_hline(x0-x, y0-y, x * 2, color);
+        pod_hline(x0-y, y0+x, y * 2, color);
+        pod_hline(x0-y, y0-x, y * 2, color);
         x++;
 
         if (d > 0) {
