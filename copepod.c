@@ -294,6 +294,27 @@ void pod_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
     }
 }
 
+void pod_fillcircle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
+    int16_t x = 0;
+    int16_t y = r;
+    int16_t d = 3 - 2 * r;
+
+    while (y >= x) {
+        pod_line(x0+x, y0+y, x0-x, y0+y, color);
+        pod_line(x0+x, y0-y, x0-x, y0-y, color);
+        pod_line(x0+y, y0+x, x0-y, y0+x, color);
+        pod_line(x0+y, y0-x, x0-y, y0-x, color);
+        x++;
+
+        if (d > 0) {
+            y--;
+            d = d + 4 * (x - y) + 10;
+        } else {
+            d = d + 4 * x + 6;
+        }
+    }
+}
+
 void pod_init() {
 #ifdef POD_HAS_HAL_INIT
     pod_hal_init();
