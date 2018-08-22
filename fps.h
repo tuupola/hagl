@@ -25,7 +25,7 @@ SOFTWARE.
 #ifndef _FPS_H
 #define _FPS_H
 
-#include CONFIG_POD_HAL_HEADER_FILE
+#include "copepod-hal.h"
 
 static inline float fps()
 {
