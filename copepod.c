@@ -315,6 +315,26 @@ void pod_fillcircle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
     }
 }
 
+void pod_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
+
+    for(int16_t i = 0; i < amount - 1; i++) {
+        pod_line(
+            vertices[(i << 1 ) + 0],
+            vertices[(i << 1 ) + 1],
+            vertices[(i << 1 ) + 2],
+            vertices[(i << 1 ) + 3],
+            color
+        );
+    }
+    pod_line(
+        vertices[0],
+        vertices[1],
+        vertices[(amount <<1 ) - 2],
+        vertices[(amount <<1 ) - 1],
+        color
+    );
+}
+
 void pod_init() {
 #ifdef POD_HAS_HAL_INIT
     pod_hal_init();
