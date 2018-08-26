@@ -28,8 +28,8 @@ typedef struct {
 } hsl_t;
 
 
-void hsl2rgb(hsl_t *hsl, rgb_t *rgb);
-void rgb2hsl(rgb_t *rgb, hsl_t *hsl);
+rgb_t hsl_to_rgb888(hsl_t *hsl);
+hsl_t rgb888_to_hsl(rgb_t *rgb);
 
 rgb_t rgb565_to_rgb888(uint16_t *input);
 uint16_t rgb888_to_rgb565(rgb_t *input);

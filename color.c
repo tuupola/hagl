@@ -44,8 +44,9 @@ https://www.lexaloffle.com/bbs/?tid=3726
 
 #include "color.h"
 
-void hsl2rgb(hsl_t *hsl, rgb_t *rgb)
+rgb_t hsl_to_rgb888(hsl_t *hsl)
 {
+    rgb_t rgb;
     float r, g, b, h, s, l;
     float temp1, temp2, tempr, tempg, tempb;
 
@@ -105,14 +106,16 @@ void hsl2rgb(hsl_t *hsl, rgb_t *rgb)
         }
     }
 
-    rgb->r = (uint8_t)(r * 255.0);
-    rgb->g = (uint8_t)(g * 255.0);
-    rgb->b = (uint8_t)(b * 255.0);
+    rgb.r = (uint8_t)(r * 255.0);
+    rgb.g = (uint8_t)(g * 255.0);
+    rgb.b = (uint8_t)(b * 255.0);
+
+    return rgb;
 }
 
-
-void rgb2hsl(rgb_t *rgb, hsl_t *hsl)
+hsl_t rgb888_to_hsl(rgb_t *rgb)
 {
+    hsl_t hsl;
     float r, g, b, h, s, l;
     r = rgb->r / 256.0;
     g = rgb->g / 256.0;
@@ -148,10 +151,13 @@ void rgb2hsl(rgb_t *rgb, hsl_t *hsl)
             h++;
         }
 
-        hsl->h = (uint8_t)(h * 255.0);
-        hsl->s = (uint8_t)(s * 255.0);
-        hsl->l = (uint8_t)(l * 255.0);
     }
+
+    hsl.h = (uint8_t)(h * 255.0);
+    hsl.s = (uint8_t)(s * 255.0);
+    hsl.l = (uint8_t)(l * 255.0);
+
+    return hsl;
 }
 
 rgb_t rgb565_to_rgb888(uint16_t *input) {
