@@ -153,3 +153,25 @@ void rgb2hsl(rgb_t *rgb, hsl_t *hsl)
         hsl->l = (uint8_t)(l * 255.0);
     }
 }
+
+rgb_t rgb565_to_rgb888(uint16_t *input) {
+    rgb_t rgb;
+
+    uint8_t r5 = (*input & 0xf800) >> 8; // 1111100000000000
+    uint8_t g6 = (*input & 0x07e0) >> 3; // 0000011111100000
+    uint8_t b5 = (*input & 0x001f) << 3; // 0000000000011111
+
+    rgb.r = (r5 * 527 + 23) >> 6;
+    rgb.g = (g6 * 259 + 33) >> 6;
+    rgb.b = (b5 * 527 + 23) >> 6;
+
+    return rgb;
+}
+
+uint16_t rgb888_to_rgb565(rgb_t *input) {
+    uint16_t r5 = (input->r * 249 + 1014 ) >> 11;
+    uint16_t g6 = (input->g * 253 +  505) >> 10;
+    uint16_t b5 = (input->b * 249 + 1014) >> 11;
+
+    return (r5 | g6 | b5);
+}
