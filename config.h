@@ -23,4 +23,3 @@ SOFTWARE.
 */
 
 #include "sdkconfig.h"
-#include CONFIG_POD_HAL_HEADER_FILE
