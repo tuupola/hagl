@@ -37,9 +37,20 @@ SOFTWARE.
  * Puts a pixel RGB565 color. This is the only mandatory function HAL must
  * support.
  */
-void pod_putpixel(int16_t x1, int16_t y1, uint16_t color)
+void pod_putpixel(int16_t x0, int16_t y0, uint16_t color)
 {
-    pod_hal_putpixel(x1, y1, color);
+    /* x0 or y0 is before the edge, nothing to do. */
+    if ((x0 < 0) || (y0 < 0))  {
+        return;
+    }
+
+    /* x0 or y0 is after the edge, nothing to do. */
+    if ((x0 > DISPLAY_WIDTH - 1) && (y0 > DISPLAY_HEIGHT - 1)) {
+        return;
+    }
+
+    /* If still in bounds set the pixel. */
+    pod_hal_putpixel(x0, y0, color);
 }
 
 /*
@@ -257,7 +268,7 @@ void pod_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *
 };
 
 void pod_cls() {
-    pod_fillrectangle(0, 0, FRAMEBUFFER_WIDTH - 1, FRAMEBUFFER_HEIGHT -1, 0x00);
+    pod_fillrectangle(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1, 0x00);
 }
 
 void pod_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
