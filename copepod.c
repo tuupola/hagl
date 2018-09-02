@@ -57,7 +57,29 @@ void pod_putpixel(int16_t x0, int16_t y0, uint16_t color)
  * Draw a vertical line with given RGB565 color. If HAL supports it uses
  * hardware hline drawing. If not falls back to vanilla line drawing.
  */
-void pod_hline(int16_t x0, int16_t y0, uint16_t width, uint16_t color) {
+void pod_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
+    int16_t width = w;
+
+    /* x0 or y0 is over the edge, nothing to do. */
+    if ((x0 > DISPLAY_WIDTH - 1) || (y0 > DISPLAY_HEIGHT - 1) || (y0 < 0))  {
+        return;
+    }
+
+    /* x0 is negative, ignore parts outside of screen. */
+    if (x0 < 0) {
+        width = width + x0;
+        x0 = 0;
+    }
+
+    /* Everything outside viewport, nothing to do. */
+    if (width < 0)  {
+        return;
+    }
+
+    /* Cut anything going over right edge. */
+    if (((x0 + width) > DISPLAY_WIDTH)) {
+        width = width - (x0 + width - DISPLAY_WIDTH);
+    }
 #ifdef POD_HAS_HAL_HLINE
     pod_hal_hline(x0, y0, width, color);
 #else
