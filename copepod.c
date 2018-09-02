@@ -45,7 +45,7 @@ void pod_putpixel(int16_t x0, int16_t y0, uint16_t color)
     }
 
     /* x0 or y0 is after the edge, nothing to do. */
-    if ((x0 > DISPLAY_WIDTH - 1) && (y0 > DISPLAY_HEIGHT - 1)) {
+    if ((x0 > DISPLAY_WIDTH - 1) || (y0 > DISPLAY_HEIGHT - 1)) {
         return;
     }
 
