@@ -91,7 +91,29 @@ void pod_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
  * Draw a vertical line with given RGB565 color. If HAL supports it uses
  * hardware vline drawing. If not falls back to vanilla line drawing.
  */
-void pod_vline(int16_t x0, int16_t y0, uint16_t height, uint16_t color) {
+void pod_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
+    int16_t height = h;
+
+    /* x0 or y0 is over the edge, nothing to do. */
+    if ((x0 > DISPLAY_WIDTH) || (y0 > DISPLAY_HEIGHT))  {
+        return;
+    }
+
+    /* y0 is negative, ignore parts outside of screen. */
+    if (y0 < 0) {
+        height = height + y0;
+        y0 = 0;
+    }
+
+    /* Everything outside viewport, nothing to do. */
+    if (height < 0)  {
+        return;
+    }
+
+    /* Cut anything going over right edge. */
+    if (((y0 + height) > DISPLAY_HEIGHT))  {
+        height = height - (y0 + height - DISPLAY_HEIGHT);
+    }
 #ifdef POD_HAS_HAL_VLINE
     pod_hal_vline(x0, y0, height, color);
 #else
