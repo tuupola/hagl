@@ -26,6 +26,7 @@ SOFTWARE.
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #include "bitmap.h"
 #include "blit.h"
@@ -389,6 +390,64 @@ void pod_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
         color
     );
 }
+
+/* Adapted from  http://alienryderflex.com/polygon_fill/ */
+void pod_fillpolygon(int16_t amount, int16_t *vertices, uint16_t color) {
+    uint16_t nodes[64];
+    int16_t y;
+
+    float x0;
+    float y0;
+    float x1;
+    float y1;
+
+    /*  Loop through the rows of the image. */
+    for (y = 0; y < DISPLAY_HEIGHT; y++) {
+
+        /*  Build a list of nodes. */
+        int16_t count = 0;
+        int16_t j = amount - 1;
+
+        for (int16_t i = 0; i < amount; i++) {
+            x0 = vertices[(i << 1) + 0];
+            y0 = vertices[(i << 1) + 1];
+            x1 = vertices[(j << 1) + 0];
+            y1 = vertices[(j << 1) + 1];
+
+            if (
+                (y0 < (float)y && y1 >= (float)y) ||
+                (y1 < (float)y && y0 >= (float)y)
+            ) {
+                nodes[count] = (int16_t)(x0 + (y - y0) / (y1 - y0) * (x1 - x0));
+                count++;
+            }
+            j = i;
+        }
+
+        /* Sort the nodes, via a simple “Bubble” sort. */
+        int16_t i = 0;
+        while (i < count - 1) {
+            if (nodes[i] > nodes[i + 1]) {
+                int16_t swap = nodes[i];
+                nodes[i] = nodes[i + 1];
+                nodes[i + 1] = swap;
+                if (i) {
+                    i--;
+                }
+            } else {
+                i++;
+            }
+        }
+
+        /* Draw lines between nodes. */
+        for (int16_t i = 0; i < count; i += 2) {
+            int16_t width = nodes[i + 1] - nodes[i];
+            pod_hline(nodes[i], y, width, color);
+            //pod_line(nodes[i], y, nodes[i + 1], y, color);
+        }
+    }
+}
+
 
 void pod_init() {
 #ifdef POD_HAS_HAL_INIT
