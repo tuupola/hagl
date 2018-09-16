@@ -126,7 +126,7 @@ void pod_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
  * Draw a line using Bresenham's algorithm with given RGB565 color.
  */
 /* https://github.com/jb55/bresenham-line.c/blob/master/bresenham_line.c */
-void pod_line(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)
+void pod_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
     int16_t dx;
     int16_t sx;
@@ -135,16 +135,16 @@ void pod_line(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)
     int16_t err;
     int16_t e2;
 
-    dx = ABS(x2 - x1);
-    sx = x1 < x2 ? 1 : -1;
-    dy = ABS(y2 - y1);
-    sy = y1 < y2 ? 1 : -1;
+    dx = ABS(x1 - x0);
+    sx = x0 < x1 ? 1 : -1;
+    dy = ABS(y1 - y0);
+    sy = y0 < y1 ? 1 : -1;
     err = (dx > dy ? dx : -dy) / 2;
 
     while (1) {
-        pod_putpixel(x1, y1, color);
+        pod_putpixel(x0, y0, color);
 
-        if (x1 == x2 && y1 == y2) {
+        if (x0 == x1 && y0 == y1) {
             break;
         };
 
@@ -152,12 +152,12 @@ void pod_line(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)
 
         if (e2 > -dx) {
             err -= dy;
-            x1 += sx;
+            x0 += sx;
         }
 
         if (e2 < dy) {
             err += dx;
-            y1 += sy;
+            y0 += sy;
         }
     }
 }
