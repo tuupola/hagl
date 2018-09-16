@@ -30,10 +30,24 @@ SOFTWARE.
 
 #include "bitmap.h"
 #include "blit.h"
+#include "cohen-sutherland.h"
 #include "copepod.h"
 #include "copepod-hal.h"
 #include "framebuffer.h"
 
+clip_window_t clip_window = {
+    .min_x = 0,
+    .min_y = 0,
+    .max_x = DISPLAY_WIDTH - 1,
+    .max_y = DISPLAY_HEIGHT - 1,
+};
+
+void pod_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
+    clip_window.min_x = x0;
+    clip_window.min_y = y0;
+    clip_window.max_x = x1;
+    clip_window.max_y = y1;
+}
 /*
  * Puts a pixel RGB565 color. This is the only mandatory function HAL must
  * support.
@@ -41,12 +55,12 @@ SOFTWARE.
 void pod_putpixel(int16_t x0, int16_t y0, uint16_t color)
 {
     /* x0 or y0 is before the edge, nothing to do. */
-    if ((x0 < 0) || (y0 < 0))  {
+    if ((x0 < clip_window.min_x) || (y0 < clip_window.min_y))  {
         return;
     }
 
     /* x0 or y0 is after the edge, nothing to do. */
-    if ((x0 > DISPLAY_WIDTH - 1) || (y0 > DISPLAY_HEIGHT - 1)) {
+    if ((x0 > clip_window.max_x) || (y0 > clip_window.max_y)) {
         return;
     }
 
@@ -55,33 +69,33 @@ void pod_putpixel(int16_t x0, int16_t y0, uint16_t color)
 }
 
 /*
- * Draw a vertical line with given RGB565 color. If HAL supports it uses
+ * Draw a horizontal line with given RGB565 color. If HAL supports it uses
  * hardware hline drawing. If not falls back to vanilla line drawing.
  */
 void pod_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
+#ifdef POD_HAS_HAL_HLINE
     int16_t width = w;
 
     /* x0 or y0 is over the edge, nothing to do. */
-    if ((x0 > DISPLAY_WIDTH - 1) || (y0 > DISPLAY_HEIGHT - 1) || (y0 < 0))  {
+    if ((x0 > clip_window.max_x) || (y0 > clip_window.max_y) || (y0 < clip_window.min_y))  {
         return;
     }
 
-    /* x0 is negative, ignore parts outside of screen. */
-    if (x0 < 0) {
+    /* x0 is left of clip window, ignore start part. */
+    if (x0 < clip_window.min_x) {
         width = width + x0;
-        x0 = 0;
+        x0 = clip_window.min_x;
     }
 
-    /* Everything outside viewport, nothing to do. */
+    /* Everything outside clip window, nothing to do. */
     if (width < 0)  {
         return;
     }
 
-    /* Cut anything going over right edge. */
-    if (((x0 + width) > DISPLAY_WIDTH)) {
-        width = width - (x0 + width - DISPLAY_WIDTH);
+    /* Cut anything going over right edge of clip window. */
+    if (((x0 + width) > clip_window.max_x)) {
+        width = width - (x0 + width - clip_window.max_x);
     }
-#ifdef POD_HAS_HAL_HLINE
     pod_hal_hline(x0, y0, width, color);
 #else
     pod_line(x0, y0, x0 + width, y0, color);
@@ -93,29 +107,30 @@ void pod_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
  * hardware vline drawing. If not falls back to vanilla line drawing.
  */
 void pod_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
+#ifdef POD_HAS_HAL_VLINE
     int16_t height = h;
 
     /* x0 or y0 is over the edge, nothing to do. */
-    if ((x0 > DISPLAY_WIDTH) || (y0 > DISPLAY_HEIGHT))  {
+    if ((x0 > clip_window.max_x) || (x0 < clip_window.min_x) || (y0 > clip_window.max_y))  {
         return;
     }
 
-    /* y0 is negative, ignore parts outside of screen. */
-    if (y0 < 0) {
+    /* y0 is top of clip window, ignore start part. */
+    if (y0 < clip_window.min_y) {
         height = height + y0;
-        y0 = 0;
+        y0 = clip_window.min_y;
     }
 
-    /* Everything outside viewport, nothing to do. */
+    /* Everything outside clip window, nothing to do. */
     if (height < 0)  {
         return;
     }
 
     /* Cut anything going over right edge. */
-    if (((y0 + height) > DISPLAY_HEIGHT))  {
-        height = height - (y0 + height - DISPLAY_HEIGHT);
+    if (((y0 + height) > clip_window.max_y))  {
+        height = height - (y0 + height - clip_window.max_y);
     }
-#ifdef POD_HAS_HAL_VLINE
+
     pod_hal_vline(x0, y0, height, color);
 #else
     pod_line(x0, y0, x0, y0 + height, color);
@@ -128,6 +143,11 @@ void pod_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
 /* https://github.com/jb55/bresenham-line.c/blob/master/bresenham_line.c */
 void pod_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
+    /* Clip coordinates to fit clip window. */
+    if (false == line_clip(&x0, &y0, &x1, &y1, clip_window)) {
+        return;
+    }
+
     int16_t dx;
     int16_t sx;
     int16_t dy;

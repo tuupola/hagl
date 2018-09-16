@@ -68,6 +68,7 @@ void pod_fillcircle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
 void pod_polygon(int16_t amount, int16_t *vertices, uint16_t color);
 void pod_fillpolygon(int16_t amount, int16_t *vertices, uint16_t color);
 
+void pod_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 void pod_cls();
 void pod_init();
 void pod_flush();
