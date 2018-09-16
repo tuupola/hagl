@@ -25,12 +25,13 @@ SOFTWARE.
 #ifndef _FPS_H
 #define _FPS_H
 
-#include "copepod-hal.h"
+#include <time.h>
+#include <stdbool.h>
 
 static inline float fps()
 {
-    static uint32_t ticks;
-    static uint32_t start;
+    static clock_t ticks;
+    static clock_t start;
     static uint32_t frames = 1;
     static float current = 0;
     static bool firstrun = true;
@@ -39,13 +40,13 @@ static inline float fps()
     float measured = 0;
 
     if (firstrun) {
-        start = pod_hal_ticks();
+        start = clock();
         firstrun = false;
     }
     frames++;
 
-    ticks = pod_hal_ticks() - start;
-    measured = frames / (float) ticks * pod_hal_ticks_per_second();
+    ticks = clock() - start;
+    measured = frames / (float) ticks * CLOCKS_PER_SEC;
     measured = (measured * smoothing) + (current * (1.0 - smoothing));
 
     return measured;
