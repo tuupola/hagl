@@ -98,7 +98,7 @@ void pod_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
     }
     pod_hal_hline(x0, y0, width, color);
 #else
-    pod_line(x0, y0, x0 + width, y0, color);
+    pod_line(x0, y0, x0 + w, y0, color);
 #endif
 }
 
@@ -107,9 +107,8 @@ void pod_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
  * hardware vline drawing. If not falls back to vanilla line drawing.
  */
 void pod_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
-#ifdef POD_HAS_HAL_VLINE
     int16_t height = h;
-
+#ifdef POD_HAS_HAL_VLINE
     /* x0 or y0 is over the edge, nothing to do. */
     if ((x0 > clip_window.max_x) || (x0 < clip_window.min_x) || (y0 > clip_window.max_y))  {
         return;
@@ -133,7 +132,7 @@ void pod_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
 
     pod_hal_vline(x0, y0, height, color);
 #else
-    pod_line(x0, y0, x0, y0 + height, color);
+    pod_line(x0, y0, x0, y0 + h, color);
 #endif
 }
 
