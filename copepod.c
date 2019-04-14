@@ -369,7 +369,7 @@ void pod_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
     }
 }
 
-void pod_fillcircle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
+void pod_fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
     int16_t x = 0;
     int16_t y = r;
     int16_t d = 3 - 2 * r;
