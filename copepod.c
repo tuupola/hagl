@@ -72,7 +72,7 @@ void pod_put_pixel(int16_t x0, int16_t y0, uint16_t color)
  * Draw a horizontal line with given RGB565 color. If HAL supports it uses
  * hardware hline drawing. If not falls back to vanilla line drawing.
  */
-void pod_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
+void pod_draw_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
 #ifdef POD_HAS_HAL_HLINE
     int16_t width = w;
 
@@ -203,8 +203,8 @@ void pod_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t colo
     uint16_t width = x1 - x0;
     uint16_t height = y1 - y0;
 
-    pod_hline(x0, y0, width, color);
-    pod_hline(x0, y1, width, color);
+    pod_draw_hline(x0, y0, width, color);
+    pod_draw_hline(x0, y1, width, color);
     pod_vline(x0, y0, height, color);
     pod_vline(x1, y0, height, color);
 }
@@ -232,7 +232,7 @@ void pod_fillrectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t 
     uint16_t height = y1 - y0;
 
     for (uint16_t i = 0; i < height; i++) {
-        pod_hline(x0, y0 + i, width, color);
+        pod_draw_hline(x0, y0 + i, width, color);
     }
 }
 
@@ -375,10 +375,10 @@ void pod_fillcircle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
     int16_t d = 3 - 2 * r;
 
     while (y >= x) {
-        pod_hline(x0-x, y0+y, x * 2 , color);
-        pod_hline(x0-x, y0-y, x * 2, color);
-        pod_hline(x0-y, y0+x, y * 2, color);
-        pod_hline(x0-y, y0-x, y * 2, color);
+        pod_draw_hline(x0-x, y0+y, x * 2 , color);
+        pod_draw_hline(x0-x, y0-y, x * 2, color);
+        pod_draw_hline(x0-y, y0+x, y * 2, color);
+        pod_draw_hline(x0-y, y0-x, y * 2, color);
         x++;
 
         if (d > 0) {
@@ -461,7 +461,7 @@ void pod_fillpolygon(int16_t amount, int16_t *vertices, uint16_t color) {
         /* Draw lines between nodes. */
         for (int16_t i = 0; i < count; i += 2) {
             int16_t width = nodes[i + 1] - nodes[i];
-            pod_hline(nodes[i], y, width, color);
+            pod_draw_hline(nodes[i], y, width, color);
             //pod_draw_line(nodes[i], y, nodes[i + 1], y, color);
         }
     }
