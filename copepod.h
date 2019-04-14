@@ -59,7 +59,7 @@ void pod_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *
 
 void pod_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
 void pod_draw_hline(int16_t x0, int16_t y0, uint16_t width, uint16_t color);
-void pod_vline(int16_t x0, int16_t y0, uint16_t height, uint16_t color);
+void pod_draw_vline(int16_t x0, int16_t y0, uint16_t height, uint16_t color);
 
 void pod_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
 void pod_fillrectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);

@@ -106,7 +106,7 @@ void pod_draw_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
  * Draw a vertical line with given RGB565 color. If HAL supports it uses
  * hardware vline drawing. If not falls back to vanilla line drawing.
  */
-void pod_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
+void pod_draw_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
     int16_t height = h;
 #ifdef POD_HAS_HAL_VLINE
     /* x0 or y0 is over the edge, nothing to do. */
@@ -205,8 +205,8 @@ void pod_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t colo
 
     pod_draw_hline(x0, y0, width, color);
     pod_draw_hline(x0, y1, width, color);
-    pod_vline(x0, y0, height, color);
-    pod_vline(x1, y0, height, color);
+    pod_draw_vline(x0, y0, height, color);
+    pod_draw_vline(x1, y0, height, color);
 }
 
 /*
