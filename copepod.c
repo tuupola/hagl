@@ -244,7 +244,7 @@ void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
  */
 
 /* https://www.geeksforgeeks.org/pass-2d-array-parameter-c/ */
-void pod_draw_char(char ascii, int16_t x0, int16_t y0, uint16_t color, char font[128][8])
+void pod_put_char(char ascii, int16_t x0, int16_t y0, uint16_t color, char font[128][8])
 {
     bool set;
     uint8_t buffer[128];
@@ -275,7 +275,7 @@ void pod_draw_char(char ascii, int16_t x0, int16_t y0, uint16_t color, char font
 }
 
 /*
- * Write a string of text by calling pod_draw_char() repeadetly. CR and LF
+ * Write a string of text by calling pod_put_char() repeadetly. CR and LF
  * continue from the next line. Currently supporst only 8x8 fonts which
  * must be the https://github.com/dhepper/font8x8 format.
  *
@@ -293,7 +293,7 @@ void pod_put_text(char *str, int16_t x0, int16_t y0, uint16_t color, char font[1
             x0 = 0;
             y0 += 8;
         } else {
-            pod_draw_char(temp, x0, y0, color, font);
+            pod_put_char(temp, x0, y0, color, font);
             x0 += 8;
         }
     } while (*str != 0);
