@@ -13,17 +13,20 @@ To use Copepod you must provide a hardware absraction layer ie. HAL. It must pro
 Guess what! Better docs to be written. High level functions are pretty self explanatory though.
 
 ```c
-void pod_putpixel(uint16_t x0, uint16_t y0, uint16_t color);
-void pod_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
-void pod_hline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color);
-void pod_vline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color);
-void pod_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
-void pod_fillrectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
-void pod_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color);
-void pod_fillcircle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
-void pod_polygon(int16_t amount, int16_t *vertices, uint16_t color);
-void pod_fillpolygon(int16_t amount, int16_t *vertices, uint16_t color);
-void pod_cls();
+void pod_put_pixel(uint16_t x0, uint16_t y0, uint16_t color);
+void pod_draw_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
+void pod_draw_hline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color);
+void pod_draw_vline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color);
+void pod_draw_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
+void pod_fill_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
+void pod_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color);
+void pod_fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
+void pod_draw_polygon(int16_t amount, int16_t *vertices, uint16_t color);
+void pod_fill_polygon(int16_t amount, int16_t *vertices, uint16_t color);
+void pod_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
+void pod_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
+void pod_clear_screen();
+
 ```
 
 For text ouput the fonts must be of same format as [dhepper/font8x8](https://github.com/dhepper/font8x8).
@@ -44,8 +47,9 @@ Depending on HAL, initialisation and flushing might be required. If HAL does not
 
 ```c
 pod_init();
-pod_putpixel(x0, y0, color);
+pod_put_pixel(x0, y0, color);
 pod_flush();
+pod_destroy();
 ```
 
 ## License
