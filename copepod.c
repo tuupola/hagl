@@ -52,7 +52,7 @@ void pod_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
  * Puts a pixel RGB565 color. This is the only mandatory function HAL must
  * support.
  */
-void pod_putpixel(int16_t x0, int16_t y0, uint16_t color)
+void pod_put_pixel(int16_t x0, int16_t y0, uint16_t color)
 {
     /* x0 or y0 is before the edge, nothing to do. */
     if ((x0 < clip_window.min_x) || (y0 < clip_window.min_y))  {
@@ -161,7 +161,7 @@ void pod_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
     err = (dx > dy ? dx : -dy) / 2;
 
     while (1) {
-        pod_putpixel(x0, y0, color);
+        pod_put_pixel(x0, y0, color);
 
         if (x0 == x1 && y0 == y1) {
             break;
@@ -317,7 +317,7 @@ void pod_blit(int16_t x0, int16_t y0, bitmap_t *source) {
     for (uint16_t y = 0; y < source->height; y++) {
         for (uint16_t x = 0; x < source->width; x++) {
             color = *(ptr++);
-            pod_putpixel(x0 + x, y0 + y, color);
+            pod_put_pixel(x0 + x, y0 + y, color);
         }
     }
 #endif
@@ -341,14 +341,14 @@ void pod_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
     int16_t d = 3 - 2 * r;
 
     while (y >= x) {
-        pod_putpixel(xc+x, yc+y, color);
-        pod_putpixel(xc-x, yc+y, color);
-        pod_putpixel(xc+x, yc-y, color);
-        pod_putpixel(xc-x, yc-y, color);
-        pod_putpixel(xc+y, yc+x, color);
-        pod_putpixel(xc-y, yc+x, color);
-        pod_putpixel(xc+y, yc-x, color);
-        pod_putpixel(xc-y, yc-x, color);
+        pod_put_pixel(xc+x, yc+y, color);
+        pod_put_pixel(xc-x, yc+y, color);
+        pod_put_pixel(xc+x, yc-y, color);
+        pod_put_pixel(xc-x, yc-y, color);
+        pod_put_pixel(xc+y, yc+x, color);
+        pod_put_pixel(xc-y, yc+x, color);
+        pod_put_pixel(xc+y, yc-x, color);
+        pod_put_pixel(xc-y, yc-x, color);
         x++;
 
         if (d > 0) {
@@ -358,14 +358,14 @@ void pod_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
             d = d + 4 * x + 6;
         }
 
-        pod_putpixel(xc+x, yc+y, color);
-        pod_putpixel(xc-x, yc+y, color);
-        pod_putpixel(xc+x, yc-y, color);
-        pod_putpixel(xc-x, yc-y, color);
-        pod_putpixel(xc+y, yc+x, color);
-        pod_putpixel(xc-y, yc+x, color);
-        pod_putpixel(xc+y, yc-x, color);
-        pod_putpixel(xc-y, yc-x, color);
+        pod_put_pixel(xc+x, yc+y, color);
+        pod_put_pixel(xc-x, yc+y, color);
+        pod_put_pixel(xc+x, yc-y, color);
+        pod_put_pixel(xc-x, yc-y, color);
+        pod_put_pixel(xc+y, yc+x, color);
+        pod_put_pixel(xc-y, yc+x, color);
+        pod_put_pixel(xc+y, yc-x, color);
+        pod_put_pixel(xc-y, yc-x, color);
     }
 }
 
