@@ -68,7 +68,7 @@ void pod_fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
 void pod_draw_polygon(int16_t amount, int16_t *vertices, uint16_t color);
 void pod_fill_polygon(int16_t amount, int16_t *vertices, uint16_t color);
 void pod_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
-void pod_filltriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
+void pod_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
 
 void pod_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 void pod_cls();

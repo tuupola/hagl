@@ -472,7 +472,7 @@ void pod_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x
     pod_draw_polygon(3, vertices, color);
 };
 
-void pod_filltriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color) {
+void pod_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color) {
     int16_t vertices[6] = {x0, y0, x1, y1, x2, y2};
     pod_fill_polygon(3, vertices, color);
 }
