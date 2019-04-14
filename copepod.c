@@ -237,31 +237,35 @@ void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
 }
 
 /*
- * Write a single character. Currently supports only 8x8 fonts which must
- * be the https://github.com/dhepper/font8x8 format.
+ * Write a single character.
  *
- * TODO: Different fonts sizes. Transparency support.
  */
 
-/* https://www.geeksforgeeks.org/pass-2d-array-parameter-c/ */
-void pod_put_char(char ascii, int16_t x0, int16_t y0, uint16_t color, char font[128][8])
+void pod_put_char(char ascii, int16_t x0, int16_t y0, uint16_t color, char font[][8])
 {
     bool set;
-    uint8_t buffer[128];
+    uint8_t buffer[128]; /* 8 * 8 * 2 bytes */
+
+    ascii = ascii & 0x7F;
+    if (ascii < 32) {
+        ascii = 0;
+    } else {
+        ascii -= 32 - 1; /* First row is the font settings. */
+    }
 
     bitmap_t bitmap = {
         .width = 8,
         .height = 8,
         .depth = 16,
-        .pitch = 16,  /* width * (depth / 8) */
-        .size = 128,   /* pitch * height. */
+        .pitch = 16, /* width * (depth / 8) */
+        .size = 128, /* pitch * height. */
         .buffer = buffer
     };
 
     uint16_t *ptr = (uint16_t *) bitmap.buffer;
 
-    for (uint8_t x = 0; x < 8; x++) {
-        for (uint8_t y = 0; y < 8; y++) {
+    for (uint8_t y = 0; y < 8; y++) {
+        for (uint8_t x = 0; x < 8; x++) {
             set = font[(uint8_t)ascii][x] & 1 << y;
             if (set) {
                 *(ptr++) = color;
@@ -276,25 +280,26 @@ void pod_put_char(char ascii, int16_t x0, int16_t y0, uint16_t color, char font[
 
 /*
  * Write a string of text by calling pod_put_char() repeadetly. CR and LF
- * continue from the next line. Currently supporst only 8x8 fonts which
- * must be the https://github.com/dhepper/font8x8 format.
- *
- * TODO: Different fonts sizes.
+ * continue from the next line.
  */
 
-void pod_put_text(char *str, int16_t x0, int16_t y0, uint16_t color, char font[128][8])
+void pod_put_text(char *str, int16_t x0, int16_t y0, uint16_t color, char font[][8])
 {
     char temp;
+
+    uint8_t width = font[0][0];
+    uint8_t height = font[0][1];
+    printf("%d %d\n", width, height);
 
     do {
         temp = *str++;
 
         if (13 == temp || 10 == temp) {
             x0 = 0;
-            y0 += 8;
+            y0 += height;
         } else {
             pod_put_char(temp, x0, y0, color, font);
-            x0 += 8;
+            x0 += width;
         }
     } while (*str != 0);
 }
