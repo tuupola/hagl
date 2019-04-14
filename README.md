@@ -32,8 +32,8 @@ void pod_clear_screen();
 For text ouput the fonts must be of same format as [dhepper/font8x8](https://github.com/dhepper/font8x8).
 
 ```c
-void pod_putchar(char ascii, uint16_t x0, uint16_t y0, uint16_t color, char font[128][8]);
-void pod_puttext(char *str, uint16_t x0, uint16_t y0, uint16_t color, char font[128][8]);
+void pod_put_char(char ascii, uint16_t x0, uint16_t y0, uint16_t color, char font[128][8]);
+void pod_put_text(char *str, uint16_t x0, uint16_t y0, uint16_t color, char font[128][8]);
 ```
 
 Blit copies a [bitmap](https://github.com/tuupola/copepod/blob/master/bitmap.c) to the screen. You can also copy a bitmap scaled up or down.
