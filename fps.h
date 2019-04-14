@@ -36,7 +36,7 @@ static inline float fps()
     static float current = 0;
     static bool firstrun = true;
 
-    float smoothing = 0.9; /* Larger value is more smoothing. */
+    float smoothing = 0.9; /* Larger value is less smoothing. */
     float measured = 0;
 
     if (firstrun) {
