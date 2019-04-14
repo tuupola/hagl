@@ -98,7 +98,7 @@ void pod_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
     }
     pod_hal_hline(x0, y0, width, color);
 #else
-    pod_line(x0, y0, x0 + w, y0, color);
+    pod_draw_line(x0, y0, x0 + w, y0, color);
 #endif
 }
 
@@ -132,7 +132,7 @@ void pod_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
 
     pod_hal_vline(x0, y0, height, color);
 #else
-    pod_line(x0, y0, x0, y0 + h, color);
+    pod_draw_line(x0, y0, x0, y0 + h, color);
 #endif
 }
 
@@ -140,7 +140,7 @@ void pod_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
  * Draw a line using Bresenham's algorithm with given RGB565 color.
  */
 /* https://github.com/jb55/bresenham-line.c/blob/master/bresenham_line.c */
-void pod_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
+void pod_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
     /* Clip coordinates to fit clip window. */
     if (false == line_clip(&x0, &y0, &x1, &y1, clip_window)) {
@@ -393,7 +393,7 @@ void pod_fillcircle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
 void pod_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
 
     for(int16_t i = 0; i < amount - 1; i++) {
-        pod_line(
+        pod_draw_line(
             vertices[(i << 1 ) + 0],
             vertices[(i << 1 ) + 1],
             vertices[(i << 1 ) + 2],
@@ -401,7 +401,7 @@ void pod_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
             color
         );
     }
-    pod_line(
+    pod_draw_line(
         vertices[0],
         vertices[1],
         vertices[(amount <<1 ) - 2],
@@ -462,7 +462,7 @@ void pod_fillpolygon(int16_t amount, int16_t *vertices, uint16_t color) {
         for (int16_t i = 0; i < count; i += 2) {
             int16_t width = nodes[i + 1] - nodes[i];
             pod_hline(nodes[i], y, width, color);
-            //pod_line(nodes[i], y, nodes[i + 1], y, color);
+            //pod_draw_line(nodes[i], y, nodes[i + 1], y, color);
         }
     }
 }
