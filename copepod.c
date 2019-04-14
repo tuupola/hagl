@@ -282,7 +282,7 @@ void pod_draw_char(char ascii, int16_t x0, int16_t y0, uint16_t color, char font
  * TODO: Different fonts sizes.
  */
 
-void pod_puttext(char *str, int16_t x0, int16_t y0, uint16_t color, char font[128][8])
+void pod_draw_text(char *str, int16_t x0, int16_t y0, uint16_t color, char font[128][8])
 {
     char temp;
 
