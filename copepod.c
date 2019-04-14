@@ -335,7 +335,7 @@ void pod_cls() {
     pod_fill_rectangle(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1, 0x00);
 }
 
-void pod_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
+void pod_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
     int16_t x = 0;
     int16_t y = r;
     int16_t d = 3 - 2 * r;
