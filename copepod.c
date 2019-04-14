@@ -184,7 +184,7 @@ void pod_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t colo
 /*
  * Draw a rectangle with given RGB565 color.
  */
-void pod_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
+void pod_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
