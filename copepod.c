@@ -482,3 +482,10 @@ void pod_flush() {
 #endif
 };
 
+void pod_destroy() {
+#ifdef POD_HAS_HAL_DESTROY
+    pod_hal_destroy();
+#else
+#endif
+};
+

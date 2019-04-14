@@ -72,5 +72,6 @@ void pod_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 void pod_cls();
 void pod_init();
 void pod_flush();
+void pod_destroy();
 
 #endif /* _COPEPOD_H */
