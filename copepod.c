@@ -212,7 +212,7 @@ void pod_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
 /*
  * Draw a filled rectangle with given RGB565 color.
  */
-void pod_fillrectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
+void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
@@ -332,7 +332,7 @@ void pod_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *
 };
 
 void pod_cls() {
-    pod_fillrectangle(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1, 0x00);
+    pod_fill_rectangle(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1, 0x00);
 }
 
 void pod_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {

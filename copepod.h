@@ -62,7 +62,7 @@ void pod_draw_hline(int16_t x0, int16_t y0, uint16_t width, uint16_t color);
 void pod_draw_vline(int16_t x0, int16_t y0, uint16_t height, uint16_t color);
 
 void pod_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
-void pod_fillrectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
+void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
 void pod_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color);
 void pod_fillcircle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
 void pod_polygon(int16_t amount, int16_t *vertices, uint16_t color);
