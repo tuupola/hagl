@@ -42,7 +42,7 @@ clip_window_t clip_window = {
     .max_y = DISPLAY_HEIGHT - 1,
 };
 
-void pod_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
+void pod_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
     clip_window.min_x = x0;
     clip_window.min_y = y0;
     clip_window.max_x = x1;
