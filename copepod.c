@@ -317,7 +317,7 @@ void pod_blit(int16_t x0, int16_t y0, bitmap_t *source) {
     for (uint16_t y = 0; y < source->height; y++) {
         for (uint16_t x = 0; x < source->width; x++) {
             color = *(ptr++);
-            pod_hal_putpixel(x0 + x, y0 + y, color);
+            pod_putpixel(x0 + x, y0 + y, color);
         }
     }
 #endif
