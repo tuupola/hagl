@@ -331,7 +331,7 @@ void pod_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *
 #endif
 };
 
-void pod_cls() {
+void pod_clear_screen() {
     pod_fill_rectangle(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1, 0x00);
 }
 

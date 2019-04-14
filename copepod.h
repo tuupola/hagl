@@ -71,7 +71,7 @@ void pod_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x
 void pod_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
 
 void pod_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
-void pod_cls();
+void pod_clear_screen();
 void pod_init();
 void pod_flush();
 void pod_destroy();
