@@ -49,19 +49,20 @@ Coordinates (x,y) by pitch * y + (depth / 8) * x
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#include <assert.h>
 
 #include "framebuffer.h"
 
-void framebuffer_init(framebuffer_t *fb)
+uint32_t framebuffer_size(framebuffer_t *fb)
+{
+    return fb->width * (fb->depth / 8) * fb->height;
+}
+
+void framebuffer_init(framebuffer_t *fb, uint8_t *buffer)
 {
     fb->pitch = fb->width * (fb->depth / 8);  /* Bytes per row. */
-    fb->size = fb->pitch * fb->height;        /* Size in bytes. */
-
-    uint8_t *buffer = malloc(fb->size);
-    assert(buffer != NULL);
-
+    fb->size = fb->pitch * fb->height;  /* Size in bytes. */
     fb->buffer = buffer;
+
     memset(fb->buffer, 0x00, fb->size);
 }
 

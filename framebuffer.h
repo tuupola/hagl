@@ -27,6 +27,8 @@ SOFTWARE.
 #ifndef _FRAMEBUFFER_H
 #define _FRAMEBUFFER_H
 
+#define FRAMEBUFFER_SIZE(width, height, depth) (width * (depth / 8) * height)
+
 typedef struct {
     uint16_t width;
     uint16_t height;
@@ -38,7 +40,8 @@ typedef struct {
 
 typedef framebuffer_t bitmap_t;
 
-void framebuffer_init(framebuffer_t *fb);
+uint32_t framebuffer_size(framebuffer_t *fb);
+void framebuffer_init(framebuffer_t *fb, uint8_t *buffer);
 void framebuffer_destroy(framebuffer_t *fb);
 
 #endif /* _FRAMEBUFFER_H */
