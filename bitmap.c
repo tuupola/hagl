@@ -22,18 +22,30 @@ SOFTWARE.
 
 */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+
 #include "bitmap.h"
 #include "framebuffer.h"
 
-/*
- * Bitmap is just an alias for framebuffer.
- */
-void bitmap_init(bitmap_t *bitmap)
+typedef framebuffer_t bitmap_t;
+
+uint32_t bitmap_size(bitmap_t *bitmap) {
+    return bitmap->width * (bitmap->depth / 8) * bitmap->height;
+};
+
+void bitmap_init(bitmap_t *bitmap, uint8_t *buffer)
 {
-    framebuffer_init(bitmap);
+    bitmap->pitch = bitmap->width * (bitmap->depth / 8);  /* Bytes per row. */
+    bitmap->size = bitmap->pitch * bitmap->height;  /* Size in bytes. */
+    bitmap->buffer = buffer;
+
+    memset(bitmap->buffer, 0x00, bitmap->size);
 }
 
 void bitmap_destroy(bitmap_t *bitmap)
 {
-    framebuffer_destroy(bitmap);
+    free(bitmap->buffer);
 }
