@@ -22,12 +22,25 @@ SOFTWARE.
 
 */
 
-#include "framebuffer.h"
+#include <stdint.h>
 
 #ifndef _BITMAP_H
 #define _BITMAP_H
 
-typedef framebuffer_t bitmap_t;
+#define BITMAP_SIZE(width, height, depth) (width * (depth / 8) * height)
+
+/*
+Pitch is bytes per row. Depth is number of bits per pixel. Size is size
+in bytes.
+*/
+typedef struct {
+    uint16_t width;
+    uint16_t height;
+    uint16_t pitch;
+    uint8_t depth;
+    uint32_t size;
+    uint8_t *buffer;
+} bitmap_t;
 
 uint32_t bitmap_size(bitmap_t *bitmap);
 void bitmap_init(bitmap_t *bitmap, uint8_t *buffer);
