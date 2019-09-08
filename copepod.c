@@ -244,10 +244,13 @@ void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
 void pod_put_char(char ascii, int16_t x0, int16_t y0, uint16_t color, char font[][8])
 {
     bool set;
-    uint8_t buffer[128]; /* 8 * 8 * 2 bytes */
 
+    /* Statically allocate 8 x 8 x 16 bits buffer. */
+    uint8_t buffer[BITMAP_SIZE(8, 8, DISPLAY_DEPTH)];
+
+    /* First row is the font settings. */
     ascii = ascii & 0x7F;
-    ascii = ascii + 1;  /* First row is the font settings. */
+    ascii = ascii + 1;
 
     uint8_t width = font[0][0];
     uint8_t height = font[0][1];
