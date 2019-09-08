@@ -44,6 +44,5 @@ typedef struct {
 
 uint32_t bitmap_size(bitmap_t *bitmap);
 void bitmap_init(bitmap_t *bitmap, uint8_t *buffer);
-void bitmap_destroy(bitmap_t *bitmap);
 
 #endif /* _BITMAP_H */

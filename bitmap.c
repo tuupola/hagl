@@ -42,8 +42,3 @@ void bitmap_init(bitmap_t *bitmap, uint8_t *buffer)
 
     memset(bitmap->buffer, 0x00, bitmap->size);
 }
-
-void bitmap_destroy(bitmap_t *bitmap)
-{
-    free(bitmap->buffer);
-}
