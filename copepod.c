@@ -289,7 +289,6 @@ void pod_put_text(char *str, int16_t x0, int16_t y0, uint16_t color, char font[]
 
     uint8_t width = font[0][0];
     uint8_t height = font[0][1];
-    printf("%d %d\n", width, height);
 
     do {
         temp = *str++;
@@ -488,6 +487,7 @@ void pod_init() {
     pod_hal_init();
 #else
 #endif
+    pod_clear_screen();
 };
 
 void pod_flush() {
