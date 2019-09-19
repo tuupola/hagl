@@ -38,8 +38,6 @@ typedef struct {
     uint8_t *buffer;
 } framebuffer_t;
 
-typedef framebuffer_t bitmap_t;
-
 uint32_t framebuffer_size(framebuffer_t *fb);
 void framebuffer_init(framebuffer_t *fb, uint8_t *buffer);
 void framebuffer_destroy(framebuffer_t *fb);

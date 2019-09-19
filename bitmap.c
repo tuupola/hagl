@@ -22,18 +22,23 @@ SOFTWARE.
 
 */
 
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+
 #include "bitmap.h"
-#include "framebuffer.h"
 
-/*
- * Bitmap is just an alias for framebuffer.
- */
-void bitmap_init(bitmap_t *bitmap)
-{
-    framebuffer_init(bitmap);
-}
+/* Get bitmap size in bytes. */
+uint32_t bitmap_size(bitmap_t *bitmap) {
+    return bitmap->width * (bitmap->depth / 8) * bitmap->height;
+};
 
-void bitmap_destroy(bitmap_t *bitmap)
+/* Initialise bitmap with given buffer set everything black. */
+void bitmap_init(bitmap_t *bitmap, uint8_t *buffer)
 {
-    framebuffer_destroy(bitmap);
+    bitmap->pitch = bitmap->width * (bitmap->depth / 8);
+    bitmap->size = bitmap->pitch * bitmap->height;
+    bitmap->buffer = buffer;
+
+    memset(bitmap->buffer, 0x00, bitmap->size);
 }

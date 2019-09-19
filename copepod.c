@@ -244,28 +244,28 @@ void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
 void pod_put_char(char ascii, int16_t x0, int16_t y0, uint16_t color, char font[][8])
 {
     bool set;
-    uint8_t buffer[128]; /* 8 * 8 * 2 bytes */
 
+    /* Statically allocate 8 x 8 x 16 bits buffer. */
+    uint8_t buffer[BITMAP_SIZE(8, 8, DISPLAY_DEPTH)];
+
+    /* First row is the font settings. */
     ascii = ascii & 0x7F;
-    if (ascii < 32) {
-        ascii = 0;
-    } else {
-        ascii -= 32 - 1; /* First row is the font settings. */
-    }
+    ascii = ascii + 1;
+
+    uint8_t width = font[0][0];
+    uint8_t height = font[0][1];
 
     bitmap_t bitmap = {
-        .width = 8,
-        .height = 8,
-        .depth = 16,
-        .pitch = 16, /* width * (depth / 8) */
-        .size = 128, /* pitch * height. */
-        .buffer = buffer
+        .width = width,
+        .height = height,
+        .depth = DISPLAY_DEPTH,
     };
+    bitmap_init(&bitmap, buffer);
 
     uint16_t *ptr = (uint16_t *) bitmap.buffer;
 
-    for (uint8_t y = 0; y < 8; y++) {
-        for (uint8_t x = 0; x < 8; x++) {
+    for (uint8_t x = 0; x < width; x++) {
+        for (uint8_t y = 0; y < height; y++) {
             set = font[(uint8_t)ascii][x] & 1 << y;
             if (set) {
                 *(ptr++) = color;
