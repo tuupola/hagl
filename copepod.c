@@ -32,7 +32,6 @@ SOFTWARE.
 #include "cohen-sutherland.h"
 #include "copepod.h"
 #include "copepod-hal.h"
-#include "framebuffer.h"
 
 clip_window_t clip_window = {
     .min_x = 0,
