@@ -29,7 +29,6 @@ SOFTWARE.
 #include <stdio.h>
 
 #include "bitmap.h"
-#include "blit.h"
 #include "cohen-sutherland.h"
 #include "copepod.h"
 #include "copepod-hal.h"
