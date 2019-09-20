@@ -28,7 +28,6 @@ SOFTWARE.
 
 #include <stdint.h>
 
-#include "framebuffer.h"
 #include "bitmap.h"
 #include "color.h"
 
