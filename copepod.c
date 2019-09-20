@@ -240,7 +240,7 @@ void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
  *
  */
 
-void pod_put_char(char ascii, int16_t x0, int16_t y0, uint16_t color, char font[][8])
+void pod_put_char(char ascii, int16_t x0, int16_t y0, uint16_t color, const char font[][8])
 {
     bool set;
 
@@ -282,7 +282,7 @@ void pod_put_char(char ascii, int16_t x0, int16_t y0, uint16_t color, char font[
  * continue from the next line.
  */
 
-void pod_put_text(char *str, int16_t x0, int16_t y0, uint16_t color, char font[][8])
+void pod_put_text(char *str, int16_t x0, int16_t y0, uint16_t color, const char font[][8])
 {
     char temp;
 
