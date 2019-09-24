@@ -54,7 +54,7 @@ pod_destroy();
 
 ## Speed
 
-Some tests done with ESP32 and ST7735S. Framebuffer FPS was capped to 30.
+Tests done with ESP32 and ST7735S. Framebuffer FPS was capped to 30.
 
 ```
 I (218846) main: 8106.7 circles per second, FB 30.0 FPS
@@ -69,6 +69,16 @@ I (264296) main: 7628.1 filled rectangles per second, FB 30.0 FPS
 I (270356) main: 30674.7 rectangles per second, FB 30.0 FPS
 I (275406) main: 17581.6 lines per second, FB 30.0 FPS
 ```
+
+Tests done with ESP32 and ILI9341.
+
+```
+I (37371) main: 7810.0 circles per second, FB 29.0 FPS
+I (42421) main: 7463.6 filled circles per second, FB 29.0 FPS
+I (47471) main: 1980.0 five sided polygons per second, FB 29.0 FPS
+I (52521) main: 663.0 five sided filled polygons per second, FB 29.0 FPS
+
+
 
 ## License
 
