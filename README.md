@@ -52,6 +52,24 @@ pod_flush();
 pod_destroy();
 ```
 
+## Speed
+
+Some tests done with ESP32 and ST7735S. Framebuffer FPS was capped to 30.
+
+```
+I (218846) main: 8106.7 circles per second, FB 30.0 FPS
+I (223896) main: 7516.8 filled circles per second, FB 30.0 FPS
+I (228946) main: 3968.8 five sided polygons per second, FB 30.0 FPS
+I (233996) main: 1296.2 five sided filled polygons per second, FB 30.0 FPS
+I (244096) main: 32504.7 characters per second, FB 30.0 FPS
+I (249146) main: 121879.9 pixels per second, FB 30.0 FPS
+I (254196) main: 2133.3 filled triangles per second, FB 30.0 FPS
+I (259246) main: 6486.4 triangles per second, FB 30.0 FPS
+I (264296) main: 7628.1 filled rectangles per second, FB 30.0 FPS
+I (270356) main: 30674.7 rectangles per second, FB 30.0 FPS
+I (275406) main: 17581.6 lines per second, FB 30.0 FPS
+```
+
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
