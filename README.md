@@ -77,8 +77,14 @@ I (37371) main: 7810.0 circles per second, FB 29.0 FPS
 I (42421) main: 7463.6 filled circles per second, FB 29.0 FPS
 I (47471) main: 1980.0 five sided polygons per second, FB 29.0 FPS
 I (52521) main: 663.0 five sided filled polygons per second, FB 29.0 FPS
-
-
+I (63631) main: 35541.7 characters per second, FB 29.0 FPS
+I (68681) main: 172289.4 pixels per second, FB 29.0 FPS
+I (73731) main: 1056.8 filled triangles per second, FB 29.0 FPS
+I (78781) main: 3280.4 triangles per second, FB 29.0 FPS
+I (83831) main: 1856.0 filled rectangles per second, FB 29.0 FPS
+I (88881) main: 20051.7 rectangles per second, FB 29.0 FPS
+I (93931) main: 9457.7 lines per second, FB 29.0 FPS
+```
 
 ## License
 
