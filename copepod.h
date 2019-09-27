@@ -29,7 +29,6 @@ SOFTWARE.
 #include <stdint.h>
 
 #include "bitmap.h"
-#include "color.h"
 
 #define ABS(x)  ((x) > 0 ? (x) : -(x))
 

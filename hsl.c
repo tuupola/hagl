@@ -26,23 +26,11 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-
-http://lodev.org/cgtutor/color.html
-http://www.midnightkite.com/color.html
-http://www.efg2.com/Lab/ScienceAndEngineering/Spectra.htm
-https://www.fourmilab.ch/documents/specrend/
-http://paulbourke.net/miscellaneous/colourspace/
-https://stackoverflow.com/questions/19452530/how-to-render-a-rainbow-spectrum
-https://stackoverflow.com/questions/5905129/converting-rgb-to-hsl-for-higher-resolution-c?rq=1
-https://www.lexaloffle.com/bbs/?tid=2706
-https://www.lexaloffle.com/bbs/?tid=2706
-https://www.lexaloffle.com/bbs/?tid=3726
 */
 
 #include <stdint.h>
-#include <math.h>
 
-#include "color.h"
+#include "hsl.h"
 
 rgb_t hsl_to_rgb888(hsl_t *hsl)
 {
@@ -111,73 +99,4 @@ rgb_t hsl_to_rgb888(hsl_t *hsl)
     rgb.b = (uint8_t)(b * 255.0);
 
     return rgb;
-}
-
-hsl_t rgb888_to_hsl(rgb_t *rgb)
-{
-    hsl_t hsl;
-    float r, g, b, h, s, l;
-    r = rgb->r / 256.0;
-    g = rgb->g / 256.0;
-    b = rgb->b / 256.0;
-
-    float maxColor = max(r, max(g, b));
-    float minColor = min(r, min(g, b));
-
-    /* R == G == B, so it's a shade of gray. */
-    if (minColor == maxColor) {
-        h = 0.0;
-        s = 0.0;
-        l = r;
-    } else {
-        l = (minColor + maxColor) / 2;
-
-        if (l < 0.5) {
-            s = (maxColor - minColor) / (maxColor + minColor);
-        } else {
-            s = (maxColor - minColor) / (2.0 - maxColor - minColor);
-        }
-
-        if (r == maxColor) {
-            h = (g - b) / (maxColor - minColor);
-        } else if (g == maxColor) {
-            h = 2.0 + (b - r) / (maxColor - minColor);
-        } else {
-            h = 4.0 + (r - g) / (maxColor - minColor);
-        }
-
-        h /= 6; /* To bring it to a number between 0 and 1. */
-        if (h < 0) {
-            h++;
-        }
-
-    }
-
-    hsl.h = (uint8_t)(h * 255.0);
-    hsl.s = (uint8_t)(s * 255.0);
-    hsl.l = (uint8_t)(l * 255.0);
-
-    return hsl;
-}
-
-rgb_t rgb565_to_rgb888(uint16_t *input) {
-    rgb_t rgb;
-
-    uint8_t r5 = (*input & 0xf800) >> 8; // 1111100000000000
-    uint8_t g6 = (*input & 0x07e0) >> 3; // 0000011111100000
-    uint8_t b5 = (*input & 0x001f) << 3; // 0000000000011111
-
-    rgb.r = (r5 * 527 + 23) >> 6;
-    rgb.g = (g6 * 259 + 33) >> 6;
-    rgb.b = (b5 * 527 + 23) >> 6;
-
-    return rgb;
-}
-
-uint16_t rgb888_to_rgb565(rgb_t *input) {
-    uint16_t r5 = (input->r * 249 + 1014 ) >> 11;
-    uint16_t g6 = (input->g * 253 +  505) >> 10;
-    uint16_t b5 = (input->b * 249 + 1014) >> 11;
-
-    return (r5 | g6 | b5);
 }
