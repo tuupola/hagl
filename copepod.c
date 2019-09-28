@@ -229,7 +229,7 @@ void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
     uint16_t width = x1 - x0;
     uint16_t height = y1 - y0;
 
-    for (uint16_t i = 0; i < height; i++) {
+    for (uint16_t i = 0; i <= height; i++) {
         pod_draw_hline(x0, y0 + i, width, color);
     }
 }
