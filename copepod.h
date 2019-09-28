@@ -32,15 +32,6 @@ SOFTWARE.
 
 #define ABS(x)  ((x) > 0 ? (x) : -(x))
 
-#define swap(x, y) do \
-    { unsigned char swap_temp[sizeof(x) == sizeof(y) ? (signed)sizeof(x) : -1]; \
-        memcpy(swap_temp,&y,sizeof(x)); \
-        memcpy(&y,&x,       sizeof(x)); \
-        memcpy(&x,swap_temp,sizeof(x)); \
-    } while (0)
-
-extern char g_font;
-
 /* This is the only mandatory function which HAL must provide. */
 extern void pod_hal_putpixel(int16_t x0, int16_t y0, uint16_t color);
 
