@@ -29,9 +29,9 @@ SOFTWARE.
 #include <stdio.h>
 
 #include "bitmap.h"
-#include "cohen-sutherland.h"
+#include "cohen_sutherland.h"
 #include "copepod.h"
-#include "copepod-hal.h"
+#include "copepod_hal.h"
 
 clip_window_t clip_window = {
     .min_x = 0,

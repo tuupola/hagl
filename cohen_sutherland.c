@@ -27,7 +27,7 @@ SOFTWARE.
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "cohen-sutherland.h"
+#include "cohen_sutherland.h"
 
 static const uint8_t INSIDE = 0b0000;
 static const uint8_t LEFT = 0b0001;
