@@ -311,7 +311,27 @@ void pod_put_text(char *str, int16_t x0, int16_t y0, uint16_t color, const char 
 
 void pod_blit(int16_t x0, int16_t y0, bitmap_t *source) {
 #ifdef POD_HAS_HAL_BLIT
-    pod_hal_blit(x0, y0, source);
+    /* Check if bitmap is inside clip windows bounds */
+    if (
+        (x0 < clip_window.min_x) ||
+        (y0 < clip_window.min_y) ||
+        (x0 + source->width > clip_window.max_x) ||
+        (y0 + source->height > clip_window.max_y)
+    ) {
+        /* Out of bounds, use local pixel fallback. */
+        uint16_t color;
+        uint16_t *ptr = (uint16_t *) source->buffer;
+
+        for (uint16_t y = 0; y < source->height; y++) {
+            for (uint16_t x = 0; x < source->width; x++) {
+                color = *(ptr++);
+                pod_put_pixel(x0 + x, y0 + y, color);
+            }
+        }
+    } else {
+        /* Inside of bounds, can use HAL provided blit. */
+        pod_hal_blit(x0, y0, source);
+    }
 #else
     uint16_t color;
     uint16_t *ptr = (uint16_t *) source->buffer;
