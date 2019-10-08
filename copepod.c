@@ -226,10 +226,10 @@ void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
         y0 = y0 - y1;
     }
 
-    uint16_t width = x1 - x0;
-    uint16_t height = y1 - y0;
+    uint16_t width = x1 - x0 + 1;
+    uint16_t height = y1 - y0 + 1;
 
-    for (uint16_t i = 0; i <= height; i++) {
+    for (uint16_t i = 0; i < height; i++) {
         pod_draw_hline(x0, y0 + i, width, color);
     }
 }
@@ -354,7 +354,14 @@ void pod_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *
 };
 
 void pod_clear_screen() {
+    uint16_t x0 = clip_window.min_x;
+    uint16_t y0 = clip_window.min_y;
+    uint16_t x1 = clip_window.max_x;
+    uint16_t y1 = clip_window.max_y;
+
+    pod_set_clip_window(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1);
     pod_fill_rectangle(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1, 0x00);
+    pod_set_clip_window(x0, y0, x1, y1);
 }
 
 void pod_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
