@@ -29,7 +29,7 @@ SOFTWARE.
 #include <stdio.h>
 
 #include "bitmap.h"
-#include "cohen_sutherland.h"
+#include "clip.h"
 #include "copepod.h"
 #include "copepod_hal.h"
 
@@ -141,7 +141,7 @@ void pod_draw_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
 void pod_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
     /* Clip coordinates to fit clip window. */
-    if (false == line_clip(&x0, &y0, &x1, &y1, clip_window)) {
+    if (false == clip_line(&x0, &y0, &x1, &y1, clip_window)) {
         return;
     }
 

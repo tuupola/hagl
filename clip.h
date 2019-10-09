@@ -22,8 +22,8 @@ SOFTWARE.
 
 */
 
-#ifndef _POD_BLIT_H
-#define _POD_BLIT_H
+#ifndef _COPEPOD_CLIP_H
+#define _COPEPOD_CLIP_H
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -35,6 +35,6 @@ typedef struct {
     uint16_t max_y;
 } clip_window_t;
 
-bool line_clip(int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, clip_window_t window);
+bool clip_line(int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, clip_window_t window);
 
-#endif /* _POD_BLIT_H */
+#endif /* _COPEPOD_CLIP_H */
