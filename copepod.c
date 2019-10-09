@@ -33,7 +33,7 @@ SOFTWARE.
 #include "copepod.h"
 #include "copepod_hal.h"
 
-clip_window_t clip_window = {
+static clip_window_t clip_window = {
     .min_x = 0,
     .min_y = 0,
     .max_x = DISPLAY_WIDTH - 1,
