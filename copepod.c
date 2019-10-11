@@ -459,8 +459,20 @@ void pod_fill_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
     float x1;
     float y1;
 
+    int16_t miny = DISPLAY_HEIGHT;
+    int16_t maxy = 0;
+
+    for (uint8_t i = 0; i < amount; i++) {
+        if (miny > vertices[(i << 1) + 1]) {
+            miny = vertices[(i << 1) + 1];
+        }
+        if (maxy < vertices[(i << 1) + 1]) {
+            maxy = vertices[(i << 1) + 1];
+        }
+    }
+
     /*  Loop through the rows of the image. */
-    for (y = 0; y < DISPLAY_HEIGHT; y++) {
+    for (y = miny; y < maxy; y++) {
 
         /*  Build a list of nodes. */
         int16_t count = 0;
@@ -501,7 +513,6 @@ void pod_fill_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
         for (int16_t i = 0; i < count; i += 2) {
             int16_t width = nodes[i + 1] - nodes[i];
             pod_draw_hline(nodes[i], y, width, color);
-            //pod_draw_line(nodes[i], y, nodes[i + 1], y, color);
         }
     }
 }
