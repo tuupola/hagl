@@ -226,11 +226,21 @@ void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
         y0 = y0 - y1;
     }
 
-    uint16_t width = x1 - x0 + 1;
-    uint16_t height = y1 - y0 + 1;
+    /* Clip coordinates to fit clip window. */
+    if (false == clip_line(&x0, &y0, &x1, &y1, clip_window)) {
+        return;
+    }
+
+    uint16_t width = x1 - x0;
+    uint16_t height = y1 - y0;
 
     for (uint16_t i = 0; i < height; i++) {
+#ifdef POD_HAS_HAL_HLINE
+        /* Already clipped so can call HAL directly. */
+        pod_hal_hline(x0, y0 + i, width, color);
+#else
         pod_draw_hline(x0, y0 + i, width, color);
+#endif
     }
 }
 
