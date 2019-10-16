@@ -27,7 +27,7 @@ SOFTWARE.
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "clip.h"
+#include "window.h"
 
 static const uint8_t INSIDE = 0b0000;
 static const uint8_t LEFT = 0b0001;
@@ -35,24 +35,24 @@ static const uint8_t RIGHT = 0b0010;
 static const uint8_t BOTTOM = 0b0100;
 static const uint8_t TOP = 0b1000;
 
-static uint8_t code(int16_t x0, int16_t y0, clip_window_t window)
+static uint8_t code(int16_t x0, int16_t y0, window_t window)
 {
     uint8_t code = INSIDE;
 
-    if (x0 < window.min_x) {
+    if (x0 < window.x0) {
         code |= LEFT;
-    } else if (x0 > window.max_x) {
+    } else if (x0 > window.x1) {
         code |= RIGHT;
-    } if (y0 < window.min_y) {
+    } if (y0 < window.y0) {
         code |= BOTTOM;
-    } else if (y0 > window.max_y) {
+    } else if (y0 > window.y1) {
         code |= TOP;
     }
 
     return code;
 }
 
-bool clip_line(int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, clip_window_t window)
+bool clip_line(int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, window_t window)
 {
     uint8_t code0 = code(*x0, *y0, window);
     uint8_t code1 = code(*x1, *y1, window);
@@ -79,17 +79,17 @@ bool clip_line(int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, clip_window_t
             /* x = x0 + (1 / slope) * (ym - y0), where ym is ymin or ymax */
             /* y = y0 + slope * (xm - x0), where xm is xmin or xmax */
             if (code3 & TOP) {
-                x = *x0 + (*x1 - *x0) * (window.max_y - *y0) / (*y1 - *y0);
-                y = window.max_y;
+                x = *x0 + (*x1 - *x0) * (window.y1 - *y0) / (*y1 - *y0);
+                y = window.y1;
             } else if (code3 & BOTTOM) {
-                x = *x0 + (*x1 - *x0) * (window.min_y - *y0) / (*y1 - *y0);
-                y = window.min_y;
+                x = *x0 + (*x1 - *x0) * (window.y0 - *y0) / (*y1 - *y0);
+                y = window.y0;
             } else if (code3 & RIGHT) {
-                y = *y0 + (*y1 - *y0) * (window.max_x - *x0) / (*x1 - *x0);
-                x = window.max_x;
+                y = *y0 + (*y1 - *y0) * (window.x1 - *x0) / (*x1 - *x0);
+                x = window.x1;
             }  else if (code3 & LEFT) {
-                y = *y0 + (*y1 - *y0) * (window.min_x - *x0) / (*x1 - *x0);
-                x = window.min_x;
+                y = *y0 + (*y1 - *y0) * (window.x0 - *x0) / (*x1 - *x0);
+                x = window.x0;
             }
 
             /* Replace the outside point with the intersection point. */

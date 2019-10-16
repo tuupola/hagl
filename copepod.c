@@ -30,21 +30,22 @@ SOFTWARE.
 
 #include "bitmap.h"
 #include "clip.h"
+#include "window.h"
 #include "copepod.h"
 #include "copepod_hal.h"
 
-static clip_window_t clip_window = {
-    .min_x = 0,
-    .min_y = 0,
-    .max_x = DISPLAY_WIDTH - 1,
-    .max_y = DISPLAY_HEIGHT - 1,
+static window_t clip_window = {
+    .x0 = 0,
+    .y0 = 0,
+    .x1 = DISPLAY_WIDTH - 1,
+    .y1 = DISPLAY_HEIGHT - 1,
 };
 
 void pod_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
-    clip_window.min_x = x0;
-    clip_window.min_y = y0;
-    clip_window.max_x = x1;
-    clip_window.max_y = y1;
+    clip_window.x0 = x0;
+    clip_window.y0 = y0;
+    clip_window.x1 = x1;
+    clip_window.y1 = y1;
 }
 /*
  * Puts a pixel RGB565 color. This is the only mandatory function HAL must
@@ -53,12 +54,12 @@ void pod_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
 void pod_put_pixel(int16_t x0, int16_t y0, uint16_t color)
 {
     /* x0 or y0 is before the edge, nothing to do. */
-    if ((x0 < clip_window.min_x) || (y0 < clip_window.min_y))  {
+    if ((x0 < clip_window.x0) || (y0 < clip_window.y0))  {
         return;
     }
 
     /* x0 or y0 is after the edge, nothing to do. */
-    if ((x0 > clip_window.max_x) || (y0 > clip_window.max_y)) {
+    if ((x0 > clip_window.x1) || (y0 > clip_window.y1)) {
         return;
     }
 
@@ -75,14 +76,14 @@ void pod_draw_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
     int16_t width = w;
 
     /* x0 or y0 is over the edge, nothing to do. */
-    if ((x0 > clip_window.max_x) || (y0 > clip_window.max_y) || (y0 < clip_window.min_y))  {
+    if ((x0 > clip_window.x1) || (y0 > clip_window.y1) || (y0 < clip_window.y0))  {
         return;
     }
 
     /* x0 is left of clip window, ignore start part. */
-    if (x0 < clip_window.min_x) {
+    if (x0 < clip_window.x0) {
         width = width + x0;
-        x0 = clip_window.min_x;
+        x0 = clip_window.x0;
     }
 
     /* Everything outside clip window, nothing to do. */
@@ -91,8 +92,8 @@ void pod_draw_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
     }
 
     /* Cut anything going over right edge of clip window. */
-    if (((x0 + width) > clip_window.max_x)) {
-        width = width - (x0 + width - clip_window.max_x);
+    if (((x0 + width) > clip_window.x1)) {
+        width = width - (x0 + width - clip_window.x1);
     }
     pod_hal_hline(x0, y0, width, color);
 #else
@@ -108,14 +109,14 @@ void pod_draw_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
     int16_t height = h;
 #ifdef POD_HAS_HAL_VLINE
     /* x0 or y0 is over the edge, nothing to do. */
-    if ((x0 > clip_window.max_x) || (x0 < clip_window.min_x) || (y0 > clip_window.max_y))  {
+    if ((x0 > clip_window.x1) || (x0 < clip_window.x0) || (y0 > clip_window.y1))  {
         return;
     }
 
     /* y0 is top of clip window, ignore start part. */
-    if (y0 < clip_window.min_y) {
+    if (y0 < clip_window.y0) {
         height = height + y0;
-        y0 = clip_window.min_y;
+        y0 = clip_window.y0;
     }
 
     /* Everything outside clip window, nothing to do. */
@@ -124,8 +125,8 @@ void pod_draw_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
     }
 
     /* Cut anything going over right edge. */
-    if (((y0 + height) > clip_window.max_y))  {
-        height = height - (y0 + height - clip_window.max_y);
+    if (((y0 + height) > clip_window.y1))  {
+        height = height - (y0 + height - clip_window.y1);
     }
 
     pod_hal_vline(x0, y0, height, color);
@@ -323,10 +324,10 @@ void pod_blit(int16_t x0, int16_t y0, bitmap_t *source) {
 #ifdef POD_HAS_HAL_BLIT
     /* Check if bitmap is inside clip windows bounds */
     if (
-        (x0 < clip_window.min_x) ||
-        (y0 < clip_window.min_y) ||
-        (x0 + source->width > clip_window.max_x) ||
-        (y0 + source->height > clip_window.max_y)
+        (x0 < clip_window.x0) ||
+        (y0 < clip_window.y0) ||
+        (x0 + source->width > clip_window.x1) ||
+        (y0 + source->height > clip_window.y1)
     ) {
         /* Out of bounds, use local pixel fallback. */
         uint16_t color;
@@ -364,10 +365,10 @@ void pod_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *
 };
 
 void pod_clear_screen() {
-    uint16_t x0 = clip_window.min_x;
-    uint16_t y0 = clip_window.min_y;
-    uint16_t x1 = clip_window.max_x;
-    uint16_t y1 = clip_window.max_y;
+    uint16_t x0 = clip_window.x0;
+    uint16_t y0 = clip_window.y0;
+    uint16_t x1 = clip_window.x1;
+    uint16_t y1 = clip_window.y1;
 
     pod_set_clip_window(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1);
     pod_fill_rectangle(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1, 0x00);
