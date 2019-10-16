@@ -14,45 +14,40 @@ To use Copepod you must provide a hardware absraction layer ie. HAL. It must pro
 Guess what! Better docs to be written. High level functions are pretty self explanatory though. For example applications see [M5Stack GFX](https://github.com/tuupola/esp-examples/tree/master/009-m5stack-gfx), [M5Stack Fire](https://github.com/tuupola/esp-examples/tree/master/010-m5stack-fire), [M5Stack Mandelbrot](https://github.com/tuupola/esp-examples/tree/master/014-mandelbrot) and [M5Stick GFX](https://github.com/tuupola/esp-examples/tree/master/015-m5stick-gfx).
 
 ```c
-void pod_put_pixel(uint16_t x0, uint16_t y0, uint16_t color);
-void pod_draw_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
-void pod_draw_hline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color);
-void pod_draw_vline(uint16_t x0, uint16_t y0, uint16_t width, uint16_t color);
-void pod_draw_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
-void pod_fill_rectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
+void pod_put_pixel(int16_t x0, int16_t y0, uint16_t color);
+void pod_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
+void pod_draw_hline(int16_t x0, int16_t y0, uint16_t width, uint16_t color);
+void pod_draw_vline(int16_t x0, int16_t y0, uint16_t height, uint16_t color);
+void pod_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
+void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
 void pod_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color);
 void pod_fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
 void pod_draw_polygon(int16_t amount, int16_t *vertices, uint16_t color);
 void pod_fill_polygon(int16_t amount, int16_t *vertices, uint16_t color);
 void pod_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
 void pod_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
+
+void pod_put_char(char ascii, int16_t x0, int16_t y0, uint16_t color, const char font[][8]);
+void pod_put_text(char *str, int16_t x0, int16_t y0, uint16_t color, const char font[][8]);
+
 void pod_clear_screen();
+void pod_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 
-```
-
-
-
-For text ouput the fonts must be of same format as [dhepper/font8x8](https://github.com/dhepper/font8x8).
-
-```c
-void pod_put_char(char ascii, uint16_t x0, uint16_t y0, uint16_t color, char font[128][8]);
-void pod_put_text(char *str, uint16_t x0, uint16_t y0, uint16_t color, char font[128][8]);
 ```
 
 Blit copies a [bitmap](https://github.com/tuupola/copepod/blob/master/bitmap.c) to the screen. You can also copy a bitmap scaled up or down.
 
 ```c
-void pod_blit(uint16_t x0, uint16_t y0, bitmap_t *source);
+void pod_blit(int16_t x0, int16_t y0, bitmap_t *source);
 void pod_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source);
 ```
 
 Depending on HAL, initialisation and flushing might be required. If HAL does not require them both functions are just a no-op.
 
 ```c
-pod_init();
-pod_put_pixel(x0, y0, color);
-pod_flush();
-pod_destroy();
+void pod_init();
+void pod_flush();
+void pod_destroy();
 ```
 
 ## Speed
