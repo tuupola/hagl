@@ -6,7 +6,7 @@ Copepod is a lightweight hardware agnostics graphics library. It supports basic 
 
 ## Hardware Abstraction Layer
 
-To use Copepod you must provide a hardware absraction layer ie. HAL. It must provide atleast the `pod_hal_putpixel(x0, y0, color)` function. If nothing else is provided all higher level graphical functions will use this function to draw the primitive. There are other optional HAL functions. While proper documentation is lacking see the example HAL implementations: [libdb](https://github.com/tuupola/copepod-libgd), [libsdl2](https://github.com/tuupola/copepod-libsdl2), [ESP ILI9341](https://github.com/tuupola/copepod-esp-ili9341) and [ESP ST7735S](https://github.com/tuupola/copepod-esp-st7735s).
+To use Copepod you must provide a hardware absraction layer ie. HAL. It must provide atleast the `pod_hal_putpixel(x0, y0, color)` function. If nothing else is provided all higher level graphical functions will use this function to draw the primitive. There are other optional HAL functions. While proper documentation is lacking see the example HAL implementations for [libgd](https://github.com/tuupola/copepod-libgd), [libsdl2](https://github.com/tuupola/copepod-libsdl2) and display drivers for [ESP-IDF supporting MIPI Display Command Set](https://github.com/tuupola/esp_mipi).
 
 
 ## Usage
