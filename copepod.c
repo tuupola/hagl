@@ -41,12 +41,57 @@ static window_t clip_window = {
     .y1 = DISPLAY_HEIGHT - 1,
 };
 
+static window_t dirty_window = {
+    .x0 = DISPLAY_WIDTH - 1,
+    .y0 = DISPLAY_HEIGHT - 1,
+    .x1 = 0,
+    .y1 = 0,
+};
+
 void pod_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
     clip_window.x0 = x0;
     clip_window.y0 = y0;
     clip_window.x1 = x1;
     clip_window.y1 = y1;
 }
+
+static inline int16_t min(int16_t a, int16_t b) {
+    if (a > b) {
+        return b;
+    };
+    return a;
+}
+
+static inline int16_t max(int16_t a, int16_t b) {
+    if (a > b) {
+        return a;
+    }
+    return b;
+}
+
+static void update_dirty_window(int16_t x0, int16_t y0, int16_t x1, int16_t y1)
+{
+    /* Make sure coordinates are inside display bounds. */
+    x0 = max(0, x0);
+    y0 = max(0, y0);
+    x1 = min(DISPLAY_WIDTH - 1, x1);
+    y1 = min(DISPLAY_HEIGHT - 1, y1);
+
+    /* Find new smallest and largest coordinate. */
+    dirty_window.x0 = min(dirty_window.x0, x0);
+    dirty_window.x1 = max(dirty_window.x1, x1);
+    dirty_window.y0 = min(dirty_window.y0, y0);
+    dirty_window.y1 = max(dirty_window.y1, y1);
+}
+
+static void reset_dirty_window()
+{
+    dirty_window.x0 = DISPLAY_WIDTH - 1;
+    dirty_window.x1 = 0;
+    dirty_window.y0 = DISPLAY_HEIGHT - 1;
+    dirty_window.y1 = 0;
+}
+
 /*
  * Puts a pixel RGB565 color. This is the only mandatory function HAL must
  * support.
@@ -65,6 +110,7 @@ void pod_put_pixel(int16_t x0, int16_t y0, uint16_t color)
 
     /* If still in bounds set the pixel. */
     pod_hal_putpixel(x0, y0, color);
+    update_dirty_window(x0, y0, x0, y0);
 }
 
 /*
@@ -95,7 +141,9 @@ void pod_draw_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
     if (((x0 + width) > clip_window.x1)) {
         width = width - (x0 + width - clip_window.x1);
     }
+
     pod_hal_hline(x0, y0, width, color);
+    update_dirty_window(x0, y0, x0 + width, y0);
 #else
     pod_draw_line(x0, y0, x0 + w, y0, color);
 #endif
@@ -130,6 +178,7 @@ void pod_draw_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
     }
 
     pod_hal_vline(x0, y0, height, color);
+    update_dirty_window(x0, y0, x0, y0 + height);
 #else
     pod_draw_line(x0, y0, x0, y0 + h, color);
 #endif
@@ -178,6 +227,8 @@ void pod_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t colo
             y0 += sy;
         }
     }
+
+    update_dirty_window(x0, y0, x1, y1);
 }
 
 /*
@@ -185,6 +236,11 @@ void pod_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t colo
  */
 void pod_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
+    /* Clip coordinates to fit clip window. */
+    if (false == clip_line(&x0, &y0, &x1, &y1, clip_window)) {
+        return;
+    }
+
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
         x0 = x0 + x1;
@@ -206,6 +262,8 @@ void pod_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
     pod_draw_hline(x0, y1, width, color);
     pod_draw_vline(x0, y0, height, color);
     pod_draw_vline(x1, y0, height, color);
+
+    update_dirty_window(x0, y0, x1, y1);
 }
 
 /*
@@ -243,6 +301,8 @@ void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
         pod_draw_hline(x0, y0 + i, width, color);
 #endif
     }
+
+    update_dirty_window(x0, y0, x1, y1);
 }
 
 /*
@@ -354,6 +414,7 @@ void pod_blit(int16_t x0, int16_t y0, bitmap_t *source) {
         }
     }
 #endif
+    update_dirty_window(x0, y0, x0 + source->width, y0 + source->height);
 };
 
 void pod_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source) {
@@ -362,6 +423,7 @@ void pod_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *
 #else
     /* TODO: Use pdo_putpixel() to write to framebuffer. */
 #endif
+    update_dirty_window(x0, y0, x0 + w, y0 + h);
 };
 
 void pod_clear_screen() {
@@ -373,6 +435,7 @@ void pod_clear_screen() {
     pod_set_clip_window(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1);
     pod_fill_rectangle(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1, 0x00);
     pod_set_clip_window(x0, y0, x1, y1);
+    update_dirty_window(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1);
 }
 
 void pod_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
@@ -407,6 +470,8 @@ void pod_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
         pod_put_pixel(xc+y, yc-x, color);
         pod_put_pixel(xc-y, yc-x, color);
     }
+
+    update_dirty_window(xc - r, yc - r, xc + r, yc + r);
 }
 
 void pod_fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
@@ -428,6 +493,8 @@ void pod_fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
             d = d + 4 * x + 6;
         }
     }
+
+    update_dirty_window(x0 - r, y0 - r, x0 + r, y0 + r);
 }
 
 void pod_draw_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
@@ -516,6 +583,9 @@ void pod_fill_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
             pod_draw_hline(nodes[i], y, width, color);
         }
     }
+
+    /* TODO: handles only y coordinates at the moment */
+    update_dirty_window(DISPLAY_WIDTH - 1, miny, 0, maxy);
 }
 
 void pod_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color) {
@@ -539,7 +609,16 @@ void pod_init() {
 
 void pod_flush() {
 #ifdef POD_HAS_HAL_FLUSH
-    pod_hal_flush();
+    bool dirty = dirty_window.y1 > dirty_window.y0;
+    // if (dirty) {
+    //     uint16_t green  = 0x0FE0;
+    //     pod_draw_rectangle(dirty_window.x0, dirty_window.y0, dirty_window.x1, dirty_window.y1, green);
+    // }
+    pod_hal_flush(
+        dirty,
+        dirty_window.x0, dirty_window.y0, dirty_window.x1, dirty_window.y1
+    );
+    reset_dirty_window();
 #else
 #endif
 };

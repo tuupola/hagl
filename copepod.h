@@ -27,6 +27,7 @@ SOFTWARE.
 #define _COPEPOD_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #include "bitmap.h"
 
@@ -39,7 +40,7 @@ extern void pod_hal_blit(uint16_t x0, uint16_t y0, bitmap_t *source);
 extern void pod_hal_hline(int16_t x0, int16_t y0, uint16_t width, uint16_t color);
 extern void pod_hal_vline(int16_t x0, int16_t y0, uint16_t width, uint16_t color);
 extern void pod_hal_init();
-extern void pod_hal_flush();
+extern void pod_hal_flush(bool dirty, int16_t x0, int16_t y0, int16_t x1, int16_t y1);
 
 void pod_put_pixel(int16_t x0, int16_t y0, uint16_t color);
 void pod_put_char(char ascii, int16_t x0, int16_t y0, uint16_t color, const char font[][8]);
