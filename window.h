@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2018 Mika Tuupola
+Copyright (c) 2018-2019 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,14 +22,14 @@ SOFTWARE.
 
 */
 
-#ifndef _COPEPOD_CLIP_H
-#define _COPEPOD_CLIP_H
+#ifndef _COPEPOD_WINDOW_H
+#define _COPEPOD_WINDOW_H
 
-#include <stdint.h>
-#include <stdbool.h>
+typedef struct {
+    uint16_t x0;
+    uint16_t y0;
+    uint16_t x1;
+    uint16_t y1;
+} window_t;
 
-#include "window.h"
-
-bool clip_line(int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, window_t window);
-
-#endif /* _COPEPOD_CLIP_H */
+#endif /* _COPEPOD_WINDOW_H */

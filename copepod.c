@@ -30,22 +30,68 @@ SOFTWARE.
 
 #include "bitmap.h"
 #include "clip.h"
+#include "window.h"
 #include "copepod.h"
 #include "copepod_hal.h"
 
-static clip_window_t clip_window = {
-    .min_x = 0,
-    .min_y = 0,
-    .max_x = DISPLAY_WIDTH - 1,
-    .max_y = DISPLAY_HEIGHT - 1,
+static window_t clip_window = {
+    .x0 = 0,
+    .y0 = 0,
+    .x1 = DISPLAY_WIDTH - 1,
+    .y1 = DISPLAY_HEIGHT - 1,
+};
+
+static window_t dirty_window = {
+    .x0 = DISPLAY_WIDTH - 1,
+    .y0 = DISPLAY_HEIGHT - 1,
+    .x1 = 0,
+    .y1 = 0,
 };
 
 void pod_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
-    clip_window.min_x = x0;
-    clip_window.min_y = y0;
-    clip_window.max_x = x1;
-    clip_window.max_y = y1;
+    clip_window.x0 = x0;
+    clip_window.y0 = y0;
+    clip_window.x1 = x1;
+    clip_window.y1 = y1;
 }
+
+static inline int16_t min(int16_t a, int16_t b) {
+    if (a > b) {
+        return b;
+    };
+    return a;
+}
+
+static inline int16_t max(int16_t a, int16_t b) {
+    if (a > b) {
+        return a;
+    }
+    return b;
+}
+
+static void update_dirty_window(int16_t x0, int16_t y0, int16_t x1, int16_t y1)
+{
+    /* Make sure coordinates are inside display bounds. */
+    x0 = max(0, x0);
+    y0 = max(0, y0);
+    x1 = min(DISPLAY_WIDTH - 1, x1);
+    y1 = min(DISPLAY_HEIGHT - 1, y1);
+
+    /* Find new smallest and largest coordinate. */
+    dirty_window.x0 = min(dirty_window.x0, x0);
+    dirty_window.x1 = max(dirty_window.x1, x1);
+    dirty_window.y0 = min(dirty_window.y0, y0);
+    dirty_window.y1 = max(dirty_window.y1, y1);
+}
+
+static void reset_dirty_window()
+{
+    dirty_window.x0 = DISPLAY_WIDTH - 1;
+    dirty_window.x1 = 0;
+    dirty_window.y0 = DISPLAY_HEIGHT - 1;
+    dirty_window.y1 = 0;
+}
+
 /*
  * Puts a pixel RGB565 color. This is the only mandatory function HAL must
  * support.
@@ -53,17 +99,18 @@ void pod_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
 void pod_put_pixel(int16_t x0, int16_t y0, uint16_t color)
 {
     /* x0 or y0 is before the edge, nothing to do. */
-    if ((x0 < clip_window.min_x) || (y0 < clip_window.min_y))  {
+    if ((x0 < clip_window.x0) || (y0 < clip_window.y0))  {
         return;
     }
 
     /* x0 or y0 is after the edge, nothing to do. */
-    if ((x0 > clip_window.max_x) || (y0 > clip_window.max_y)) {
+    if ((x0 > clip_window.x1) || (y0 > clip_window.y1)) {
         return;
     }
 
     /* If still in bounds set the pixel. */
     pod_hal_putpixel(x0, y0, color);
+    update_dirty_window(x0, y0, x0, y0);
 }
 
 /*
@@ -75,14 +122,14 @@ void pod_draw_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
     int16_t width = w;
 
     /* x0 or y0 is over the edge, nothing to do. */
-    if ((x0 > clip_window.max_x) || (y0 > clip_window.max_y) || (y0 < clip_window.min_y))  {
+    if ((x0 > clip_window.x1) || (y0 > clip_window.y1) || (y0 < clip_window.y0))  {
         return;
     }
 
     /* x0 is left of clip window, ignore start part. */
-    if (x0 < clip_window.min_x) {
+    if (x0 < clip_window.x0) {
         width = width + x0;
-        x0 = clip_window.min_x;
+        x0 = clip_window.x0;
     }
 
     /* Everything outside clip window, nothing to do. */
@@ -91,10 +138,12 @@ void pod_draw_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
     }
 
     /* Cut anything going over right edge of clip window. */
-    if (((x0 + width) > clip_window.max_x)) {
-        width = width - (x0 + width - clip_window.max_x);
+    if (((x0 + width) > clip_window.x1)) {
+        width = width - (x0 + width - clip_window.x1);
     }
+
     pod_hal_hline(x0, y0, width, color);
+    update_dirty_window(x0, y0, x0 + width, y0);
 #else
     pod_draw_line(x0, y0, x0 + w, y0, color);
 #endif
@@ -108,14 +157,14 @@ void pod_draw_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
     int16_t height = h;
 #ifdef POD_HAS_HAL_VLINE
     /* x0 or y0 is over the edge, nothing to do. */
-    if ((x0 > clip_window.max_x) || (x0 < clip_window.min_x) || (y0 > clip_window.max_y))  {
+    if ((x0 > clip_window.x1) || (x0 < clip_window.x0) || (y0 > clip_window.y1))  {
         return;
     }
 
     /* y0 is top of clip window, ignore start part. */
-    if (y0 < clip_window.min_y) {
+    if (y0 < clip_window.y0) {
         height = height + y0;
-        y0 = clip_window.min_y;
+        y0 = clip_window.y0;
     }
 
     /* Everything outside clip window, nothing to do. */
@@ -124,11 +173,12 @@ void pod_draw_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
     }
 
     /* Cut anything going over right edge. */
-    if (((y0 + height) > clip_window.max_y))  {
-        height = height - (y0 + height - clip_window.max_y);
+    if (((y0 + height) > clip_window.y1))  {
+        height = height - (y0 + height - clip_window.y1);
     }
 
     pod_hal_vline(x0, y0, height, color);
+    update_dirty_window(x0, y0, x0, y0 + height);
 #else
     pod_draw_line(x0, y0, x0, y0 + h, color);
 #endif
@@ -177,6 +227,8 @@ void pod_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t colo
             y0 += sy;
         }
     }
+
+    update_dirty_window(x0, y0, x1, y1);
 }
 
 /*
@@ -184,6 +236,11 @@ void pod_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t colo
  */
 void pod_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
+    /* Clip coordinates to fit clip window. */
+    if (false == clip_line(&x0, &y0, &x1, &y1, clip_window)) {
+        return;
+    }
+
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
         x0 = x0 + x1;
@@ -205,6 +262,8 @@ void pod_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
     pod_draw_hline(x0, y1, width, color);
     pod_draw_vline(x0, y0, height, color);
     pod_draw_vline(x1, y0, height, color);
+
+    update_dirty_window(x0, y0, x1, y1);
 }
 
 /*
@@ -242,6 +301,8 @@ void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
         pod_draw_hline(x0, y0 + i, width, color);
 #endif
     }
+
+    update_dirty_window(x0, y0, x1, y1);
 }
 
 /*
@@ -323,10 +384,10 @@ void pod_blit(int16_t x0, int16_t y0, bitmap_t *source) {
 #ifdef POD_HAS_HAL_BLIT
     /* Check if bitmap is inside clip windows bounds */
     if (
-        (x0 < clip_window.min_x) ||
-        (y0 < clip_window.min_y) ||
-        (x0 + source->width > clip_window.max_x) ||
-        (y0 + source->height > clip_window.max_y)
+        (x0 < clip_window.x0) ||
+        (y0 < clip_window.y0) ||
+        (x0 + source->width > clip_window.x1) ||
+        (y0 + source->height > clip_window.y1)
     ) {
         /* Out of bounds, use local pixel fallback. */
         uint16_t color;
@@ -353,6 +414,7 @@ void pod_blit(int16_t x0, int16_t y0, bitmap_t *source) {
         }
     }
 #endif
+    update_dirty_window(x0, y0, x0 + source->width, y0 + source->height);
 };
 
 void pod_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source) {
@@ -361,17 +423,19 @@ void pod_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *
 #else
     /* TODO: Use pdo_putpixel() to write to framebuffer. */
 #endif
+    update_dirty_window(x0, y0, x0 + w, y0 + h);
 };
 
 void pod_clear_screen() {
-    uint16_t x0 = clip_window.min_x;
-    uint16_t y0 = clip_window.min_y;
-    uint16_t x1 = clip_window.max_x;
-    uint16_t y1 = clip_window.max_y;
+    uint16_t x0 = clip_window.x0;
+    uint16_t y0 = clip_window.y0;
+    uint16_t x1 = clip_window.x1;
+    uint16_t y1 = clip_window.y1;
 
     pod_set_clip_window(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1);
     pod_fill_rectangle(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1, 0x00);
     pod_set_clip_window(x0, y0, x1, y1);
+    update_dirty_window(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1);
 }
 
 void pod_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
@@ -406,6 +470,8 @@ void pod_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
         pod_put_pixel(xc+y, yc-x, color);
         pod_put_pixel(xc-y, yc-x, color);
     }
+
+    update_dirty_window(xc - r, yc - r, xc + r, yc + r);
 }
 
 void pod_fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
@@ -427,6 +493,8 @@ void pod_fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
             d = d + 4 * x + 6;
         }
     }
+
+    update_dirty_window(x0 - r, y0 - r, x0 + r, y0 + r);
 }
 
 void pod_draw_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
@@ -515,6 +583,9 @@ void pod_fill_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
             pod_draw_hline(nodes[i], y, width, color);
         }
     }
+
+    /* TODO: handles only y coordinates at the moment */
+    update_dirty_window(DISPLAY_WIDTH - 1, miny, 0, maxy);
 }
 
 void pod_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color) {
@@ -538,7 +609,16 @@ void pod_init() {
 
 void pod_flush() {
 #ifdef POD_HAS_HAL_FLUSH
-    pod_hal_flush();
+    bool dirty = dirty_window.y1 > dirty_window.y0;
+    // if (dirty) {
+    //     uint16_t green  = 0x0FE0;
+    //     pod_draw_rectangle(dirty_window.x0, dirty_window.y0, dirty_window.x1, dirty_window.y1, green);
+    // }
+    pod_hal_flush(
+        dirty,
+        dirty_window.x0, dirty_window.y0, dirty_window.x1, dirty_window.y1
+    );
+    reset_dirty_window();
 #else
 #endif
 };
