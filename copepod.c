@@ -260,8 +260,8 @@ void pod_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
         return;
     }
 
-    uint16_t width = x1 - x0;
-    uint16_t height = y1 - y0;
+    uint16_t width = x1 - x0 + 1;
+    uint16_t height = y1 - y0 + 1;
 
     pod_draw_hline(x0, y0, width, color);
     pod_draw_hline(x0, y1, width, color);
@@ -311,8 +311,8 @@ void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
     x1 = min(x1, clip_window.x1);
     y1 = min(y1, clip_window.y1);
 
-    uint16_t width = x1 - x0;
-    uint16_t height = y1 - y0;
+    uint16_t width = x1 - x0 + 1;
+    uint16_t height = y1 - y0 + 1;
 
     for (uint16_t i = 0; i < height; i++) {
 #ifdef POD_HAS_HAL_HLINE
