@@ -236,11 +236,6 @@ void pod_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t colo
  */
 void pod_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
-    /* Clip coordinates to fit clip window. */
-    if (false == clip_line(&x0, &y0, &x1, &y1, clip_window)) {
-        return;
-    }
-
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
         x0 = x0 + x1;
@@ -255,6 +250,16 @@ void pod_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
         y0 = y0 - y1;
     }
 
+    /* x1 or y1 is before the edge, nothing to do. */
+    if ((x1 < clip_window.x0) || (y1 < clip_window.y0))  {
+        return;
+    }
+
+    /* x0 or y0 is after the edge, nothing to do. */
+    if ((x0 > clip_window.x1) || (y0 > clip_window.y1)) {
+        return;
+    }
+
     uint16_t width = x1 - x0;
     uint16_t height = y1 - y0;
 
@@ -262,6 +267,12 @@ void pod_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
     pod_draw_hline(x0, y1, width, color);
     pod_draw_vline(x0, y0, height, color);
     pod_draw_vline(x1, y0, height, color);
+
+    /* Only dirty window needs to be clipped. */
+    x0 = max(x0, clip_window.x0);
+    y0 = max(y0, clip_window.y0);
+    x1 = min(x1, clip_window.x1);
+    y1 = min(y1, clip_window.y1);
 
     update_dirty_window(x0, y0, x1, y1);
 }
@@ -285,10 +296,20 @@ void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
         y0 = y0 - y1;
     }
 
-    /* Clip coordinates to fit clip window. */
-    if (false == clip_line(&x0, &y0, &x1, &y1, clip_window)) {
+    /* x1 or y1 is before the edge, nothing to do. */
+    if ((x1 < clip_window.x0) || (y1 < clip_window.y0))  {
         return;
     }
+
+    /* x0 or y0 is after the edge, nothing to do. */
+    if ((x0 > clip_window.x1) || (y0 > clip_window.y1)) {
+        return;
+    }
+
+    x0 = max(x0, clip_window.x0);
+    y0 = max(y0, clip_window.y0);
+    x1 = min(x1, clip_window.x1);
+    y1 = min(y1, clip_window.y1);
 
     uint16_t width = x1 - x0;
     uint16_t height = y1 - y0;
