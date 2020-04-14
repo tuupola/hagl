@@ -22,19 +22,38 @@ SOFTWARE.
 
 */
 
-#ifndef _POD_FPS_H
-#define _POD_FPS_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+#include <time.h>
+#include <stdbool.h>
 #include <stdint.h>
 
-float fps();
-void fps_reset();
+static clock_t ticks;
+static clock_t start;
+static uint32_t frames = 1;
+static float current = 0;
+static bool firstrun = true;
 
-#ifdef __cplusplus
+float fps()
+{
+    /* Larger value is less smoothing */
+    float smoothing = 0.9;
+    float measured = 0;
+
+    if (firstrun) {
+        start = clock();
+        firstrun = false;
+    }
+    frames++;
+
+    ticks = clock() - start;
+    measured = frames / (float) ticks * CLOCKS_PER_SEC;
+    measured = (measured * smoothing) + (current * (1.0 - smoothing));
+
+    return measured;
 }
-#endif
-#endif /* POD_FPS_H */
+
+void fps_reset()
+{
+    firstrun = true;
+    frames = 1;
+    current = 0;
+}
