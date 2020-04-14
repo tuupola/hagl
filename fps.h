@@ -25,10 +25,16 @@ SOFTWARE.
 #ifndef _POD_FPS_H
 #define _POD_FPS_H
 
-#include <time.h>
-#include <stdbool.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <stdint.h>
 
 float fps();
 void fps_reset();
 
+#ifdef __cplusplus
+}
+#endif
 #endif /* POD_FPS_H */
