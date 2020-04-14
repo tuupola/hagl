@@ -26,6 +26,13 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
+-cut-
+
+This file is part of the Copepod graphics library:
+https://github.com/tuupola/copepod
+
+SPDX-License-Identifier: BSD-2-Clause
+
 */
 
 #include <stdint.h>

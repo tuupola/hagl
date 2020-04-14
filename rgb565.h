@@ -1,6 +1,8 @@
 /*
 
-Copyright (c) 2018 Mika Tuupola
+MIT License
+
+Copyright (c) 2018-2020 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,8 +22,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-*/
+-cut-
 
+This file is part of the Copepod graphics library:
+https://github.com/tuupola/copepod
+
+SPDX-License-Identifier: MIT
+
+*/
 #ifndef _RGB565_H
 #define _RGB565_H
 
