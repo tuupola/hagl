@@ -121,9 +121,6 @@ void bitmap_blit(int16_t x0, int16_t y0, bitmap_t *src, bitmap_t *dst)
 
 void bitmap_scale_blit(int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth, bitmap_t *src, bitmap_t *dst)
 {
-    int16_t x1 = 0;
-    int16_t y1 = 0;
-
     uint16_t px, py;
 
     uint16_t srcw = src->width;
@@ -139,14 +136,12 @@ void bitmap_scale_blit(int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth, bit
     /* x0 is negative, ignore parts outside of screen. */
     if (x0 < 0) {
         dstw = dstw + x0;
-        x1 = abs(x0);
         x0 = 0;
     }
 
     /* y0 is negative, ignore parts outside of screen. */
     if (y0 < 0) {
         dsth = dsth + y0;
-        y1 = abs(y0);
         y0 = 0;
     }
 
