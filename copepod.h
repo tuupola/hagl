@@ -42,7 +42,7 @@ SPDX-License-Identifier: MIT
 #define ABS(x)  ((x) > 0 ? (x) : -(x))
 
 /* This is the only mandatory function which HAL must provide. */
-extern void pod_hal_putpixel(int16_t x0, int16_t y0, uint16_t color);
+extern void pod_hal_put_pixel(int16_t x0, int16_t y0, uint16_t color);
 
 extern void pod_hal_blit(uint16_t x0, uint16_t y0, bitmap_t *source);
 extern void pod_hal_hline(int16_t x0, int16_t y0, uint16_t width, uint16_t color);

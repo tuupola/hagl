@@ -88,7 +88,7 @@ void pod_put_pixel(int16_t x0, int16_t y0, uint16_t color)
     }
 
     /* If still in bounds set the pixel. */
-    pod_hal_putpixel(x0, y0, color);
+    pod_hal_put_pixel(x0, y0, color);
 }
 
 /*
@@ -405,7 +405,7 @@ void pod_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *
 #ifdef POD_HAS_HAL_SCALE_BLIT
     pod_hal_scale_blit(x0, y0, w, h, source);
 #else
-    /* TODO: Use pdo_putpixel() to write to framebuffer. */
+    /* TODO: Use pdo_put_pixel() to write to framebuffer. */
 #endif
 };
 
