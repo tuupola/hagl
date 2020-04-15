@@ -589,9 +589,9 @@ void pod_flush() {
 #endif
 };
 
-void pod_destroy() {
-#ifdef POD_HAS_HAL_DESTROY
-    pod_hal_destroy();
+void pod_close() {
+#ifdef POD_HAS_HAL_CLOSE
+    pod_hal_close();
 #else
 #endif
 };

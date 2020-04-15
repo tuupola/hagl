@@ -73,6 +73,6 @@ void pod_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 void pod_clear_screen();
 void pod_init();
 void pod_flush();
-void pod_destroy();
+void pod_close();
 
 #endif /* _COPEPOD_H */

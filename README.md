@@ -47,7 +47,7 @@ Depending on HAL, initialisation and flushing might be required. If HAL does not
 ```c
 void pod_init();
 void pod_flush();
-void pod_destroy();
+void pod_close();
 ```
 
 ## Speed
