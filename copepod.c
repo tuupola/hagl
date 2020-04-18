@@ -574,12 +574,15 @@ void pod_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x
 }
 
 
-void pod_init() {
+bitmap_t *pod_init() {
 #ifdef POD_HAS_HAL_INIT
-    pod_hal_init();
-#else
-#endif
+    bitmap_t *bb = pod_hal_init();
     pod_clear_screen();
+    return bb;
+#else
+    pod_clear_screen();
+    return NULL;
+#endif
 };
 
 void pod_flush() {
