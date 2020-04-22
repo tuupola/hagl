@@ -11,7 +11,7 @@ To use Copepod you must provide a hardware absraction layer ie. HAL. It must pro
 
 ## Usage
 
-Guess what! Better docs to be written. High level functions are pretty self explanatory though. For example applications see [M5Stack GFX](https://github.com/tuupola/esp-examples/tree/master/009-m5stack-gfx), [M5Stack Fire](https://github.com/tuupola/esp-examples/tree/master/010-m5stack-fire), [M5Stack Mandelbrot](https://github.com/tuupola/esp-examples/tree/master/014-mandelbrot) and [M5Stick GFX](https://github.com/tuupola/esp-examples/tree/master/015-m5stick-gfx).
+Guess what! Better docs to be written. High level functions are pretty self explanatory though. For example applications see [ESP GFX](https://github.com/tuupola/esp_gfx), [ESP Fire](https://github.com/tuupola/esp_fire), [M5Stack Mandelbrot](https://github.com/tuupola/esp-examples/tree/master/014-mandelbrot) and [ESP M5StickC](https://github.com/tuupola/esp_m5stick).
 
 ```c
 void pod_put_pixel(int16_t x0, int16_t y0, uint16_t color);
