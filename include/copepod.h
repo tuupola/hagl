@@ -47,8 +47,8 @@ extern void pod_hal_put_pixel(int16_t x0, int16_t y0, uint16_t color);
 extern void pod_hal_blit(uint16_t x0, uint16_t y0, bitmap_t *source);
 extern void pod_hal_hline(int16_t x0, int16_t y0, uint16_t width, uint16_t color);
 extern void pod_hal_vline(int16_t x0, int16_t y0, uint16_t width, uint16_t color);
-extern void pod_hal_init();
 extern void pod_hal_flush();
+extern bitmap_t *pod_hal_init();
 
 void pod_put_pixel(int16_t x0, int16_t y0, uint16_t color);
 void pod_put_char(char ascii, int16_t x0, int16_t y0, uint16_t color, const char font[][8]);
@@ -71,7 +71,7 @@ void pod_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x
 
 void pod_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 void pod_clear_screen();
-void pod_init();
+bitmap_t *pod_init();
 void pod_flush();
 void pod_close();
 

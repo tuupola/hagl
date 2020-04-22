@@ -45,7 +45,7 @@ void pod_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *
 Depending on HAL, initialisation and flushing might be required. If HAL does not require them both functions are just a no-op.
 
 ```c
-void pod_init();
+bitmap_t *pod_init();
 void pod_flush();
 void pod_close();
 ```
