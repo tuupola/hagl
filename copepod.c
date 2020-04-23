@@ -574,7 +574,6 @@ void pod_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x
     pod_fill_polygon(3, vertices, color);
 }
 
-
 static uint16_t tjpgd_data_reader(JDEC *decoder, uint8_t *buffer, uint16_t size)
 {
     FILE *fp = (FILE *)decoder->device;
@@ -592,7 +591,6 @@ static uint16_t tjpgd_data_writer(JDEC* decoder, void* bitmap, JRECT* rectangle)
 {
     uint8_t width = (rectangle->right - rectangle->left) + 1;
     uint8_t height = (rectangle->bottom - rectangle->top) + 1;
-    //printf("%d,%d %d,%d (%dx%d)\n", rect->top, rect->left, rect->bottom, rect->right, width, height);
 
     bitmap_t block = {
         .width = width,
@@ -608,7 +606,7 @@ static uint16_t tjpgd_data_writer(JDEC* decoder, void* bitmap, JRECT* rectangle)
     return 1;
 }
 
-void pod_load_jpg(int16_t x0, int16_t y0, char *filename)
+uint32_t pod_load_jpg(int16_t x0, int16_t y0, char *filename)
 {
     uint8_t work[3100];
     JDEC decoder;
@@ -617,22 +615,19 @@ void pod_load_jpg(int16_t x0, int16_t y0, char *filename)
 
     fp = fopen(filename, "rb");
     if (!fp) {
-        printf("Unable to open file!");
-        //return 1;
+        return POD_ERR_FILE_IO;
     }
     result = jd_prepare(&decoder, tjpgd_data_reader, work, 3100, fp);
     if (result == JDR_OK) {
-        printf("Image dimensions: %u by %u. %u bytes used.\n", decoder.width, decoder.height, 3100 - decoder.sz_pool);
         result = jd_decomp(&decoder, tjpgd_data_writer, 0);
-        if (result == JDR_OK) {
-            printf("\rOK  \n");
-        } else {
-            printf("Failed to decompress: rc=%d\n", result);
+        if (JDR_OK != result) {
+            return POD_ERR_TJPGD + result;
         }
     } else {
-        printf("Failed to prepare: rc=%d\n", result);
-        //return res;
+        return POD_ERR_TJPGD + result;
     }
+
+    return POD_OK;
 }
 
 

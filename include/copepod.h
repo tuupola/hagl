@@ -41,6 +41,11 @@ SPDX-License-Identifier: MIT
 
 #define ABS(x)  ((x) > 0 ? (x) : -(x))
 
+#define POD_OK                  (0)
+#define POD_ERR_GENERAL         (1)
+#define POD_ERR_FILE_IO         (2)
+#define POD_ERR_TJPGD           (100)
+
 /* This is the only mandatory function which HAL must provide. */
 extern void pod_hal_put_pixel(int16_t x0, int16_t y0, uint16_t color);
 
@@ -69,7 +74,7 @@ void pod_fill_polygon(int16_t amount, int16_t *vertices, uint16_t color);
 void pod_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
 void pod_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
 
-void pod_load_jpg(int16_t x0, int16_t y0, char *filename);
+uint32_t pod_load_jpg(int16_t x0, int16_t y0, char *filename);
 
 void pod_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 void pod_clear_screen();
