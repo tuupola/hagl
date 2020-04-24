@@ -44,6 +44,12 @@ SPDX-License-Identifier: MIT
 #include "copepod.h"
 #include "copepod_hal.h"
 
+typedef struct {
+    FILE *fp;
+    int16_t x0;
+    int16_t y0;
+} tjpgd_iodev_t;
+
 static window_t clip_window = {
     .x0 = 0,
     .y0 = 0,
@@ -576,19 +582,20 @@ void pod_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x
 
 static uint16_t tjpgd_data_reader(JDEC *decoder, uint8_t *buffer, uint16_t size)
 {
-    FILE *fp = (FILE *)decoder->device;
+    tjpgd_iodev_t *device = (tjpgd_iodev_t *)decoder->device;
 
     if (buffer) {
         /* Read bytes from input stream. */
-        return (uint16_t)fread(buffer, 1, size, fp);
+        return (uint16_t)fread(buffer, 1, size, device->fp);
     } else {
         /* Skip bytes from input stream. */
-        return fseek(fp, size, SEEK_CUR) ? 0 : size;
+        return fseek(device->fp, size, SEEK_CUR) ? 0 : size;
     }
 }
 
 static uint16_t tjpgd_data_writer(JDEC* decoder, void* bitmap, JRECT* rectangle)
 {
+    tjpgd_iodev_t *device = (tjpgd_iodev_t *)decoder->device;
     uint8_t width = (rectangle->right - rectangle->left) + 1;
     uint8_t height = (rectangle->bottom - rectangle->top) + 1;
 
@@ -601,7 +608,7 @@ static uint16_t tjpgd_data_writer(JDEC* decoder, void* bitmap, JRECT* rectangle)
         .buffer = (uint8_t *)bitmap
     };
 
-    pod_blit(rectangle->left, rectangle->top, &block);
+    pod_blit(rectangle->left + device->x0, rectangle->top + device->y0, &block);
 
     return 1;
 }
@@ -611,13 +618,16 @@ uint32_t pod_load_jpg(int16_t x0, int16_t y0, char *filename)
     uint8_t work[3100];
     JDEC decoder;
     JRESULT result;
-    FILE *fp;
+    tjpgd_iodev_t device;
 
-    fp = fopen(filename, "rb");
-    if (!fp) {
+    device.x0 = x0;
+    device.y0 = y0;
+    device.fp = fopen(filename, "rb");
+
+    if (!device.fp) {
         return POD_ERR_FILE_IO;
     }
-    result = jd_prepare(&decoder, tjpgd_data_reader, work, 3100, fp);
+    result = jd_prepare(&decoder, tjpgd_data_reader, work, 3100, (void *)&device);
     if (result == JDR_OK) {
         result = jd_decomp(&decoder, tjpgd_data_writer, 0);
         if (JDR_OK != result) {
