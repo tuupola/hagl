@@ -20,7 +20,7 @@
 /----------------------------------------------------------------------------*/
 
 #include "tjpgd.h"
-
+#include "config.h"
 
 /*-----------------------------------------------*/
 /* Zigzag-order to raster-order conversion table */
@@ -681,7 +681,11 @@ static JRESULT mcu_output (
             w = (*s++ & 0xF8) << 8;		/* RRRRR----------- */
             w |= (*s++ & 0xFC) << 3;	/* -----GGGGGG----- */
             w |= *s++ >> 3;				/* -----------BBBBB */
+#ifdef TJPGD_NEEDS_BYTESWAP
+            *d++ = (w>>8) | (w<<8);
+#else
             *d++ = w;
+#endif
         } while (--n);
     }
 

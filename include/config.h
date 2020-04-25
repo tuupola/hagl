@@ -31,4 +31,16 @@ SPDX-License-Identifier: MIT
 
 */
 
+#ifdef NO_MENUCONFIG
+
+/* If you don't use menuconfig change the settings here.  */
+#define TJPGD_NEEDS_BYTESWAP
+
+# else
+
 #include "sdkconfig.h"
+#ifdef CONFIG_POD_TJPGD_NEEDS_BYTESWAP
+#define TJPGD_NEEDS_BYTESWAP
+#endif /* CONFIG_POD_TJPGD_NEEDS_BYTESWAP */
+
+#endif /* NO_MENUCONFIG */
