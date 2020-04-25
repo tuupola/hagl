@@ -686,7 +686,7 @@ static JRESULT mcu_output (
 	}
 
 	/* Output the RGB rectangular */
-	return outfunc(jd, jd->workbuf, &rect) ? JDR_OK : JDR_INTR; 
+	return outfunc(jd, jd->workbuf, &rect) ? JDR_OK : JDR_INTR;
 }
 
 
