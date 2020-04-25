@@ -33,7 +33,7 @@ SPDX-License-Identifier: MIT
 
 #ifdef NO_MENUCONFIG
 
-/* If you don't use menuconfig change the settings here.  */
+/* If you don't use menuconfig change the settings here. */
 #define TJPGD_NEEDS_BYTESWAP
 
 # else
