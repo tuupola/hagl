@@ -631,12 +631,15 @@ uint32_t pod_load_jpg(int16_t x0, int16_t y0, char *filename)
     if (result == JDR_OK) {
         result = jd_decomp(&decoder, tjpgd_data_writer, 0);
         if (JDR_OK != result) {
+            fclose(device.fp);
             return POD_ERR_TJPGD + result;
         }
     } else {
+        fclose(device.fp);
         return POD_ERR_TJPGD + result;
     }
 
+    fclose(device.fp);
     return POD_OK;
 }
 
