@@ -609,8 +609,10 @@ void pod_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, 
         return;
     }
 
+    /* Max radius is half of shortest edge. */
     width = x1 - x0 + 1;
     height = y1 - y0 + 1;
+    r = min(r, min(width / 2, height / 2));
 
     pod_draw_hline(x0 + r, y0, width - 2 * r, color);
     pod_draw_hline(x0 + r, y1, width - 2 * r, color);
@@ -677,6 +679,11 @@ void pod_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, 
     if ((x0 > clip_window.x1) || (y0 > clip_window.y1)) {
         return;
     }
+
+    /* Max radius is half of shortest edge. */
+    width = x1 - x0 + 1;
+    height = y1 - y0 + 1;
+    r = min(r, min(width / 2, height / 2));
 
     x = 0;
     y = r;
