@@ -613,7 +613,7 @@ static uint16_t tjpgd_data_writer(JDEC* decoder, void* bitmap, JRECT* rectangle)
     return 1;
 }
 
-uint32_t pod_load_image(int16_t x0, int16_t y0, char *filename)
+uint32_t pod_load_image(int16_t x0, int16_t y0, const char *filename)
 {
     uint8_t work[3100];
     JDEC decoder;
