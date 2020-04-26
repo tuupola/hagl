@@ -553,6 +553,72 @@ void pod_draw_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t col
     }
 }
 
+void pod_fill_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t color) {
+    int wx, wy;
+    int t;
+    int asq = a * a;
+    int bsq = b * b;
+    int xa, ya;
+
+    pod_put_pixel(x0, y0 + b, color);
+    pod_put_pixel(x0, y0 - b, color);
+
+    wx = 0;
+    wy = b;
+    xa = 0;
+    ya = asq * 2 * b;
+    t = asq / 4 - asq * b;
+
+    while (1) {
+        t += xa + bsq;
+
+        if (t >= 0) {
+            ya -= asq * 2;
+            t -= ya;
+            wy--;
+        }
+
+        xa += bsq * 2;
+        wx++;
+
+        if (xa >= ya) {
+            break;
+        }
+
+        pod_draw_hline(x0 - wx, y0 - wy, wx * 2, color);
+        pod_draw_hline(x0 - wx, y0 + wy, wx * 2, color);
+    }
+
+    pod_draw_hline(x0 - a, y0, a * 2, color);
+
+    wx = a;
+    wy = 0;
+    xa = bsq * 2 * a;
+
+    ya = 0;
+    t = bsq / 4 - bsq * a;
+
+    while (1) {
+        t += ya + asq;
+
+        if (t >= 0) {
+            xa -= bsq * 2;
+            t = t - xa;
+            wx--;
+        }
+
+        ya += asq * 2;
+        wy++;
+
+        if (ya > xa) {
+            break;
+        }
+
+        pod_draw_hline(x0 - wx, y0 - wy, wx * 2, color);
+        pod_draw_hline(x0 - wx, y0 + wy, wx * 2, color);
+    }
+}
+
 
 void pod_draw_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
 
