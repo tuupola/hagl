@@ -724,10 +724,10 @@ void pod_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, 
         rx1 = x1 - r + y;
         width = rx1 -  rx0;
         pod_draw_hline(rx0, ry0, width, color);
-
-        /* Center */
-        pod_fill_rectangle(x0, y0 + r, x1, y1 - r, color);
     }
+
+    /* Center */
+    pod_fill_rectangle(x0, y0 + r, x1, y1 - r, color);
 };
 
 
