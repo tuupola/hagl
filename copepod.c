@@ -170,7 +170,6 @@ void pod_draw_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
 /*
  * Draw a line using Bresenham's algorithm with given RGB565 color.
  */
-/* https://github.com/jb55/bresenham-line.c/blob/master/bresenham_line.c */
 void pod_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
     /* Clip coordinates to fit clip window. */
@@ -198,7 +197,7 @@ void pod_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t colo
             break;
         };
 
-        e2 = err;
+        e2 = err + err;
 
         if (e2 > -dx) {
             err -= dy;
