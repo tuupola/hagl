@@ -483,11 +483,11 @@ void pod_fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
 }
 
 void pod_draw_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t color) {
-    int wx, wy;
-    int t;
-    int asq = a * a;
-    int bsq = b * b;
-    int xa, ya;
+    int16_t wx, wy;
+    int32_t xa, ya;
+    int32_t t;
+    int32_t asq = a * a;
+    int32_t bsq = b * b;
 
     pod_put_pixel(x0, y0 + b, color);
     pod_put_pixel(x0, y0 - b, color);
@@ -554,11 +554,11 @@ void pod_draw_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t col
 }
 
 void pod_fill_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t color) {
-    int wx, wy;
-    int t;
-    int asq = a * a;
-    int bsq = b * b;
-    int xa, ya;
+    int16_t wx, wy;
+    int32_t xa, ya;
+    int32_t t;
+    int32_t asq = a * a;
+    int32_t bsq = b * b;
 
     pod_put_pixel(x0, y0 + b, color);
     pod_put_pixel(x0, y0 - b, color);
