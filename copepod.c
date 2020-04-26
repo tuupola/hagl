@@ -431,15 +431,16 @@ void pod_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
     int16_t y = r;
     int16_t d = 3 - 2 * r;
 
+    pod_put_pixel(xc + x, yc + y, color);
+    pod_put_pixel(xc - x, yc + y, color);
+    pod_put_pixel(xc + x, yc - y, color);
+    pod_put_pixel(xc - x, yc - y, color);
+    pod_put_pixel(xc + y, yc + x, color);
+    pod_put_pixel(xc - y, yc + x, color);
+    pod_put_pixel(xc + y, yc - x, color);
+    pod_put_pixel(xc - y, yc - x, color);
+
     while (y >= x) {
-        pod_put_pixel(xc+x, yc+y, color);
-        pod_put_pixel(xc-x, yc+y, color);
-        pod_put_pixel(xc+x, yc-y, color);
-        pod_put_pixel(xc-x, yc-y, color);
-        pod_put_pixel(xc+y, yc+x, color);
-        pod_put_pixel(xc-y, yc+x, color);
-        pod_put_pixel(xc+y, yc-x, color);
-        pod_put_pixel(xc-y, yc-x, color);
         x++;
 
         if (d > 0) {
@@ -449,14 +450,14 @@ void pod_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
             d = d + 4 * x + 6;
         }
 
-        pod_put_pixel(xc+x, yc+y, color);
-        pod_put_pixel(xc-x, yc+y, color);
-        pod_put_pixel(xc+x, yc-y, color);
-        pod_put_pixel(xc-x, yc-y, color);
-        pod_put_pixel(xc+y, yc+x, color);
-        pod_put_pixel(xc-y, yc+x, color);
-        pod_put_pixel(xc+y, yc-x, color);
-        pod_put_pixel(xc-y, yc-x, color);
+        pod_put_pixel(xc + x, yc + y, color);
+        pod_put_pixel(xc - x, yc + y, color);
+        pod_put_pixel(xc + x, yc - y, color);
+        pod_put_pixel(xc - x, yc - y, color);
+        pod_put_pixel(xc + y, yc + x, color);
+        pod_put_pixel(xc - y, yc + x, color);
+        pod_put_pixel(xc + y, yc - x, color);
+        pod_put_pixel(xc - y, yc - x, color);
     }
 }
 
@@ -466,10 +467,10 @@ void pod_fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
     int16_t d = 3 - 2 * r;
 
     while (y >= x) {
-        pod_draw_hline(x0-x, y0+y, x * 2 , color);
-        pod_draw_hline(x0-x, y0-y, x * 2, color);
-        pod_draw_hline(x0-y, y0+x, y * 2, color);
-        pod_draw_hline(x0-y, y0-x, y * 2, color);
+        pod_draw_hline(x0 - x, y0 + y, x * 2, color);
+        pod_draw_hline(x0 - x, y0 - y, x * 2, color);
+        pod_draw_hline(x0 - y, y0 + x, y * 2, color);
+        pod_draw_hline(x0 - y, y0 - x, y * 2, color);
         x++;
 
         if (d > 0) {
