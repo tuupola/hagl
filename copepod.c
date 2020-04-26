@@ -580,6 +580,158 @@ void pod_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x
     pod_fill_polygon(3, vertices, color);
 }
 
+void pod_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, uint16_t color) {
+
+    uint16_t width, height;
+    int16_t x, y, d;
+
+    /* Make sure x0 is smaller than x1. */
+    if (x0 > x1) {
+        x0 = x0 + x1;
+        x1 = x0 - x1;
+        x0 = x0 - x1;
+    }
+
+    /* Make sure y0 is smaller than y1. */
+    if (y0 > y1) {
+        y0 = y0 + y1;
+        y1 = y0 - y1;
+        y0 = y0 - y1;
+    }
+
+    /* x1 or y1 is before the edge, nothing to do. */
+    if ((x1 < clip_window.x0) || (y1 < clip_window.y0))  {
+        return;
+    }
+
+    /* x0 or y0 is after the edge, nothing to do. */
+    if ((x0 > clip_window.x1) || (y0 > clip_window.y1)) {
+        return;
+    }
+
+    /* Max radius is half of shortest edge. */
+    width = x1 - x0 + 1;
+    height = y1 - y0 + 1;
+    r = min(r, min(width / 2, height / 2));
+
+    pod_draw_hline(x0 + r, y0, width - 2 * r, color);
+    pod_draw_hline(x0 + r, y1, width - 2 * r, color);
+    pod_draw_vline(x0, y0 + r, height - 2 * r, color);
+    pod_draw_vline(x1, y0 + r, height - 2 * r, color);
+
+    x = 0;
+    y = r;
+    d = 3 - 2 * r;
+
+    while (y >= x) {
+        x++;
+
+        if (d > 0) {
+            y--;
+            d = d + 4 * (x - y) + 10;
+        } else {
+            d = d + 4 * x + 6;
+        }
+
+        /* Top right */
+        pod_put_pixel(x1 - r + x, y0 + r - y, color);
+        pod_put_pixel(x1 - r + y, y0 + r - x, color);
+
+        /* Top left */
+        pod_put_pixel(x0 + r - x, y0 + r - y, color);
+        pod_put_pixel(x0 + r - y, y0 + r - x, color);
+
+        /* Bottom right */
+        pod_put_pixel(x1 - r + x, y1 - r + y, color);
+        pod_put_pixel(x1 - r + y, y1 - r + x, color);
+
+        /* Bottom left */
+        pod_put_pixel(x0 + r - x, y1 - r + y, color);
+        pod_put_pixel(x0 + r - y, y1 - r + x, color);
+    }
+};
+
+void pod_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, uint16_t color) {
+
+    uint16_t width, height;
+    int16_t rx0, ry0, rx1, ry1, x, y, d;
+
+    /* Make sure x0 is smaller than x1. */
+    if (x0 > x1) {
+        x0 = x0 + x1;
+        x1 = x0 - x1;
+        x0 = x0 - x1;
+    }
+
+    /* Make sure y0 is smaller than y1. */
+    if (y0 > y1) {
+        y0 = y0 + y1;
+        y1 = y0 - y1;
+        y0 = y0 - y1;
+    }
+
+    /* x1 or y1 is before the edge, nothing to do. */
+    if ((x1 < clip_window.x0) || (y1 < clip_window.y0))  {
+        return;
+    }
+
+    /* x0 or y0 is after the edge, nothing to do. */
+    if ((x0 > clip_window.x1) || (y0 > clip_window.y1)) {
+        return;
+    }
+
+    /* Max radius is half of shortest edge. */
+    width = x1 - x0 + 1;
+    height = y1 - y0 + 1;
+    r = min(r, min(width / 2, height / 2));
+
+    x = 0;
+    y = r;
+    d = 3 - 2 * r;
+
+    while (y >= x) {
+        x++;
+
+        if (d > 0) {
+            y--;
+            d = d + 4 * (x - y) + 10;
+        } else {
+            d = d + 4 * x + 6;
+        }
+
+        /* Top  */
+        ry0 = y0 + r - x;
+        rx0 = x0 + r - y;
+        rx1 = x1 - r + y;
+        width = rx1 -  rx0;
+        pod_draw_hline(rx0, ry0, width, color);
+
+        ry0 = y0 + r - y;
+        rx0 = x0 + r - x;
+        rx1 = x1 - r + x;
+        width = rx1 -  rx0;
+        pod_draw_hline(rx0, ry0, width, color);
+
+        /* Bottom */
+        ry0 = y1 - r + y;
+        rx0 = x0 + r - x;
+        rx1 = x1 - r + x;
+        width = rx1 -  rx0;
+        pod_draw_hline(rx0, ry0, width, color);
+
+        ry0 = y1 - r + x;
+        rx0 = x0 + r - y;
+        rx1 = x1 - r + y;
+        width = rx1 -  rx0;
+        pod_draw_hline(rx0, ry0, width, color);
+    }
+
+    /* Center */
+    pod_fill_rectangle(x0, y0 + r, x1, y1 - r, color);
+};
+
+
+
 static uint16_t tjpgd_data_reader(JDEC *decoder, uint8_t *buffer, uint16_t size)
 {
     tjpgd_iodev_t *device = (tjpgd_iodev_t *)decoder->device;

@@ -73,6 +73,9 @@ void pod_draw_polygon(int16_t amount, int16_t *vertices, uint16_t color);
 void pod_fill_polygon(int16_t amount, int16_t *vertices, uint16_t color);
 void pod_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
 void pod_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
+void pod_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, uint16_t color);
+void pod_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, uint16_t color);
+
 
 uint32_t pod_load_image(int16_t x0, int16_t y0, const char *filename);
 
