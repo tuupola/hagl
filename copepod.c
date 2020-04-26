@@ -431,15 +431,16 @@ void pod_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
     int16_t y = r;
     int16_t d = 3 - 2 * r;
 
+    pod_put_pixel(xc+x, yc+y, color);
+    pod_put_pixel(xc-x, yc+y, color);
+    pod_put_pixel(xc+x, yc-y, color);
+    pod_put_pixel(xc-x, yc-y, color);
+    pod_put_pixel(xc+y, yc+x, color);
+    pod_put_pixel(xc-y, yc+x, color);
+    pod_put_pixel(xc+y, yc-x, color);
+    pod_put_pixel(xc-y, yc-x, color);
+
     while (y >= x) {
-        pod_put_pixel(xc+x, yc+y, color);
-        pod_put_pixel(xc-x, yc+y, color);
-        pod_put_pixel(xc+x, yc-y, color);
-        pod_put_pixel(xc-x, yc-y, color);
-        pod_put_pixel(xc+y, yc+x, color);
-        pod_put_pixel(xc-y, yc+x, color);
-        pod_put_pixel(xc+y, yc-x, color);
-        pod_put_pixel(xc-y, yc-x, color);
         x++;
 
         if (d > 0) {
