@@ -546,10 +546,10 @@ void pod_draw_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t col
             break;
         }
 
-        pod_put_pixel(x0+wx, y0-wy, color);
-        pod_put_pixel(x0-wx, y0-wy, color);
-        pod_put_pixel(x0+wx, y0+wy, color);
-        pod_put_pixel(x0-wx, y0+wy, color);
+        pod_put_pixel(x0 + wx, y0 - wy, color);
+        pod_put_pixel(x0 - wx, y0 - wy, color);
+        pod_put_pixel(x0 + wx, y0 + wy, color);
+        pod_put_pixel(x0 - wx, y0 + wy, color);
     }
 }
 
