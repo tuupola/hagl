@@ -69,13 +69,13 @@ void pod_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
 void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
 void pod_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color);
 void pod_fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
+void pod_draw_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t color);
 void pod_draw_polygon(int16_t amount, int16_t *vertices, uint16_t color);
 void pod_fill_polygon(int16_t amount, int16_t *vertices, uint16_t color);
 void pod_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
 void pod_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
 void pod_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, uint16_t color);
 void pod_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, uint16_t color);
-
 
 uint32_t pod_load_image(int16_t x0, int16_t y0, const char *filename);
 
