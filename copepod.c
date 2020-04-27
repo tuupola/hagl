@@ -302,7 +302,7 @@ void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
  *
  */
 
-void pod_put_char(char ascii, int16_t x0, int16_t y0, uint16_t color, const uint8_t *font)
+uint8_t pod_put_char(char ascii, int16_t x0, int16_t y0, uint16_t color, const uint8_t *font)
 {
     uint8_t set, status;
     uint8_t buffer[BITMAP_SIZE(16, 16, DISPLAY_DEPTH)];
@@ -312,7 +312,7 @@ void pod_put_char(char ascii, int16_t x0, int16_t y0, uint16_t color, const uint
     status = fontx2_glyph(&glyph, ascii, font);
 
     if (0 != status) {
-        return;
+        return 0;
     }
 
     bitmap.width = glyph.width,
@@ -336,6 +336,8 @@ void pod_put_char(char ascii, int16_t x0, int16_t y0, uint16_t color, const uint
     }
 
     pod_blit(x0, y0, &bitmap);
+
+    return glyph.width;
 }
 
 /*
