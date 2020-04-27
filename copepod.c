@@ -345,15 +345,17 @@ uint8_t pod_put_char(char ascii, int16_t x0, int16_t y0, uint16_t color, const u
  * continue from the next line.
  */
 
-void pod_put_text(char *str, int16_t x0, int16_t y0, uint16_t color, const uint8_t *font)
+uint16_t pod_put_text(char *str, int16_t x0, int16_t y0, uint16_t color, const uint8_t *font)
 {
     char temp;
     uint8_t status;
+    uint16_t original = x0;
+    uint16_t pixels = 0;
     fontx2_meta_t meta;
 
     status = fontx2_meta(&meta, font);
     if (0 != status) {
-        return;
+        return 0;
     }
 
     do {
@@ -363,10 +365,11 @@ void pod_put_text(char *str, int16_t x0, int16_t y0, uint16_t color, const uint8
             x0 = 0;
             y0 += meta.height;
         } else {
-            pod_put_char(temp, x0, y0, color, font);
-            x0 += meta.width;
+            x0 += pod_put_char(temp, x0, y0, color, font);
         }
     } while (*str != 0);
+
+    return x0 - original;
 }
 
 /*
