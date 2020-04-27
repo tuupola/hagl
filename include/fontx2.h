@@ -44,6 +44,7 @@ extern "C" {
 
 #define FONTX2_OK                   (0)
 #define FONTX2_ERR_GLYPH_NOT_FOUND  (1)
+#define FONTX2_NAME                 (6)
 #define FONTX2_WIDTH               (14)
 #define FONTX2_HEIGHT              (15)
 #define FONTX2_TYPE                (16)

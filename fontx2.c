@@ -42,8 +42,7 @@ SPDX-License-Identifier: MIT
 
 uint8_t fontx2_meta(fontx2_meta_t *meta, const uint8_t *font) {
 
-    memset(meta->name, '\0', sizeof(meta->name));
-    memcpy(meta->name, font, 8);
+    memcpy(meta->name, &font[FONTX2_NAME], 8);
     meta->width = font[FONTX2_WIDTH];
     meta->height = font[FONTX2_HEIGHT];
     meta->type = font[FONTX2_TYPE];
