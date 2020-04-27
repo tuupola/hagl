@@ -42,6 +42,8 @@ SPDX-License-Identifier: MIT
 extern "C" {
 #endif
 
+#define FONTX2_OK                   (0)
+#define FONTX2_ERR_GLYPH_NOT_FOUND  (1)
 #define FONTX2_WIDTH               (14)
 #define FONTX2_HEIGHT              (15)
 #define FONTX2_TYPE                (16)
@@ -69,8 +71,8 @@ typedef struct{
     uint8_t type;
 } fontx2_meta_t;
 
-fontx2_meta_t fontx2_meta(const uint8_t *font);
-fontx2_glyph_t *fontx2_glyph(uint16_t code, const uint8_t *font);
+uint8_t fontx2_meta(fontx2_meta_t *meta, const uint8_t *font);
+uint8_t fontx2_glyph(fontx2_glyph_t *glyph, uint16_t code, const uint8_t *font);
 
 #ifdef __cplusplus
 }
