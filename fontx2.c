@@ -40,6 +40,19 @@ SPDX-License-Identifier: MIT
 
 #include "fontx2.h"
 
+fontx2_meta_t fontx2_meta(const uint8_t *font) {
+    fontx2_meta_t meta;
+
+    memset(meta.name, '\0', sizeof(meta.name));
+    memcpy(meta.name, font, 8);
+    meta.width = font[FONTX2_WIDTH];
+    meta.height = font[FONTX2_HEIGHT];
+    meta.type = font[FONTX2_TYPE];
+
+    return meta;
+}
+
+
 fontx2_glyph_t *fontx2_glyph(uint16_t code, const uint8_t* font) {
     uint32_t nc, bc, sb, eb, total;
     uint16_t fsz;

@@ -62,6 +62,14 @@ typedef struct{
     const uint8_t *buffer;
 } fontx2_glyph_t;
 
+typedef struct{
+    char name[9];
+    uint8_t width;
+    uint8_t height;
+    uint8_t type;
+} fontx2_meta_t;
+
+fontx2_meta_t fontx2_meta(const uint8_t *font);
 fontx2_glyph_t *fontx2_glyph(uint16_t code, const uint8_t *font);
 
 #ifdef __cplusplus
