@@ -302,13 +302,15 @@ void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
  *
  */
 
-uint8_t pod_put_char(wchar_t code, int16_t x0, int16_t y0, uint16_t color, const uint8_t *font)
+uint8_t pod_put_char(const char *mbc, int16_t x0, int16_t y0, uint16_t color, const uint8_t *font)
 {
     uint8_t set, status;
     uint8_t buffer[BITMAP_SIZE(16, 16, DISPLAY_DEPTH)];
     bitmap_t bitmap;
     fontx2_glyph_t glyph;
+    wchar_t code;
 
+    mbtowc(&code, mbc, MB_CUR_MAX);
     status = fontx2_glyph(&glyph, code, font);
 
     if (0 != status) {
@@ -345,9 +347,10 @@ uint8_t pod_put_char(wchar_t code, int16_t x0, int16_t y0, uint16_t color, const
  * continue from the next line.
  */
 
-uint16_t pod_put_text(const wchar_t *str, int16_t x0, int16_t y0, uint16_t color, const unsigned char *font)
+uint16_t pod_put_text(const char *str, int16_t x0, int16_t y0, uint16_t color, const unsigned char *font)
 {
     char temp;
+    char mbc[MB_CUR_MAX];
     uint8_t status;
     uint16_t original = x0;
     uint16_t pixels = 0;
@@ -360,12 +363,12 @@ uint16_t pod_put_text(const wchar_t *str, int16_t x0, int16_t y0, uint16_t color
 
     do {
         temp = *str++;
-
+        wctomb(mbc, temp);
         if (13 == temp || 10 == temp) {
             x0 = 0;
             y0 += meta.height;
         } else {
-            x0 += pod_put_char(temp, x0, y0, color, font);
+            x0 += pod_put_char(mbc, x0, y0, color, font);
         }
     } while (*str != 0);
 
