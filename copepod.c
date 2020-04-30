@@ -302,7 +302,7 @@ void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
  *
  */
 
-uint8_t pod_put_char(unsigned char code, int16_t x0, int16_t y0, uint16_t color, const uint8_t *font)
+uint8_t pod_put_char(wchar_t code, int16_t x0, int16_t y0, uint16_t color, const uint8_t *font)
 {
     uint8_t set, status;
     uint8_t buffer[BITMAP_SIZE(16, 16, DISPLAY_DEPTH)];
@@ -345,7 +345,7 @@ uint8_t pod_put_char(unsigned char code, int16_t x0, int16_t y0, uint16_t color,
  * continue from the next line.
  */
 
-uint16_t pod_put_text(unsigned char *str, int16_t x0, int16_t y0, uint16_t color, const uint8_t *font)
+uint16_t pod_put_text(const wchar_t *str, int16_t x0, int16_t y0, uint16_t color, const unsigned char *font)
 {
     char temp;
     uint8_t status;
