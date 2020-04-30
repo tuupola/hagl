@@ -54,6 +54,10 @@ extern "C" {
 #define FONTX2_BLOCK_TABLE_SIZE    (17)
 #define FONTX2_BLOCK_TABLE_START   (18)
 
+#ifndef char16_t
+typedef uint16_t char16_t;
+#endif
+
 #include <stdint.h>
 
 /* Pitch is bytes per row. Size is size in bytes. */
@@ -73,7 +77,7 @@ typedef struct{
 } fontx2_meta_t;
 
 uint8_t fontx2_meta(fontx2_meta_t *meta, const uint8_t *font);
-uint8_t fontx2_glyph(fontx2_glyph_t *glyph, uint16_t code, const uint8_t *font);
+uint8_t fontx2_glyph(fontx2_glyph_t *glyph, char16_t code, const uint8_t *font);
 
 #ifdef __cplusplus
 }
