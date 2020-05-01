@@ -433,6 +433,13 @@ void pod_clear_screen() {
     pod_set_clip_window(x0, y0, x1, y1);
 }
 
+void pod_clear_clip_window() {
+    pod_fill_rectangle(
+        clip_window.x0, clip_window.y0, clip_window.x1, clip_window.y1,
+        0x00
+    );
+}
+
 void pod_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
     int16_t x = 0;
     int16_t y = r;
