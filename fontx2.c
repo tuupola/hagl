@@ -52,8 +52,7 @@ uint8_t fontx2_meta(fontx2_meta_t *meta, const uint8_t *font) {
 
 
 uint8_t fontx2_glyph(fontx2_glyph_t *glyph, uint16_t code, const uint8_t* font) {
-    uint32_t nc, bc, sb, eb, total;
-    uint16_t fsz;
+    uint32_t nc, bc, sb, eb;
     uint8_t status;
     const uint8_t *block_table;
     fontx2_meta_t meta;
