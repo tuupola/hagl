@@ -350,7 +350,6 @@ uint16_t pod_put_text(const char16_t *str, int16_t x0, int16_t y0, uint16_t colo
     char16_t temp;
     uint8_t status;
     uint16_t original = x0;
-    uint16_t pixels = 0;
     fontx2_meta_t meta;
 
     status = fontx2_meta(&meta, font);
