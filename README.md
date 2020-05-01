@@ -60,24 +60,24 @@ void pod_close();
 
  First table numbers are operations per second with double buffering enabled. Bigger number is better. T-Display and M5StickC have higher numbers because they have smaller resolution. Smaller resolution means less bytes to push to the display.
 
-|                              | T4    | T-Display | M5Stack | M5StickC |
-|------------------------------|-------|-----------|---------|----------|
-| pod_put_pixel()              | 33132 | 33114     | 33199   | 33282    |
-| pod_draw_line()              | 7559  | 9891      | 7829    | 16133    |
-| pod_draw_circle()            | 10329 | 10633     | 10384   | 11747    |
-| pod_fill_circle()            | 6508  | 6851      | 6689    | 9396     |
-| pod_draw_ellipse()           | 6160  | 6445      | 6196    | 7287     |
-| pod_fill_ellipse()           | 2626  | 2857      | 2718    | 4451     |
-| pod_draw_triangle()          | 2981  | 4130      | 3093    | 7937     |
-| pod_fill_triangle()          | 1088  | 1713      | 1288    | 4807     |
-| pod_draw_rectangle()         | 13264 | 15747     | 13788   | 22824    |
-| pod_fill_rectangle()         | 1830  | 3898      | 1909    | 10508    |
-| pod_draw_rounded_rectangle() | 11143 | 12968     | 11608   | 18173    |
-| pod_fill_rounded_rectangle() | 1752  | 3629      | 1814    | 9091     |
-| pod_draw_polygon()           | 1848  | 2595      | 1923    | 5238     |
-| pod_fill_polygon()           | 610   | 942       | 733     | 2757     |
-| pod_put_char()               | 14071 | 14302     | 13937   | 14882    |
-| pod_flush()                  | 29    | 68        | 29      | 86       |
+|                              | T4     | T-Display | M5Stack | M5StickC |
+|------------------------------|--------|-----------|---------|----------|
+| pod_put_pixel()              | 176091 | 176175    | 176913  | 180684   |
+| pod_draw_line()              | 9286   | 13092     | 9683    | 26672    |
+| pod_draw_circle()            | 13803  | 14351     | 13992   | 16460    |
+| pod_fill_circle()            | 7692   | 8224      | 8009    | 12216    |
+| pod_draw_ellipse()           | 7254   | 7655      | 7310    | 8855     |
+| pod_fill_ellipse()           | 2814   | 3086      | 2900    | 4998     |
+| pod_draw_triangle()          | 3204   | 4589      | 3394    | 9875     |
+| pod_fill_triangle()          | 1126   | 1787      | 1334    | 5447     |
+| pod_draw_rectangle()         | 19638  | 25672     | 20861   | 51851    |
+| pod_fill_rectangle()         | 1940   | 4308      | 2036    | 14182    |
+| pod_draw_rounded_rectangle() | 15344  | 19040     | 16188   | 32773    |
+| pod_fill_rounded_rectangle() | 1834   | 3982      | 1865    | 11647    |
+| pod_draw_polygon()           | 1933   | 2784      | 2015    | 6023     |
+| pod_fill_polygon()           | 623    | 971       | 755     | 2961     |
+| pod_put_char()               | 30473  | 22128     | 29852   | 25658    |
+| pod_flush()                  | 29     | 68        | 29      | 86       |
 
 Second table numbers are operations per second with double buffering disabled.
 
