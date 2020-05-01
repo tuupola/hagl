@@ -62,21 +62,21 @@ void pod_close();
 
 |                              | T4    | T-Display | M5Stack | M5StickC |
 |------------------------------|-------|-----------|---------|----------|
-| pod_put_pixel()              | 77695 | 79762     | 80017   | 84496    |
-| pod_draw_line()              | 897   | 1308      | 932     | 2107     |
-| pod_draw_circle()            | 1170  | 725       | 679     | 891      |
-| pod_fill_circle()            | 1870  | 2080      | 2064    | 2325     |
-| pod_draw_ellipse()           | 668   |           |         |          |
-| pod_fill_ellipse()           | 875   |           |         |          |
-| pod_draw_triangle()          | 297   | 438       | 306     | 707      |
-| pod_fill_triangle()          | 472   | 683       | 600     | 1104     |
-| pod_draw_rectangle()         | 12313 | 14625     | 12942   | 17703    |
-| pod_fill_rectangle()         | 751   | 1193      | 913     | 2031     |
-| pod_draw_rounded_rectangle() | 3220  |           |         |          |
-| pod_fill_rounded_rectangle() | 701   |           |         |          |
-| pod_draw_polygon()           | 181   | 265       | 188     | 425      |
-| pod_fill_polygon()           | 274   | 397       | 349     | 633      |
-| pod_put_char)                | 16790 | 14302     | 16192   | 11656    |
+| pod_put_pixel()              | 33132 | 33114     | 33199   | 33282    |
+| pod_draw_line()              | 7559  | 9891      | 7829    | 16133    |
+| pod_draw_circle()            | 10329 | 10633     | 10384   | 11747    |
+| pod_fill_circle()            | 6508  | 6851      | 6689    | 9396     |
+| pod_draw_ellipse()           | 6160  | 6445      | 6196    | 7287     |
+| pod_fill_ellipse()           | 2626  | 2857      | 2718    | 4451     |
+| pod_draw_triangle()          | 2981  | 4130      | 3093    | 7937     |
+| pod_fill_triangle()          | 1088  | 1713      | 1288    | 4807     |
+| pod_draw_rectangle()         | 13264 | 15747     | 13788   | 22824    |
+| pod_fill_rectangle()         | 1830  | 3898      | 1909    | 10508    |
+| pod_draw_rounded_rectangle() | 11143 | 12968     | 11608   | 18173    |
+| pod_fill_rounded_rectangle() | 1752  | 3629      | 1814    | 9091     |
+| pod_draw_polygon()           | 1848  | 2595      | 1923    | 5238     |
+| pod_fill_polygon()           | 610   | 942       | 733     | 2757     |
+| pod_put_char()               | 14071 | 14302     | 13937   | 14882    |
 | pod_flush()                  | 29    | 68        | 29      | 86       |
 
 Second table numbers are operations per second with double buffering disabled.
