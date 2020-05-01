@@ -31,8 +31,9 @@ void pod_fill_polygon(int16_t amount, int16_t *vertices, uint16_t color);
 void pod_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
 void pod_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
 
-void pod_put_char(char ascii, int16_t x0, int16_t y0, uint16_t color, const char font[][8]);
-void pod_put_text(char *str, int16_t x0, int16_t y0, uint16_t color, const char font[][8]);
+
+uint8_t pod_put_char(char16_t code, int16_t x0, int16_t y0, uint16_t color, const unsigned char *font);
+uint16_t pod_put_text(const char16_t *str, int16_t x0, int16_t y0, uint16_t color, const unsigned char *font);
 
 void pod_clear_screen();
 void pod_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);

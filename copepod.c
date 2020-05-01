@@ -38,6 +38,7 @@ SPDX-License-Identifier: MIT
 #include <stdio.h>
 
 #include "bitmap.h"
+#include "fontx2.h"
 #include "clip.h"
 #include "tjpgd.h"
 #include "window.h"
@@ -301,41 +302,42 @@ void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
  *
  */
 
-void pod_put_char(char ascii, int16_t x0, int16_t y0, uint16_t color, const char font[][8])
+uint8_t pod_put_char(char16_t code, int16_t x0, int16_t y0, uint16_t color, const uint8_t *font)
 {
-    bool set;
+    uint8_t set, status;
+    uint8_t buffer[BITMAP_SIZE(16, 16, DISPLAY_DEPTH)];
+    bitmap_t bitmap;
+    fontx2_glyph_t glyph;
 
-    /* Statically allocate 8 x 8 x 16 bits buffer. */
-    uint8_t buffer[BITMAP_SIZE(8, 8, DISPLAY_DEPTH)];
+    status = fontx2_glyph(&glyph, code, font);
 
-    /* First row is the font settings. */
-    ascii = ascii & 0x7F;
-    ascii = ascii + 1;
+    if (0 != status) {
+        return 0;
+    }
 
-    uint8_t width = font[0][0];
-    uint8_t height = font[0][1];
+    bitmap.width = glyph.width,
+    bitmap.height = glyph.height,
+    bitmap.depth = DISPLAY_DEPTH,
 
-    bitmap_t bitmap = {
-        .width = width,
-        .height = height,
-        .depth = DISPLAY_DEPTH,
-    };
     bitmap_init(&bitmap, buffer);
 
     uint16_t *ptr = (uint16_t *) bitmap.buffer;
 
-    for (uint8_t x = 0; x < width; x++) {
-        for (uint8_t y = 0; y < height; y++) {
-            set = font[(uint8_t)ascii][x] & 1 << y;
+    for (uint8_t y = 0; y < glyph.height; y++) {
+        for (uint8_t x = 0; x < glyph.width; x++) {
+            set = *(glyph.buffer) & (0x80 >> (x % 8));
             if (set) {
                 *(ptr++) = color;
             } else {
                 *(ptr++) = 0x0000;
             }
         }
+        glyph.buffer += glyph.pitch;
     }
 
     pod_blit(x0, y0, &bitmap);
+
+    return glyph.width;
 }
 
 /*
@@ -343,24 +345,29 @@ void pod_put_char(char ascii, int16_t x0, int16_t y0, uint16_t color, const char
  * continue from the next line.
  */
 
-void pod_put_text(char *str, int16_t x0, int16_t y0, uint16_t color, const char font[][8])
+uint16_t pod_put_text(const char16_t *str, int16_t x0, int16_t y0, uint16_t color, const unsigned char *font)
 {
-    char temp;
+    char16_t temp;
+    uint8_t status;
+    uint16_t original = x0;
+    fontx2_meta_t meta;
 
-    uint8_t width = font[0][0];
-    uint8_t height = font[0][1];
+    status = fontx2_meta(&meta, font);
+    if (0 != status) {
+        return 0;
+    }
 
     do {
         temp = *str++;
-
         if (13 == temp || 10 == temp) {
             x0 = 0;
-            y0 += height;
+            y0 += meta.height;
         } else {
-            pod_put_char(temp, x0, y0, color, font);
-            x0 += width;
+            x0 += pod_put_char(temp, x0, y0, color, font);
         }
     } while (*str != 0);
+
+    return x0 - original;
 }
 
 /*
