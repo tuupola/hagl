@@ -106,6 +106,19 @@ void pod_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, 
 uint32_t pod_load_image(int16_t x0, int16_t y0, const char *filename);
 
 void pod_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+
+/**
+ * Clear area of the current clip window
+ *
+ * @return void
+ */
+void pod_clear_clip_window();
+
+/**
+ * Clear the whole display
+ *
+ * @return void
+ */
 void pod_clear_screen();
 bitmap_t *pod_init();
 void pod_flush();

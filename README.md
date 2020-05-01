@@ -35,6 +35,7 @@ void pod_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x
 uint8_t pod_put_char(char16_t code, int16_t x0, int16_t y0, uint16_t color, const unsigned char *font);
 uint16_t pod_put_text(const char16_t *str, int16_t x0, int16_t y0, uint16_t color, const unsigned char *font);
 
+void pod_clear_clip_window();
 void pod_clear_screen();
 void pod_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 
