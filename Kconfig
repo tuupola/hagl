@@ -1,4 +1,4 @@
-menu "Copepod graphics library"
+menu "Hardware Agnostic Graphics Library (HAGL)"
 
 config HAGL_TJPGD_NEEDS_BYTESWAP
     bool "Swap TJPGD output bytes"

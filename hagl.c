@@ -45,7 +45,7 @@ SPDX-License-Identifier: MIT
 #include "window.h"
 #include "hagl.h"
 
-#include "copepod_hal.h"
+#include "hagl_hal.h"
 
 typedef struct {
     FILE *fp;
