@@ -24,15 +24,16 @@ SOFTWARE.
 
 -cut-
 
-This file is part of the Copepod graphics library:
-https://github.com/tuupola/copepod
+This file is part of the HAGL graphics library:
+https://github.com/tuupola/hagl
+
 
 SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _COPEPOD_WINDOW_H
-#define _COPEPOD_WINDOW_H
+#ifndef _HAGL_WINDOW_H
+#define _HAGL_WINDOW_H
 
 typedef struct {
     uint16_t x0;
@@ -41,4 +42,4 @@ typedef struct {
     uint16_t y1;
 } window_t;
 
-#endif /* _COPEPOD_WINDOW_H */
+#endif /* _HAGL_WINDOW_H */

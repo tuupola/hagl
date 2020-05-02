@@ -24,15 +24,16 @@ SOFTWARE.
 
 -cut-
 
-This file is part of the Copepod graphics library:
-https://github.com/tuupola/copepod
+This file is part of the HAGL graphics library:
+https://github.com/tuupola/hagl
+
 
 SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _COPEPOD_CLIP_H
-#define _COPEPOD_CLIP_H
+#ifndef _HAGL_CLIP_H
+#define _HAGL_CLIP_H
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -41,4 +42,4 @@ SPDX-License-Identifier: MIT
 
 bool clip_line(int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, window_t window);
 
-#endif /* _COPEPOD_CLIP_H */
+#endif /* _HAGL_CLIP_H */

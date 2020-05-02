@@ -25,8 +25,9 @@ SOFTWARE.
 
 -cut-
 
-This file is part of the Copepod graphics library:
-https://github.com/tuupola/copepod
+This file is part of the HAGL graphics library:
+https://github.com/tuupola/hagl
+
 
 Adapted from the blog post by ChaN:
 http://elm-chan.org/docs/dosv/fontx_e.html
@@ -35,8 +36,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _COPEPOD_FONTX2_H
-#define _COPEPOD_FONTX2_H
+#ifndef _HAGL_FONTX2_H
+#define _HAGL_FONTX2_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -82,4 +83,4 @@ uint8_t fontx2_glyph(fontx2_glyph_t *glyph, char16_t code, const uint8_t *font);
 #ifdef __cplusplus
 }
 #endif
-#endif /* _COPEPOD_FONTX2_H */
+#endif /* _HAGL_FONTX2_H */
