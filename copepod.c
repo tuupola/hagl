@@ -139,8 +139,9 @@ void pod_draw_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
  * hardware vline drawing. If not falls back to vanilla line drawing.
  */
 void pod_draw_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
-    int16_t height = h;
 #ifdef POD_HAS_HAL_VLINE
+    int16_t height = h;
+
     /* x0 or y0 is over the edge, nothing to do. */
     if ((x0 > clip_window.x1) || (x0 < clip_window.x0) || (y0 > clip_window.y1))  {
         return;
@@ -806,7 +807,7 @@ void pod_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, 
 void pod_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, uint16_t color) {
 
     uint16_t width, height;
-    int16_t rx0, ry0, rx1, ry1, x, y, d;
+    int16_t rx0, ry0, rx1, x, y, d;
 
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
