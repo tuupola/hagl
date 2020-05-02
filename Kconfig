@@ -1,6 +1,6 @@
 menu "Copepod graphics library"
 
-config POD_TJPGD_NEEDS_BYTESWAP
+config HAGL_TJPGD_NEEDS_BYTESWAP
     bool "Swap TJPGD output bytes"
     default y
     help

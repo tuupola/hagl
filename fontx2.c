@@ -25,8 +25,9 @@ SOFTWARE.
 
 -cut-
 
-This file is part of the Copepod graphics library:
-https://github.com/tuupola/copepod
+This file is part of the HAGL graphics library:
+https://github.com/tuupola/hagl
+
 
 Adapted from the blog post by ChaN:
 http://elm-chan.org/docs/dosv/fontx_e.html

@@ -24,8 +24,9 @@ SOFTWARE.
 
 -cut-
 
-This file is part of the Copepod graphics library:
-https://github.com/tuupola/copepod
+This file is part of the HAGL graphics library:
+https://github.com/tuupola/hagl
+
 
 SPDX-License-Identifier: MIT
 
@@ -39,8 +40,8 @@ SPDX-License-Identifier: MIT
 # else
 
 #include "sdkconfig.h"
-#ifdef CONFIG_POD_TJPGD_NEEDS_BYTESWAP
+#ifdef CONFIG_HAGL_TJPGD_NEEDS_BYTESWAP
 #define TJPGD_NEEDS_BYTESWAP
-#endif /* CONFIG_POD_TJPGD_NEEDS_BYTESWAP */
+#endif /* CONFIG_HAGL_TJPGD_NEEDS_BYTESWAP */
 
 #endif /* NO_MENUCONFIG */

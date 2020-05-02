@@ -24,15 +24,16 @@ SOFTWARE.
 
 -cut-
 
-This file is part of the Copepod graphics library:
-https://github.com/tuupola/copepod
+This file is part of the HAGL graphics library:
+https://github.com/tuupola/hagl
+
 
 SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _POD_FPS_H
-#define _POD_FPS_H
+#ifndef _HAGL_FPS_H
+#define _HAGL_FPS_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,4 +47,4 @@ void fps_reset();
 #ifdef __cplusplus
 }
 #endif
-#endif /* POD_FPS_H */
+#endif /* HAGL_FPS_H */

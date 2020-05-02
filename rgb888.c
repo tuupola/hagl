@@ -28,8 +28,9 @@ POSSIBILITY OF SUCH DAMAGE.
 
 -cut-
 
-This file is part of the Copepod graphics library:
-https://github.com/tuupola/copepod
+This file is part of the HAGL graphics library:
+https://github.com/tuupola/hagl
+
 
 SPDX-License-Identifier: BSD-2-Clause
 

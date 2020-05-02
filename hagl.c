@@ -24,8 +24,9 @@ SOFTWARE.
 
 -cut-
 
-This file is part of the Copepod graphics library:
-https://github.com/tuupola/copepod
+This file is part of the HAGL graphics library:
+https://github.com/tuupola/hagl
+
 
 SPDX-License-Identifier: MIT
 
@@ -42,7 +43,8 @@ SPDX-License-Identifier: MIT
 #include "clip.h"
 #include "tjpgd.h"
 #include "window.h"
-#include "copepod.h"
+#include "hagl.h"
+
 #include "copepod_hal.h"
 
 typedef struct {
@@ -58,7 +60,7 @@ static window_t clip_window = {
     .y1 = DISPLAY_HEIGHT - 1,
 };
 
-void pod_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
+void hagl_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
     clip_window.x0 = x0;
     clip_window.y0 = y0;
     clip_window.x1 = x1;
@@ -83,7 +85,7 @@ static inline int16_t max(int16_t a, int16_t b) {
  * Puts a pixel RGB565 color. This is the only mandatory function HAL must
  * support.
  */
-void pod_put_pixel(int16_t x0, int16_t y0, uint16_t color)
+void hagl_put_pixel(int16_t x0, int16_t y0, uint16_t color)
 {
     /* x0 or y0 is before the edge, nothing to do. */
     if ((x0 < clip_window.x0) || (y0 < clip_window.y0))  {
@@ -96,15 +98,15 @@ void pod_put_pixel(int16_t x0, int16_t y0, uint16_t color)
     }
 
     /* If still in bounds set the pixel. */
-    pod_hal_put_pixel(x0, y0, color);
+    hagl_hal_put_pixel(x0, y0, color);
 }
 
 /*
  * Draw a horizontal line with given RGB565 color. If HAL supports it uses
  * hardware hline drawing. If not falls back to vanilla line drawing.
  */
-void pod_draw_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
-#ifdef POD_HAS_HAL_HLINE
+void hagl_draw_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
+#ifdef HAGL_HAS_HAL_HLINE
     int16_t width = w;
 
     /* x0 or y0 is over the edge, nothing to do. */
@@ -128,9 +130,9 @@ void pod_draw_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
         width = width - (x0 + width - clip_window.x1);
     }
 
-    pod_hal_hline(x0, y0, width, color);
+    hagl_hal_hline(x0, y0, width, color);
 #else
-    pod_draw_line(x0, y0, x0 + w, y0, color);
+    hagl_draw_line(x0, y0, x0 + w, y0, color);
 #endif
 }
 
@@ -138,8 +140,8 @@ void pod_draw_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
  * Draw a vertical line with given RGB565 color. If HAL supports it uses
  * hardware vline drawing. If not falls back to vanilla line drawing.
  */
-void pod_draw_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
-#ifdef POD_HAS_HAL_VLINE
+void hagl_draw_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
+#ifdef HAGL_HAS_HAL_VLINE
     int16_t height = h;
 
     /* x0 or y0 is over the edge, nothing to do. */
@@ -163,16 +165,16 @@ void pod_draw_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
         height = height - (y0 + height - clip_window.y1);
     }
 
-    pod_hal_vline(x0, y0, height, color);
+    hagl_hal_vline(x0, y0, height, color);
 #else
-    pod_draw_line(x0, y0, x0, y0 + h, color);
+    hagl_draw_line(x0, y0, x0, y0 + h, color);
 #endif
 }
 
 /*
  * Draw a line using Bresenham's algorithm with given RGB565 color.
  */
-void pod_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
+void hagl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
     /* Clip coordinates to fit clip window. */
     if (false == clip_line(&x0, &y0, &x1, &y1, clip_window)) {
@@ -193,7 +195,7 @@ void pod_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t colo
     err = (dx > dy ? dx : -dy) / 2;
 
     while (1) {
-        pod_put_pixel(x0, y0, color);
+        hagl_put_pixel(x0, y0, color);
 
         if (x0 == x1 && y0 == y1) {
             break;
@@ -216,7 +218,7 @@ void pod_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t colo
 /*
  * Draw a rectangle with given RGB565 color.
  */
-void pod_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
+void hagl_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
@@ -245,16 +247,16 @@ void pod_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
     uint16_t width = x1 - x0 + 1;
     uint16_t height = y1 - y0 + 1;
 
-    pod_draw_hline(x0, y0, width, color);
-    pod_draw_hline(x0, y1, width, color);
-    pod_draw_vline(x0, y0, height, color);
-    pod_draw_vline(x1, y0, height, color);
+    hagl_draw_hline(x0, y0, width, color);
+    hagl_draw_hline(x0, y1, width, color);
+    hagl_draw_vline(x0, y0, height, color);
+    hagl_draw_vline(x1, y0, height, color);
 }
 
 /*
  * Draw a filled rectangle with given RGB565 color.
  */
-void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
+void hagl_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
@@ -289,11 +291,11 @@ void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
     uint16_t height = y1 - y0 + 1;
 
     for (uint16_t i = 0; i < height; i++) {
-#ifdef POD_HAS_HAL_HLINE
+#ifdef HAGL_HAS_HAL_HLINE
         /* Already clipped so can call HAL directly. */
-        pod_hal_hline(x0, y0 + i, width, color);
+        hagl_hal_hline(x0, y0 + i, width, color);
 #else
-        pod_draw_hline(x0, y0 + i, width, color);
+        hagl_draw_hline(x0, y0 + i, width, color);
 #endif
     }
 }
@@ -303,7 +305,7 @@ void pod_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t
  *
  */
 
-uint8_t pod_put_char(char16_t code, int16_t x0, int16_t y0, uint16_t color, const uint8_t *font)
+uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, uint16_t color, const uint8_t *font)
 {
     uint8_t set, status;
     uint8_t buffer[BITMAP_SIZE(16, 16, DISPLAY_DEPTH)];
@@ -336,17 +338,17 @@ uint8_t pod_put_char(char16_t code, int16_t x0, int16_t y0, uint16_t color, cons
         glyph.buffer += glyph.pitch;
     }
 
-    pod_blit(x0, y0, &bitmap);
+    hagl_blit(x0, y0, &bitmap);
 
     return glyph.width;
 }
 
 /*
- * Write a string of text by calling pod_put_char() repeadetly. CR and LF
+ * Write a string of text by calling hagl_put_char() repeadetly. CR and LF
  * continue from the next line.
  */
 
-uint16_t pod_put_text(const char16_t *str, int16_t x0, int16_t y0, uint16_t color, const unsigned char *font)
+uint16_t hagl_put_text(const char16_t *str, int16_t x0, int16_t y0, uint16_t color, const unsigned char *font)
 {
     char16_t temp;
     uint8_t status;
@@ -364,7 +366,7 @@ uint16_t pod_put_text(const char16_t *str, int16_t x0, int16_t y0, uint16_t colo
             x0 = 0;
             y0 += meta.height;
         } else {
-            x0 += pod_put_char(temp, x0, y0, color, font);
+            x0 += hagl_put_char(temp, x0, y0, color, font);
         }
     } while (*str != 0);
 
@@ -379,8 +381,8 @@ uint16_t pod_put_text(const char16_t *str, int16_t x0, int16_t y0, uint16_t colo
  * TODO: Handle transparency.
  */
 
-void pod_blit(int16_t x0, int16_t y0, bitmap_t *source) {
-#ifdef POD_HAS_HAL_BLIT
+void hagl_blit(int16_t x0, int16_t y0, bitmap_t *source) {
+#ifdef HAGL_HAS_HAL_BLIT
     /* Check if bitmap is inside clip windows bounds */
     if (
         (x0 < clip_window.x0) ||
@@ -395,12 +397,12 @@ void pod_blit(int16_t x0, int16_t y0, bitmap_t *source) {
         for (uint16_t y = 0; y < source->height; y++) {
             for (uint16_t x = 0; x < source->width; x++) {
                 color = *(ptr++);
-                pod_put_pixel(x0 + x, y0 + y, color);
+                hagl_put_pixel(x0 + x, y0 + y, color);
             }
         }
     } else {
         /* Inside of bounds, can use HAL provided blit. */
-        pod_hal_blit(x0, y0, source);
+        hagl_hal_blit(x0, y0, source);
     }
 #else
     uint16_t color;
@@ -409,51 +411,51 @@ void pod_blit(int16_t x0, int16_t y0, bitmap_t *source) {
     for (uint16_t y = 0; y < source->height; y++) {
         for (uint16_t x = 0; x < source->width; x++) {
             color = *(ptr++);
-            pod_put_pixel(x0 + x, y0 + y, color);
+            hagl_put_pixel(x0 + x, y0 + y, color);
         }
     }
 #endif
 };
 
-void pod_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source) {
-#ifdef POD_HAS_HAL_SCALE_BLIT
-    pod_hal_scale_blit(x0, y0, w, h, source);
+void hagl_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source) {
+#ifdef HAGL_HAS_HAL_SCALE_BLIT
+    hagl_hal_scale_blit(x0, y0, w, h, source);
 #else
     /* TODO: Use pdo_put_pixel() to write to framebuffer. */
 #endif
 };
 
-void pod_clear_screen() {
+void hagl_clear_screen() {
     uint16_t x0 = clip_window.x0;
     uint16_t y0 = clip_window.y0;
     uint16_t x1 = clip_window.x1;
     uint16_t y1 = clip_window.y1;
 
-    pod_set_clip_window(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1);
-    pod_fill_rectangle(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1, 0x00);
-    pod_set_clip_window(x0, y0, x1, y1);
+    hagl_set_clip_window(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1);
+    hagl_fill_rectangle(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1, 0x00);
+    hagl_set_clip_window(x0, y0, x1, y1);
 }
 
-void pod_clear_clip_window() {
-    pod_fill_rectangle(
+void hagl_clear_clip_window() {
+    hagl_fill_rectangle(
         clip_window.x0, clip_window.y0, clip_window.x1, clip_window.y1,
         0x00
     );
 }
 
-void pod_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
+void hagl_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
     int16_t x = 0;
     int16_t y = r;
     int16_t d = 3 - 2 * r;
 
-    pod_put_pixel(xc + x, yc + y, color);
-    pod_put_pixel(xc - x, yc + y, color);
-    pod_put_pixel(xc + x, yc - y, color);
-    pod_put_pixel(xc - x, yc - y, color);
-    pod_put_pixel(xc + y, yc + x, color);
-    pod_put_pixel(xc - y, yc + x, color);
-    pod_put_pixel(xc + y, yc - x, color);
-    pod_put_pixel(xc - y, yc - x, color);
+    hagl_put_pixel(xc + x, yc + y, color);
+    hagl_put_pixel(xc - x, yc + y, color);
+    hagl_put_pixel(xc + x, yc - y, color);
+    hagl_put_pixel(xc - x, yc - y, color);
+    hagl_put_pixel(xc + y, yc + x, color);
+    hagl_put_pixel(xc - y, yc + x, color);
+    hagl_put_pixel(xc + y, yc - x, color);
+    hagl_put_pixel(xc - y, yc - x, color);
 
     while (y >= x) {
         x++;
@@ -465,27 +467,27 @@ void pod_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
             d = d + 4 * x + 6;
         }
 
-        pod_put_pixel(xc + x, yc + y, color);
-        pod_put_pixel(xc - x, yc + y, color);
-        pod_put_pixel(xc + x, yc - y, color);
-        pod_put_pixel(xc - x, yc - y, color);
-        pod_put_pixel(xc + y, yc + x, color);
-        pod_put_pixel(xc - y, yc + x, color);
-        pod_put_pixel(xc + y, yc - x, color);
-        pod_put_pixel(xc - y, yc - x, color);
+        hagl_put_pixel(xc + x, yc + y, color);
+        hagl_put_pixel(xc - x, yc + y, color);
+        hagl_put_pixel(xc + x, yc - y, color);
+        hagl_put_pixel(xc - x, yc - y, color);
+        hagl_put_pixel(xc + y, yc + x, color);
+        hagl_put_pixel(xc - y, yc + x, color);
+        hagl_put_pixel(xc + y, yc - x, color);
+        hagl_put_pixel(xc - y, yc - x, color);
     }
 }
 
-void pod_fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
+void hagl_fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
     int16_t x = 0;
     int16_t y = r;
     int16_t d = 3 - 2 * r;
 
     while (y >= x) {
-        pod_draw_hline(x0 - x, y0 + y, x * 2, color);
-        pod_draw_hline(x0 - x, y0 - y, x * 2, color);
-        pod_draw_hline(x0 - y, y0 + x, y * 2, color);
-        pod_draw_hline(x0 - y, y0 - x, y * 2, color);
+        hagl_draw_hline(x0 - x, y0 + y, x * 2, color);
+        hagl_draw_hline(x0 - x, y0 - y, x * 2, color);
+        hagl_draw_hline(x0 - y, y0 + x, y * 2, color);
+        hagl_draw_hline(x0 - y, y0 - x, y * 2, color);
         x++;
 
         if (d > 0) {
@@ -497,15 +499,15 @@ void pod_fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
     }
 }
 
-void pod_draw_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t color) {
+void hagl_draw_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t color) {
     int16_t wx, wy;
     int32_t xa, ya;
     int32_t t;
     int32_t asq = a * a;
     int32_t bsq = b * b;
 
-    pod_put_pixel(x0, y0 + b, color);
-    pod_put_pixel(x0, y0 - b, color);
+    hagl_put_pixel(x0, y0 + b, color);
+    hagl_put_pixel(x0, y0 - b, color);
 
     wx = 0;
     wy = b;
@@ -529,14 +531,14 @@ void pod_draw_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t col
             break;
         }
 
-        pod_put_pixel(x0 + wx, y0 - wy, color);
-        pod_put_pixel(x0 - wx, y0 - wy, color);
-        pod_put_pixel(x0 + wx, y0 + wy, color);
-        pod_put_pixel(x0 - wx, y0 + wy, color);
+        hagl_put_pixel(x0 + wx, y0 - wy, color);
+        hagl_put_pixel(x0 - wx, y0 - wy, color);
+        hagl_put_pixel(x0 + wx, y0 + wy, color);
+        hagl_put_pixel(x0 - wx, y0 + wy, color);
     }
 
-    pod_put_pixel(x0 + a, y0, color);
-    pod_put_pixel(x0 - a, y0, color);
+    hagl_put_pixel(x0 + a, y0, color);
+    hagl_put_pixel(x0 - a, y0, color);
 
     wx = a;
     wy = 0;
@@ -561,22 +563,22 @@ void pod_draw_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t col
             break;
         }
 
-        pod_put_pixel(x0 + wx, y0 - wy, color);
-        pod_put_pixel(x0 - wx, y0 - wy, color);
-        pod_put_pixel(x0 + wx, y0 + wy, color);
-        pod_put_pixel(x0 - wx, y0 + wy, color);
+        hagl_put_pixel(x0 + wx, y0 - wy, color);
+        hagl_put_pixel(x0 - wx, y0 - wy, color);
+        hagl_put_pixel(x0 + wx, y0 + wy, color);
+        hagl_put_pixel(x0 - wx, y0 + wy, color);
     }
 }
 
-void pod_fill_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t color) {
+void hagl_fill_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t color) {
     int16_t wx, wy;
     int32_t xa, ya;
     int32_t t;
     int32_t asq = a * a;
     int32_t bsq = b * b;
 
-    pod_put_pixel(x0, y0 + b, color);
-    pod_put_pixel(x0, y0 - b, color);
+    hagl_put_pixel(x0, y0 + b, color);
+    hagl_put_pixel(x0, y0 - b, color);
 
     wx = 0;
     wy = b;
@@ -600,11 +602,11 @@ void pod_fill_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t col
             break;
         }
 
-        pod_draw_hline(x0 - wx, y0 - wy, wx * 2, color);
-        pod_draw_hline(x0 - wx, y0 + wy, wx * 2, color);
+        hagl_draw_hline(x0 - wx, y0 - wy, wx * 2, color);
+        hagl_draw_hline(x0 - wx, y0 + wy, wx * 2, color);
     }
 
-    pod_draw_hline(x0 - a, y0, a * 2, color);
+    hagl_draw_hline(x0 - a, y0, a * 2, color);
 
     wx = a;
     wy = 0;
@@ -629,16 +631,16 @@ void pod_fill_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t col
             break;
         }
 
-        pod_draw_hline(x0 - wx, y0 - wy, wx * 2, color);
-        pod_draw_hline(x0 - wx, y0 + wy, wx * 2, color);
+        hagl_draw_hline(x0 - wx, y0 - wy, wx * 2, color);
+        hagl_draw_hline(x0 - wx, y0 + wy, wx * 2, color);
     }
 }
 
 
-void pod_draw_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
+void hagl_draw_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
 
     for(int16_t i = 0; i < amount - 1; i++) {
-        pod_draw_line(
+        hagl_draw_line(
             vertices[(i << 1 ) + 0],
             vertices[(i << 1 ) + 1],
             vertices[(i << 1 ) + 2],
@@ -646,7 +648,7 @@ void pod_draw_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
             color
         );
     }
-    pod_draw_line(
+    hagl_draw_line(
         vertices[0],
         vertices[1],
         vertices[(amount <<1 ) - 2],
@@ -656,7 +658,7 @@ void pod_draw_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
 }
 
 /* Adapted from  http://alienryderflex.com/polygon_fill/ */
-void pod_fill_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
+void hagl_fill_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
     uint16_t nodes[64];
     int16_t y;
 
@@ -718,22 +720,22 @@ void pod_fill_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
         /* Draw lines between nodes. */
         for (int16_t i = 0; i < count; i += 2) {
             int16_t width = nodes[i + 1] - nodes[i];
-            pod_draw_hline(nodes[i], y, width, color);
+            hagl_draw_hline(nodes[i], y, width, color);
         }
     }
 }
 
-void pod_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color) {
+void hagl_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color) {
     int16_t vertices[6] = {x0, y0, x1, y1, x2, y2};
-    pod_draw_polygon(3, vertices, color);
+    hagl_draw_polygon(3, vertices, color);
 };
 
-void pod_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color) {
+void hagl_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color) {
     int16_t vertices[6] = {x0, y0, x1, y1, x2, y2};
-    pod_fill_polygon(3, vertices, color);
+    hagl_fill_polygon(3, vertices, color);
 }
 
-void pod_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, uint16_t color) {
+void hagl_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, uint16_t color) {
 
     uint16_t width, height;
     int16_t x, y, d;
@@ -767,10 +769,10 @@ void pod_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, 
     height = y1 - y0 + 1;
     r = min(r, min(width / 2, height / 2));
 
-    pod_draw_hline(x0 + r, y0, width - 2 * r, color);
-    pod_draw_hline(x0 + r, y1, width - 2 * r, color);
-    pod_draw_vline(x0, y0 + r, height - 2 * r, color);
-    pod_draw_vline(x1, y0 + r, height - 2 * r, color);
+    hagl_draw_hline(x0 + r, y0, width - 2 * r, color);
+    hagl_draw_hline(x0 + r, y1, width - 2 * r, color);
+    hagl_draw_vline(x0, y0 + r, height - 2 * r, color);
+    hagl_draw_vline(x1, y0 + r, height - 2 * r, color);
 
     x = 0;
     y = r;
@@ -787,27 +789,27 @@ void pod_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, 
         }
 
         /* Top right */
-        pod_put_pixel(x1 - r + x, y0 + r - y, color);
-        pod_put_pixel(x1 - r + y, y0 + r - x, color);
+        hagl_put_pixel(x1 - r + x, y0 + r - y, color);
+        hagl_put_pixel(x1 - r + y, y0 + r - x, color);
 
         /* Top left */
-        pod_put_pixel(x0 + r - x, y0 + r - y, color);
-        pod_put_pixel(x0 + r - y, y0 + r - x, color);
+        hagl_put_pixel(x0 + r - x, y0 + r - y, color);
+        hagl_put_pixel(x0 + r - y, y0 + r - x, color);
 
         /* Bottom right */
-        pod_put_pixel(x1 - r + x, y1 - r + y, color);
-        pod_put_pixel(x1 - r + y, y1 - r + x, color);
+        hagl_put_pixel(x1 - r + x, y1 - r + y, color);
+        hagl_put_pixel(x1 - r + y, y1 - r + x, color);
 
         /* Bottom left */
-        pod_put_pixel(x0 + r - x, y1 - r + y, color);
-        pod_put_pixel(x0 + r - y, y1 - r + x, color);
+        hagl_put_pixel(x0 + r - x, y1 - r + y, color);
+        hagl_put_pixel(x0 + r - y, y1 - r + x, color);
     }
 };
 
-void pod_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, uint16_t color) {
+void hagl_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, uint16_t color) {
 
     uint16_t width, height;
-    int16_t rx0, ry0, rx1, x, y, d;
+    int16_t rx0, ry0, rx1, ry1, x, y, d;
 
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
@@ -857,30 +859,30 @@ void pod_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, 
         rx0 = x0 + r - y;
         rx1 = x1 - r + y;
         width = rx1 -  rx0;
-        pod_draw_hline(rx0, ry0, width, color);
+        hagl_draw_hline(rx0, ry0, width, color);
 
         ry0 = y0 + r - y;
         rx0 = x0 + r - x;
         rx1 = x1 - r + x;
         width = rx1 -  rx0;
-        pod_draw_hline(rx0, ry0, width, color);
+        hagl_draw_hline(rx0, ry0, width, color);
 
         /* Bottom */
         ry0 = y1 - r + y;
         rx0 = x0 + r - x;
         rx1 = x1 - r + x;
         width = rx1 -  rx0;
-        pod_draw_hline(rx0, ry0, width, color);
+        hagl_draw_hline(rx0, ry0, width, color);
 
         ry0 = y1 - r + x;
         rx0 = x0 + r - y;
         rx1 = x1 - r + y;
         width = rx1 -  rx0;
-        pod_draw_hline(rx0, ry0, width, color);
+        hagl_draw_hline(rx0, ry0, width, color);
     }
 
     /* Center */
-    pod_fill_rectangle(x0, y0 + r, x1, y1 - r, color);
+    hagl_fill_rectangle(x0, y0 + r, x1, y1 - r, color);
 };
 
 
@@ -913,12 +915,12 @@ static uint16_t tjpgd_data_writer(JDEC* decoder, void* bitmap, JRECT* rectangle)
         .buffer = (uint8_t *)bitmap
     };
 
-    pod_blit(rectangle->left + device->x0, rectangle->top + device->y0, &block);
+    hagl_blit(rectangle->left + device->x0, rectangle->top + device->y0, &block);
 
     return 1;
 }
 
-uint32_t pod_load_image(int16_t x0, int16_t y0, const char *filename)
+uint32_t hagl_load_image(int16_t x0, int16_t y0, const char *filename)
 {
     uint8_t work[3100];
     JDEC decoder;
@@ -930,46 +932,46 @@ uint32_t pod_load_image(int16_t x0, int16_t y0, const char *filename)
     device.fp = fopen(filename, "rb");
 
     if (!device.fp) {
-        return POD_ERR_FILE_IO;
+        return HAGL_ERR_FILE_IO;
     }
     result = jd_prepare(&decoder, tjpgd_data_reader, work, 3100, (void *)&device);
     if (result == JDR_OK) {
         result = jd_decomp(&decoder, tjpgd_data_writer, 0);
         if (JDR_OK != result) {
             fclose(device.fp);
-            return POD_ERR_TJPGD + result;
+            return HAGL_ERR_TJPGD + result;
         }
     } else {
         fclose(device.fp);
-        return POD_ERR_TJPGD + result;
+        return HAGL_ERR_TJPGD + result;
     }
 
     fclose(device.fp);
-    return POD_OK;
+    return HAGL_OK;
 }
 
 
-bitmap_t *pod_init() {
-#ifdef POD_HAS_HAL_INIT
-    bitmap_t *bb = pod_hal_init();
-    pod_clear_screen();
+bitmap_t *hagl_init() {
+#ifdef HAGL_HAS_HAL_INIT
+    bitmap_t *bb = hagl_hal_init();
+    hagl_clear_screen();
     return bb;
 #else
-    pod_clear_screen();
+    hagl_clear_screen();
     return NULL;
 #endif
 };
 
-void pod_flush() {
-#ifdef POD_HAS_HAL_FLUSH
-    pod_hal_flush();
+void hagl_flush() {
+#ifdef HAGL_HAS_HAL_FLUSH
+    hagl_hal_flush();
 #else
 #endif
 };
 
-void pod_close() {
-#ifdef POD_HAS_HAL_CLOSE
-    pod_hal_close();
+void hagl_close() {
+#ifdef HAGL_HAS_HAL_CLOSE
+    hagl_hal_close();
 #else
 #endif
 };

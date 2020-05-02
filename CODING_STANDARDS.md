@@ -1,7 +1,7 @@
-# Coding style for Copepod
+# Coding style for HAGL
 
-This document is meant to define the coding style for Copepod, and
-all subprojects of Copepod. This covers C and Assembly coding
+This document is meant to define the coding style for HAGL, and
+all subprojects of HAGL. This covers C and Assembly coding
 conventions, *only*.
 
 ## Headers
