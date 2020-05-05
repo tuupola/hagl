@@ -39,6 +39,8 @@ SPDX-License-Identifier: MIT
 #include <stdio.h>
 
 #include "bitmap.h"
+#include "rgb332.h"
+#include "rgb565.h"
 #include "fontx2.h"
 #include "clip.h"
 #include "tjpgd.h"
@@ -63,20 +65,6 @@ void hagl_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
     clip_window.y0 = y0;
     clip_window.x1 = x1;
     clip_window.y1 = y1;
-}
-
-static inline int16_t min(int16_t a, int16_t b) {
-    if (a > b) {
-        return b;
-    };
-    return a;
-}
-
-static inline int16_t max(int16_t a, int16_t b) {
-    if (a > b) {
-        return a;
-    }
-    return b;
 }
 
 /*
@@ -946,6 +934,16 @@ uint32_t hagl_load_image(int16_t x0, int16_t y0, const char *filename)
 
     fclose(device.fp);
     return HAGL_OK;
+}
+
+
+color_t hagl_color(uint8_t r, uint8_t g, uint8_t b)
+{
+#ifdef HAGL_HAL_RGB332
+    return rgb332(r, g, b);
+#else
+    return rgb565(r, g, b);
+#endif
 }
 
 

@@ -51,13 +51,9 @@ SPDX-License-Identifier: MIT
 typedef uint16_t char16_t;
 #endif
 
-/* This should already be defined by HAL. */
-#ifndef color_t
-typedef uint16_t color_t;
-#endif
-
 /* This is the only mandatory function which HAL must provide. */
 extern void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color);
+
 
 extern void hagl_hal_blit(uint16_t x0, uint16_t y0, bitmap_t *source);
 extern void hagl_hal_hline(int16_t x0, int16_t y0, uint16_t width, color_t color);
@@ -113,6 +109,8 @@ void hagl_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
 uint32_t hagl_load_image(int16_t x0, int16_t y0, const char *filename);
 
 void hagl_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+
+color_t hagl_color(uint8_t r, uint8_t g, uint8_t b);
 
 /**
  * Clear area of the current clip window

@@ -37,8 +37,8 @@ SPDX-License-Identifier: MIT
 #include <string.h>
 #include <math.h>
 
+#include "hagl_hal.h"
 #include "bitmap.h"
-#include "color.h"
 
 /* Get bitmap size in bytes. */
 uint32_t bitmap_size(bitmap_t *bitmap) {
