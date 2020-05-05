@@ -38,6 +38,7 @@ SPDX-License-Identifier: MIT
 #include <math.h>
 
 #include "bitmap.h"
+#include "color.h"
 
 /* Get bitmap size in bytes. */
 uint32_t bitmap_size(bitmap_t *bitmap) {
@@ -99,9 +100,9 @@ void bitmap_blit(int16_t x0, int16_t y0, bitmap_t *src, bitmap_t *dst)
         return;
     }
 
-    uint16_t *dstptr = (uint16_t *) (dst->buffer + (dst->pitch * y0) + ((dst->depth / 8) * x0));
+    color_t *dstptr = (color_t *) (dst->buffer + (dst->pitch * y0) + ((dst->depth / 8) * x0));
     //uint16_t *srcptr = (uint16_t *) src->buffer;
-    uint16_t *srcptr = (uint16_t *) (src->buffer + (src->pitch * y1) + ((dst->depth / 8) * x1));
+    color_t *srcptr = (color_t *) (src->buffer + (src->pitch * y1) + ((dst->depth / 8) * x1));
 
     for (uint16_t y = 0; y < srch; y++) {
         for (uint16_t x = 0; x < srcw; x++) {
@@ -156,15 +157,15 @@ void bitmap_scale_blit(int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth, bit
         dsth = dst->height - y0;
     }
 
-    uint16_t *dstptr = (uint16_t *) (dst->buffer + dst->pitch * y0 + (dst->depth / 8) * x0);
-    uint16_t *srcptr = (uint16_t *) src->buffer;
+    color_t *dstptr = (color_t *) (dst->buffer + dst->pitch * y0 + (dst->depth / 8) * x0);
+    color_t *srcptr = (color_t *) src->buffer;
     //uint16_t *srcptr = (uint16_t *) src->buffer + y1 * src->pitch + x1;;
 
     for (uint16_t y = 0; y < dsth; y++) {
         for (uint16_t x = 0; x < dstw; x++) {
             px = ((x * x_ratio) >> 16);
             py = ((y * y_ratio) >> 16);
-            *(dstptr++) = srcptr[(uint16_t)((py * srcw) + px)];
+            *(dstptr++) = srcptr[(color_t)((py * srcw) + px)];
         }
         dstptr += dst->pitch / (dst->depth / 8) - dstw;
     }

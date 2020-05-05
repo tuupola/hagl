@@ -322,7 +322,7 @@ uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, color_t color, cons
 
     bitmap_init(&bitmap, buffer);
 
-    uint16_t *ptr = (uint16_t *) bitmap.buffer;
+    color_t *ptr = (color_t *) bitmap.buffer;
 
     for (uint8_t y = 0; y < glyph.height; y++) {
         for (uint8_t x = 0; x < glyph.width; x++) {
@@ -390,7 +390,7 @@ void hagl_blit(int16_t x0, int16_t y0, bitmap_t *source) {
     ) {
         /* Out of bounds, use local pixel fallback. */
         color_t color;
-        uint16_t *ptr = (uint16_t *) source->buffer;
+        color_t *ptr = (color_t *) source->buffer;
 
         for (uint16_t y = 0; y < source->height; y++) {
             for (uint16_t x = 0; x < source->width; x++) {
@@ -404,7 +404,7 @@ void hagl_blit(int16_t x0, int16_t y0, bitmap_t *source) {
     }
 #else
     color_t color;
-    uint16_t *ptr = (uint16_t *) source->buffer;
+    color_t *ptr = (color_t *) source->buffer;
 
     for (uint16_t y = 0; y < source->height; y++) {
         for (uint16_t x = 0; x < source->width; x++) {
