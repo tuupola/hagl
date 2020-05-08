@@ -936,16 +936,14 @@ uint32_t hagl_load_image(int16_t x0, int16_t y0, const char *filename)
     return HAGL_OK;
 }
 
-
 color_t hagl_color(uint8_t r, uint8_t g, uint8_t b)
 {
-#ifdef HAGL_HAL_RGB332
-    return rgb332(r, g, b);
+#ifdef HAGL_HAS_HAL_COLOR
+    return hagl_hal_color(r, g, b);
 #else
     return rgb565(r, g, b);
 #endif
 }
-
 
 bitmap_t *hagl_init() {
 #ifdef HAGL_HAS_HAL_INIT
