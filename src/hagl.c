@@ -294,7 +294,7 @@ void hagl_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t
 uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, color_t color, const uint8_t *font)
 {
     uint8_t set, status;
-    color_t buffer[256]; /* 16 * 16 */
+    color_t buffer[HAGL_CHAR_BUFFER_SIZE];
     bitmap_t bitmap;
     fontx2_glyph_t glyph;
 
