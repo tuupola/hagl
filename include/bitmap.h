@@ -32,6 +32,7 @@ SPDX-License-Identifier: MIT
 */
 
 #include <stdint.h>
+#include "hagl_hal.h"
 
 #ifndef _BITMAP_H
 #define _BITMAP_H
@@ -49,10 +50,11 @@ typedef struct {
     uint8_t depth;
     uint32_t size;
     uint8_t *buffer;
+    // color_t *buffer;
 } bitmap_t;
 
 uint32_t bitmap_size(bitmap_t *bitmap);
-void bitmap_init(bitmap_t *bitmap, uint8_t *buffer);
+void bitmap_init(bitmap_t *bitmap, color_t *buffer);
 void bitmap_blit(int16_t x0, int16_t y0, bitmap_t *src, bitmap_t *dst);
 void bitmap_scale_blit(int16_t x0, int16_t y0, uint16_t w, uint16_t h, bitmap_t *src, bitmap_t *dst);
 

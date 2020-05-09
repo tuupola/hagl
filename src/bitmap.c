@@ -46,11 +46,11 @@ uint32_t bitmap_size(bitmap_t *bitmap) {
 };
 
 /* Initialise bitmap with given buffer set everything black. */
-void bitmap_init(bitmap_t *bitmap, uint8_t *buffer)
+void bitmap_init(bitmap_t *bitmap, color_t *buffer)
 {
     bitmap->pitch = bitmap->width * (bitmap->depth / 8);
     bitmap->size = bitmap->pitch * bitmap->height;
-    bitmap->buffer = buffer;
+    bitmap->buffer = (uint8_t *) buffer;
 
     memset(bitmap->buffer, 0x00, bitmap->size);
 }
@@ -101,15 +101,16 @@ void bitmap_blit(int16_t x0, int16_t y0, bitmap_t *src, bitmap_t *dst)
     }
 
     color_t *dstptr = (color_t *) (dst->buffer + (dst->pitch * y0) + ((dst->depth / 8) * x0));
-    //uint16_t *srcptr = (uint16_t *) src->buffer;
+    // color_t *dstptr = (color_t *) (dst->buffer + (dst->width * y0) + ((dst->depth / 8) * x0));
     color_t *srcptr = (color_t *) (src->buffer + (src->pitch * y1) + ((dst->depth / 8) * x1));
+    // color_t *srcptr = (color_t *) (src->buffer + (src->width * y1) + ((dst->depth / 8) * x1));
 
     for (uint16_t y = 0; y < srch; y++) {
         for (uint16_t x = 0; x < srcw; x++) {
              *(dstptr++) = *(srcptr++);
         }
         dstptr += dst->pitch / (dst->depth / 8) - srcw;
-        //srcptr += src->pitch / (src->depth / 8) - srcw;
+        // dstptr += dst->width / (dst->depth / 8) - srcw;
     }
 }
 
