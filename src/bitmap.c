@@ -50,7 +50,7 @@ void bitmap_init(bitmap_t *bitmap, uint8_t *buffer)
 {
     bitmap->pitch = bitmap->width * (bitmap->depth / 8);
     bitmap->size = bitmap->pitch * bitmap->height;
-    bitmap->buffer = (uint8_t *) buffer;
+    bitmap->buffer = buffer;
 
     memset(bitmap->buffer, 0x00, bitmap->size);
 }
