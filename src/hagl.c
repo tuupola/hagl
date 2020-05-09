@@ -308,7 +308,7 @@ uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, color_t color, cons
     bitmap.height = glyph.height,
     bitmap.depth = DISPLAY_DEPTH,
 
-    bitmap_init(&bitmap, buffer);
+    bitmap_init(&bitmap, (uint8_t *)buffer);
 
     color_t *ptr = (color_t *) bitmap.buffer;
 

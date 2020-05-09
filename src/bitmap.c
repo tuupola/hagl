@@ -46,7 +46,7 @@ uint32_t bitmap_size(bitmap_t *bitmap) {
 };
 
 /* Initialise bitmap with given buffer set everything black. */
-void bitmap_init(bitmap_t *bitmap, color_t *buffer)
+void bitmap_init(bitmap_t *bitmap, uint8_t *buffer)
 {
     bitmap->pitch = bitmap->width * (bitmap->depth / 8);
     bitmap->size = bitmap->pitch * bitmap->height;
@@ -100,17 +100,18 @@ void bitmap_blit(int16_t x0, int16_t y0, bitmap_t *src, bitmap_t *dst)
         return;
     }
 
-    color_t *dstptr = (color_t *) (dst->buffer + (dst->pitch * y0) + ((dst->depth / 8) * x0));
-    // color_t *dstptr = (color_t *) (dst->buffer + (dst->width * y0) + ((dst->depth / 8) * x0));
-    color_t *srcptr = (color_t *) (src->buffer + (src->pitch * y1) + ((dst->depth / 8) * x1));
-    // color_t *srcptr = (color_t *) (src->buffer + (src->width * y1) + ((dst->depth / 8) * x1));
+    uint8_t *dstptr = (uint8_t *) (dst->buffer + (dst->pitch * y0) + ((dst->depth / 8) * x0));
+    uint8_t *srcptr = (uint8_t *) (src->buffer + (src->pitch * y1) + ((dst->depth / 8) * x1));
 
+    /* Bytes per pixel. */
+    uint8_t bytes = dst->depth / 8;
     for (uint16_t y = 0; y < srch; y++) {
         for (uint16_t x = 0; x < srcw; x++) {
-             *(dstptr++) = *(srcptr++);
+            for (uint16_t z = 0; z < bytes; z++) {
+                *(dstptr++) = *(srcptr++);
+            }
         }
-        dstptr += dst->pitch / (dst->depth / 8) - srcw;
-        // dstptr += dst->width / (dst->depth / 8) - srcw;
+        dstptr += (dst->pitch / (dst->depth / 8) - srcw) * bytes;
     }
 }
 
@@ -158,15 +159,15 @@ void bitmap_scale_blit(int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth, bit
         dsth = dst->height - y0;
     }
 
-    color_t *dstptr = (color_t *) (dst->buffer + dst->pitch * y0 + (dst->depth / 8) * x0);
-    color_t *srcptr = (color_t *) src->buffer;
+    uint16_t *dstptr = (uint16_t *) (dst->buffer + dst->pitch * y0 + (dst->depth / 8) * x0);
+    uint16_t *srcptr = (uint16_t *) src->buffer;
     //uint16_t *srcptr = (uint16_t *) src->buffer + y1 * src->pitch + x1;;
 
     for (uint16_t y = 0; y < dsth; y++) {
         for (uint16_t x = 0; x < dstw; x++) {
             px = ((x * x_ratio) >> 16);
             py = ((y * y_ratio) >> 16);
-            *(dstptr++) = srcptr[(color_t)((py * srcw) + px)];
+            *(dstptr++) = srcptr[(uint16_t)((py * srcw) + px)];
         }
         dstptr += dst->pitch / (dst->depth / 8) - dstw;
     }
