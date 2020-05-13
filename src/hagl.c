@@ -39,13 +39,13 @@ SPDX-License-Identifier: MIT
 #include <stdio.h>
 
 #include "bitmap.h"
+#include "rgb332.h"
+#include "rgb565.h"
 #include "fontx2.h"
 #include "clip.h"
 #include "tjpgd.h"
 #include "window.h"
 #include "hagl.h"
-
-#include "hagl_hal.h"
 
 typedef struct {
     FILE *fp;
@@ -67,25 +67,11 @@ void hagl_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
     clip_window.y1 = y1;
 }
 
-static inline int16_t min(int16_t a, int16_t b) {
-    if (a > b) {
-        return b;
-    };
-    return a;
-}
-
-static inline int16_t max(int16_t a, int16_t b) {
-    if (a > b) {
-        return a;
-    }
-    return b;
-}
-
 /*
  * Puts a pixel RGB565 color. This is the only mandatory function HAL must
  * support.
  */
-void hagl_put_pixel(int16_t x0, int16_t y0, uint16_t color)
+void hagl_put_pixel(int16_t x0, int16_t y0, color_t color)
 {
     /* x0 or y0 is before the edge, nothing to do. */
     if ((x0 < clip_window.x0) || (y0 < clip_window.y0))  {
@@ -102,10 +88,10 @@ void hagl_put_pixel(int16_t x0, int16_t y0, uint16_t color)
 }
 
 /*
- * Draw a horizontal line with given RGB565 color. If HAL supports it uses
+ * Draw a horizontal line with given color. If HAL supports it uses
  * hardware hline drawing. If not falls back to vanilla line drawing.
  */
-void hagl_draw_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
+void hagl_draw_hline(int16_t x0, int16_t y0, uint16_t w, color_t color) {
 #ifdef HAGL_HAS_HAL_HLINE
     int16_t width = w;
 
@@ -137,10 +123,10 @@ void hagl_draw_hline(int16_t x0, int16_t y0, uint16_t w, uint16_t color) {
 }
 
 /*
- * Draw a vertical line with given RGB565 color. If HAL supports it uses
+ * Draw a vertical line with given color. If HAL supports it uses
  * hardware vline drawing. If not falls back to vanilla line drawing.
  */
-void hagl_draw_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
+void hagl_draw_vline(int16_t x0, int16_t y0, uint16_t h, color_t color) {
 #ifdef HAGL_HAS_HAL_VLINE
     int16_t height = h;
 
@@ -172,9 +158,9 @@ void hagl_draw_vline(int16_t x0, int16_t y0, uint16_t h, uint16_t color) {
 }
 
 /*
- * Draw a line using Bresenham's algorithm with given RGB565 color.
+ * Draw a line using Bresenham's algorithm with given color.
  */
-void hagl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
+void hagl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
 {
     /* Clip coordinates to fit clip window. */
     if (false == clip_line(&x0, &y0, &x1, &y1, clip_window)) {
@@ -216,9 +202,9 @@ void hagl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t col
 }
 
 /*
- * Draw a rectangle with given RGB565 color.
+ * Draw a rectangle with given color.
  */
-void hagl_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
+void hagl_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
 {
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
@@ -254,9 +240,9 @@ void hagl_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_
 }
 
 /*
- * Draw a filled rectangle with given RGB565 color.
+ * Draw a filled rectangle with given color.
  */
-void hagl_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
+void hagl_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
 {
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
@@ -305,10 +291,10 @@ void hagl_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_
  *
  */
 
-uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, uint16_t color, const uint8_t *font)
+uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, color_t color, const uint8_t *font)
 {
     uint8_t set, status;
-    uint8_t buffer[BITMAP_SIZE(16, 16, DISPLAY_DEPTH)];
+    color_t buffer[HAGL_CHAR_BUFFER_SIZE];
     bitmap_t bitmap;
     fontx2_glyph_t glyph;
 
@@ -322,9 +308,9 @@ uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, uint16_t color, con
     bitmap.height = glyph.height,
     bitmap.depth = DISPLAY_DEPTH,
 
-    bitmap_init(&bitmap, buffer);
+    bitmap_init(&bitmap, (uint8_t *)buffer);
 
-    uint16_t *ptr = (uint16_t *) bitmap.buffer;
+    color_t *ptr = (color_t *) bitmap.buffer;
 
     for (uint8_t y = 0; y < glyph.height; y++) {
         for (uint8_t x = 0; x < glyph.width; x++) {
@@ -348,7 +334,7 @@ uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, uint16_t color, con
  * continue from the next line.
  */
 
-uint16_t hagl_put_text(const char16_t *str, int16_t x0, int16_t y0, uint16_t color, const unsigned char *font)
+uint16_t hagl_put_text(const char16_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font)
 {
     char16_t temp;
     uint8_t status;
@@ -391,8 +377,8 @@ void hagl_blit(int16_t x0, int16_t y0, bitmap_t *source) {
         (y0 + source->height > clip_window.y1)
     ) {
         /* Out of bounds, use local pixel fallback. */
-        uint16_t color;
-        uint16_t *ptr = (uint16_t *) source->buffer;
+        color_t color;
+        color_t *ptr = (color_t *) source->buffer;
 
         for (uint16_t y = 0; y < source->height; y++) {
             for (uint16_t x = 0; x < source->width; x++) {
@@ -405,8 +391,8 @@ void hagl_blit(int16_t x0, int16_t y0, bitmap_t *source) {
         hagl_hal_blit(x0, y0, source);
     }
 #else
-    uint16_t color;
-    uint16_t *ptr = (uint16_t *) source->buffer;
+    color_t color;
+    color_t *ptr = (color_t *) source->buffer;
 
     for (uint16_t y = 0; y < source->height; y++) {
         for (uint16_t x = 0; x < source->width; x++) {
@@ -447,7 +433,7 @@ void hagl_clear_clip_window() {
     );
 }
 
-void hagl_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
+void hagl_draw_circle(int16_t xc, int16_t yc, int16_t r, color_t color) {
     int16_t x = 0;
     int16_t y = r;
     int16_t d = 3 - 2 * r;
@@ -482,7 +468,7 @@ void hagl_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color) {
     }
 }
 
-void hagl_fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
+void hagl_fill_circle(int16_t x0, int16_t y0, int16_t r, color_t color) {
     int16_t x = 0;
     int16_t y = r;
     int16_t d = 3 - 2 * r;
@@ -503,7 +489,7 @@ void hagl_fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
     }
 }
 
-void hagl_draw_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t color) {
+void hagl_draw_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color) {
     int16_t wx, wy;
     int32_t xa, ya;
     int32_t t;
@@ -574,7 +560,7 @@ void hagl_draw_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t co
     }
 }
 
-void hagl_fill_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t color) {
+void hagl_fill_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color) {
     int16_t wx, wy;
     int32_t xa, ya;
     int32_t t;
@@ -641,7 +627,7 @@ void hagl_fill_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t co
 }
 
 
-void hagl_draw_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
+void hagl_draw_polygon(int16_t amount, int16_t *vertices, color_t color) {
 
     for(int16_t i = 0; i < amount - 1; i++) {
         hagl_draw_line(
@@ -662,7 +648,7 @@ void hagl_draw_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
 }
 
 /* Adapted from  http://alienryderflex.com/polygon_fill/ */
-void hagl_fill_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
+void hagl_fill_polygon(int16_t amount, int16_t *vertices, color_t color) {
     uint16_t nodes[64];
     int16_t y;
 
@@ -729,17 +715,17 @@ void hagl_fill_polygon(int16_t amount, int16_t *vertices, uint16_t color) {
     }
 }
 
-void hagl_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color) {
+void hagl_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color) {
     int16_t vertices[6] = {x0, y0, x1, y1, x2, y2};
     hagl_draw_polygon(3, vertices, color);
 };
 
-void hagl_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color) {
+void hagl_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color) {
     int16_t vertices[6] = {x0, y0, x1, y1, x2, y2};
     hagl_fill_polygon(3, vertices, color);
 }
 
-void hagl_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, uint16_t color) {
+void hagl_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color) {
 
     uint16_t width, height;
     int16_t x, y, d;
@@ -810,7 +796,7 @@ void hagl_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
     }
 };
 
-void hagl_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, uint16_t color) {
+void hagl_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color) {
 
     uint16_t width, height;
     int16_t rx0, ry0, rx1, ry1, x, y, d;
@@ -954,6 +940,14 @@ uint32_t hagl_load_image(int16_t x0, int16_t y0, const char *filename)
     return HAGL_OK;
 }
 
+color_t hagl_color(uint8_t r, uint8_t g, uint8_t b)
+{
+#ifdef HAGL_HAS_HAL_COLOR
+    return hagl_hal_color(r, g, b);
+#else
+    return rgb565(r, g, b);
+#endif
+}
 
 bitmap_t *hagl_init() {
 #ifdef HAGL_HAS_HAL_INIT

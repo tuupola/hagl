@@ -37,9 +37,12 @@ SPDX-License-Identifier: MIT
 
 #include <stdint.h>
 
+#include "hagl_hal.h"
 #include "bitmap.h"
 
 #define ABS(x)  ((x) > 0 ? (x) : -(x))
+
+#define HAGL_CHAR_BUFFER_SIZE    (16 * 16 * DISPLAY_DEPTH / 2)
 
 #define HAGL_OK                  (0)
 #define HAGL_ERR_GENERAL         (1)
@@ -51,15 +54,16 @@ typedef uint16_t char16_t;
 #endif
 
 /* This is the only mandatory function which HAL must provide. */
-extern void hagl_hal_put_pixel(int16_t x0, int16_t y0, uint16_t color);
+extern void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color);
+
 
 extern void hagl_hal_blit(uint16_t x0, uint16_t y0, bitmap_t *source);
-extern void hagl_hal_hline(int16_t x0, int16_t y0, uint16_t width, uint16_t color);
-extern void hagl_hal_vline(int16_t x0, int16_t y0, uint16_t width, uint16_t color);
+extern void hagl_hal_hline(int16_t x0, int16_t y0, uint16_t width, color_t color);
+extern void hagl_hal_vline(int16_t x0, int16_t y0, uint16_t width, color_t color);
 extern void hagl_hal_flush();
 extern bitmap_t *hagl_hal_init();
 
-void hagl_put_pixel(int16_t x0, int16_t y0, uint16_t color);
+void hagl_put_pixel(int16_t x0, int16_t y0, color_t color);
 
 /**
  * Draw a single character
@@ -71,7 +75,7 @@ void hagl_put_pixel(int16_t x0, int16_t y0, uint16_t color);
  * @param font Pointer to a FONTX2 font
  * @return Width of the drawn character
  */
-uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, uint16_t color, const unsigned char *font);
+uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
 
 /**
  * Draw a string
@@ -83,30 +87,32 @@ uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, uint16_t color, con
  * @param font Pointer to a FONTX2 font
  * @return Width of the drawn string
  */
-uint16_t hagl_put_text(const char16_t *str, int16_t x0, int16_t y0, uint16_t color, const unsigned char *font);
+uint16_t hagl_put_text(const char16_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
 void hagl_blit(int16_t x0, int16_t y0, bitmap_t *source);
 void hagl_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source);
 
-void hagl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
-void hagl_draw_hline(int16_t x0, int16_t y0, uint16_t width, uint16_t color);
-void hagl_draw_vline(int16_t x0, int16_t y0, uint16_t height, uint16_t color);
+void hagl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color);
+void hagl_draw_hline(int16_t x0, int16_t y0, uint16_t width, color_t color);
+void hagl_draw_vline(int16_t x0, int16_t y0, uint16_t height, color_t color);
 
-void hagl_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
-void hagl_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
-void hagl_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color);
-void hagl_fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
-void hagl_draw_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t color);
-void hagl_fill_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t color);
-void hagl_draw_polygon(int16_t amount, int16_t *vertices, uint16_t color);
-void hagl_fill_polygon(int16_t amount, int16_t *vertices, uint16_t color);
-void hagl_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
-void hagl_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
-void hagl_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, uint16_t color);
-void hagl_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, uint16_t color);
+void hagl_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color);
+void hagl_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color);
+void hagl_draw_circle(int16_t xc, int16_t yc, int16_t r, color_t color);
+void hagl_fill_circle(int16_t x0, int16_t y0, int16_t r, color_t color);
+void hagl_draw_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color);
+void hagl_fill_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color);
+void hagl_draw_polygon(int16_t amount, int16_t *vertices, color_t color);
+void hagl_fill_polygon(int16_t amount, int16_t *vertices, color_t color);
+void hagl_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color);
+void hagl_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color);
+void hagl_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color);
+void hagl_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color);
 
 uint32_t hagl_load_image(int16_t x0, int16_t y0, const char *filename);
 
 void hagl_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+
+color_t hagl_color(uint8_t r, uint8_t g, uint8_t b);
 
 /**
  * Clear area of the current clip window

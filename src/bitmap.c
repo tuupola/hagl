@@ -37,6 +37,7 @@ SPDX-License-Identifier: MIT
 #include <string.h>
 #include <math.h>
 
+#include "hagl_hal.h"
 #include "bitmap.h"
 
 /* Get bitmap size in bytes. */
@@ -99,16 +100,18 @@ void bitmap_blit(int16_t x0, int16_t y0, bitmap_t *src, bitmap_t *dst)
         return;
     }
 
-    uint16_t *dstptr = (uint16_t *) (dst->buffer + (dst->pitch * y0) + ((dst->depth / 8) * x0));
-    //uint16_t *srcptr = (uint16_t *) src->buffer;
-    uint16_t *srcptr = (uint16_t *) (src->buffer + (src->pitch * y1) + ((dst->depth / 8) * x1));
+    uint8_t *dstptr = (uint8_t *) (dst->buffer + (dst->pitch * y0) + ((dst->depth / 8) * x0));
+    uint8_t *srcptr = (uint8_t *) (src->buffer + (src->pitch * y1) + ((dst->depth / 8) * x1));
 
+    /* Bytes per pixel. */
+    uint8_t bytes = dst->depth / 8;
     for (uint16_t y = 0; y < srch; y++) {
         for (uint16_t x = 0; x < srcw; x++) {
-             *(dstptr++) = *(srcptr++);
+            for (uint16_t z = 0; z < bytes; z++) {
+                *(dstptr++) = *(srcptr++);
+            }
         }
-        dstptr += dst->pitch / (dst->depth / 8) - srcw;
-        //srcptr += src->pitch / (src->depth / 8) - srcw;
+        dstptr += (dst->pitch / (dst->depth / 8) - srcw) * bytes;
     }
 }
 
@@ -156,17 +159,34 @@ void bitmap_scale_blit(int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth, bit
         dsth = dst->height - y0;
     }
 
-    uint16_t *dstptr = (uint16_t *) (dst->buffer + dst->pitch * y0 + (dst->depth / 8) * x0);
-    uint16_t *srcptr = (uint16_t *) src->buffer;
-    //uint16_t *srcptr = (uint16_t *) src->buffer + y1 * src->pitch + x1;;
+    /* Bytes per pixel. */
+    uint8_t bytes = dst->depth / 8;
 
-    for (uint16_t y = 0; y < dsth; y++) {
-        for (uint16_t x = 0; x < dstw; x++) {
-            px = ((x * x_ratio) >> 16);
-            py = ((y * y_ratio) >> 16);
-            *(dstptr++) = srcptr[(uint16_t)((py * srcw) + px)];
+    /* If sentence here is not the most elegant thing, but makes */
+    /* the pointer maths much more easy to read. */
+    if (2 == bytes) {
+        uint16_t *dstptr = (uint16_t *) (dst->buffer + dst->pitch * y0 + (dst->depth / 8) * x0);
+        uint16_t *srcptr = (uint16_t *) src->buffer;
+        for (uint16_t y = 0; y < dsth; y++) {
+            for (uint16_t x = 0; x < dstw; x++) {
+                px = ((x * x_ratio) >> 16);
+                py = ((y * y_ratio) >> 16);
+                *(dstptr++) = srcptr[(uint8_t)((py * srcw) + px)];
+            }
+            dstptr += dst->pitch / (dst->depth / 8) - dstw;
         }
-        dstptr += dst->pitch / (dst->depth / 8) - dstw;
+    /* Assume 1 byte per pixel. */
+    } else {
+        uint8_t *dstptr = (uint8_t *) (dst->buffer + dst->pitch * y0 + (dst->depth / 8) * x0);
+        uint8_t *srcptr = (uint8_t *) src->buffer;
+        for (uint16_t y = 0; y < dsth; y++) {
+            for (uint16_t x = 0; x < dstw; x++) {
+                px = ((x * x_ratio) >> 16);
+                py = ((y * y_ratio) >> 16);
+                *(dstptr++) = srcptr[(uint8_t)((py * srcw) + px)];
+            }
+            dstptr += dst->pitch / (dst->depth / 8) - dstw;
+        }
     }
 }
 

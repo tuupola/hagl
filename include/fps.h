@@ -39,10 +39,33 @@ SPDX-License-Identifier: MIT
 extern "C" {
 #endif
 
+#include <time.h>
 #include <stdint.h>
+#include <stdbool.h>
 
-float fps();
-void fps_reset();
+static inline float fps()
+{
+    static clock_t ticks;
+    static clock_t start;
+    static uint32_t frames = 1;
+    static float current = 0;
+    static bool firstrun = true;
+
+    float smoothing = 0.9; /* Larger value is less smoothing. */
+    float measured = 0;
+
+    if (firstrun) {
+        start = clock();
+        firstrun = false;
+    }
+    frames++;
+
+    ticks = clock() - start;
+    measured = frames / (float) ticks * CLOCKS_PER_SEC;
+    measured = (measured * smoothing) + (current * (1.0 - smoothing));
+
+    return measured;
+}
 
 #ifdef __cplusplus
 }
