@@ -28,9 +28,11 @@ POSSIBILITY OF SUCH DAMAGE.
 
 -cut-
 
+Adapted from Lode's Computer Graphics Tutorial
+https://lodev.org/cgtutor/color.html
+
 This file is part of the HAGL graphics library:
 https://github.com/tuupola/hagl
-
 
 SPDX-License-Identifier: BSD-2-Clause
 
@@ -40,7 +42,7 @@ SPDX-License-Identifier: BSD-2-Clause
 
 #include "hsl.h"
 
-rgb_t hsl_to_rgb888(hsl_t *hsl)
+rgb_t hsl_to_rgb(hsl_t *hsl)
 {
     rgb_t rgb;
     float r, g, b, h, s, l;
