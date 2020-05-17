@@ -4,6 +4,8 @@ HAGL is a lightweight hardware agnostics graphics library. It supports basic geo
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
+![Old school demo effects](https://appelsiini.net/img/2020/esp-effects.jpg)
+
 ## Hardware Abstraction Layer
 
 To use HAGL you must provide a hardware absraction layer. HAL must provide atleast the `hagl_hal_put_pixel(x0, y0, color)` function. If nothing else is provided all higher level graphical functions will use this function to draw the primitive. There are other optional HAL functions. While proper documentation is lacking see the example HAL implementations for [libgd](https://github.com/tuupola/hagl_gd), [libsdl2](https://github.com/tuupola/hagl_sdl2) and display drivers for [ESP-IDF supporting MIPI Display Command Set](https://github.com/tuupola/esp_mipi).
@@ -60,8 +62,8 @@ void hagl_close();
 
  First table numbers are operations per second with double buffering enabled. Bigger number is better. T-Display and M5StickC have higher numbers because they have smaller resolution. Smaller resolution means less bytes to push to the display.
 
-|                              | T4     | T-Display | M5Stack | M5StickC |
-|------------------------------|--------|-----------|---------|----------|
+|                               | T4     | T-Display | M5Stack | M5StickC |
+|-------------------------------|--------|-----------|---------|----------|
 | hagl_put_pixel()              | 176091 | 176175    | 176913  | 180684   |
 | hagl_draw_line()              | 9286   | 13092     | 9683    | 26672    |
 | hagl_draw_circle()            | 13803  | 14351     | 13992   | 16460    |
