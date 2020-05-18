@@ -106,4 +106,4 @@ static inline float aps(uint32_t add)
 #ifdef __cplusplus
 }
 #endif
-#endif /* HAGL_FPS_H */
+#endif /* _HAGL_APS_H */

@@ -46,19 +46,19 @@ extern "C" {
 /**
  * Frames per second counter
  *
- * Use to measure rendering speed. Should be called always after
- * flushing the back buffer.
+ * Use to measure rendering speed. Should be called always after flushing
+ * the back buffer.
  *
  * float fps;
  * hagl_flush();
- * fps = fps(1024);
+ * fps = fps();
  *
  * @return current fps
  */
 static inline float fps()
 {
     static struct timespec start;
-    static uint32_t frames = 1;
+    static uint32_t frames = 0;
     static float current = 0.0;
     static bool firstrun = true;
 
