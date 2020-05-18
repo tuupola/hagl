@@ -43,28 +43,50 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 
+/**
+ * Frames per second counter
+ *
+ * Use to measure rendering speed. Should be called always after
+ * flushing the back buffer.
+ *
+ * float fps;
+ * hagl_flush();
+ * fps = fps(1024);
+ *
+ * @return current fps
+ */
 static inline float fps()
 {
-    static clock_t ticks;
-    static clock_t start;
+    static struct timespec start;
     static uint32_t frames = 1;
-    static float current = 0;
+    static float current = 0.0;
     static bool firstrun = true;
 
-    float smoothing = 0.95; /* Larger value is less smoothing. */
-    float measured = 0;
+    struct timespec now;
+    uint32_t seconds;
+    float measured = 0.0;
+
+    /* Larger value is less smoothing. */
+    float smoothing = 0.98;
+
 
     if (firstrun) {
-        start = clock();
+        clock_gettime(CLOCK_MONOTONIC, &start);
         firstrun = false;
     }
     frames++;
 
-    ticks = clock() - start;
-    measured = frames / (float) ticks * CLOCKS_PER_SEC;
-    measured = (measured * smoothing) + (current * (1.0 - smoothing));
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    seconds = now.tv_sec - start.tv_sec;
 
-    return measured;
+    if (seconds) {
+        measured = frames / (float) seconds;
+        current = (measured * smoothing) + (current * (1.0 - smoothing));
+
+        return current;
+    }
+
+    return 0;
 }
 
 #ifdef __cplusplus
