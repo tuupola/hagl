@@ -43,7 +43,7 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 
-#define APS_RESET = UINT32_MAX;
+#define APS_RESET   (UINT32_MAX)
 
 /**
  * Anything per second counter
@@ -75,17 +75,19 @@ static inline float aps(uint32_t add)
     /* Larger value is less smoothing. */
     float smoothing = 0.95;
 
-    if (0 == add) {
-        clock_gettime(CLOCK_MONOTONIC, &start);
-        value = 0;
-        current = 0;
-        firstrun = false;
-    }
-
     if (firstrun) {
         clock_gettime(CLOCK_MONOTONIC, &start);
         firstrun = false;
     }
+
+    if (APS_RESET == add) {
+        clock_gettime(CLOCK_MONOTONIC, &start);
+        value = 0;
+        current = 0;
+        firstrun = false;
+        return 0;
+    }
+
     value += add;
 
     clock_gettime(CLOCK_MONOTONIC, &now);
@@ -104,4 +106,4 @@ static inline float aps(uint32_t add)
 #ifdef __cplusplus
 }
 #endif
-#endif /* HAGL_FPS_H */
+#endif /* _HAGL_APS_H */
