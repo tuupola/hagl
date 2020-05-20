@@ -26,7 +26,7 @@ for (uint32_t i = 1; i < 100000; i++) {
     hagl_put_pixel(x0, y0, color);
 }
 ```
-![Random pixels](https://appelsiini.net/img/2020/pod-put-pixel.png)
+![Random pixels](https://appelsiini.net/img/2020/hagl-put-pixel-gh.png)
 
 ### Draw a line
 
@@ -314,7 +314,7 @@ for (uint16_t i = 1; i < 10000; i++) {
 }
 ```
 
-![Random filled polygon](https://appelsiini.net/img/2020/pod-put-char.png)
+![Random chars](https://appelsiini.net/img/2020/hagl-put-char-gh.png)
 
 ### Put a string
 
@@ -330,7 +330,7 @@ for (uint16_t i = 1; i < 10000; i++) {
 }
 ```
 
-![Random filled polygon](https://appelsiini.net/img/2020/pod-put-string.png)
+![Random strings](https://appelsiini.net/img/2020/hagl-put-text-gh.png)
 
 ```c
 void hagl_put_pixel(int16_t x0, int16_t y0, uint16_t color);
