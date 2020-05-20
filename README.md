@@ -64,43 +64,43 @@ void hagl_close();
 
 |                               | T4     | T-Display | M5Stack | M5StickC |
 |-------------------------------|--------|-----------|---------|----------|
-| hagl_put_pixel()              | 176091 | 176175    | 176913  | 180684   |
-| hagl_draw_line()              | 9286   | 13092     | 9683    | 26672    |
-| hagl_draw_circle()            | 13803  | 14351     | 13992   | 16460    |
-| hagl_fill_circle()            | 7692   | 8224      | 8009    | 12216    |
-| hagl_draw_ellipse()           | 7254   | 7655      | 7310    | 8855     |
-| hagl_fill_ellipse()           | 2814   | 3086      | 2900    | 4998     |
-| hagl_draw_triangle()          | 3204   | 4589      | 3394    | 9875     |
-| hagl_fill_triangle()          | 1126   | 1787      | 1334    | 5447     |
-| hagl_draw_rectangle()         | 19638  | 25672     | 20861   | 51851    |
-| hagl_fill_rectangle()         | 1940   | 4308      | 2036    | 14182    |
-| hagl_draw_rounded_rectangle() | 15344  | 19040     | 16188   | 32773    |
-| hagl_fill_rounded_rectangle() | 1834   | 3982      | 1865    | 11647    |
-| hagl_draw_polygon()           | 1933   | 2784      | 2015    | 6023     |
-| hagl_fill_polygon()           | 623    | 971       | 755     | 2961     |
-| hagl_put_char()               | 30473  | 22128     | 29852   | 25658    |
-| hagl_flush()                  | 29     | 68        | 29      | 86       |
+| hagl_put_pixel()              | 304400 |    304585 |  340850 |   317094 |
+| hagl_draw_line()              |  10485 |     14942 |   12145 |    31293 |
+| hagl_draw_circle()            |  15784 |     16430 |   17730 |    18928 |
+| hagl_fill_circle()            |   8712 |      9344 |    9982 |    13910 |
+| hagl_draw_ellipse()           |   8187 |      8642 |    9168 |    10019 |
+| hagl_fill_ellipse()           |   3132 |      3457 |    3605 |     5590 |
+| hagl_draw_triangle()          |   3581 |      5137 |    4160 |    11186 |
+| hagl_fill_triangle()          |   1246 |      1993 |    1654 |     6119 |
+| hagl_draw_rectangle()         |  22759 |     30174 |   26910 |    64259 |
+| hagl_fill_rectangle()         |   2191 |      4849 |    2487 |    16146 |
+| hagl_draw_rounded_rectangle() |  17660 |     21993 |   20736 |    39102 |
+| hagl_fill_rounded_rectangle() |   2059 |      4446 |    2313 |    13270 |
+| hagl_draw_polygon()           |   2155 |      3096 |    2494 |     6763 |
+| hagl_fill_polygon()           |    692 |      1081 |     938 |     3295 |
+| hagl_put_char()               |  29457 |     29131 |   32429 |    27569 |
+| hagl_flush()                  |     32 |        76 |      32 |       96 |
 
 Second table numbers are operations per second with double buffering disabled.
 
-|                              | T4    | T-Display | M5Stack | M5StickC |
-|------------------------------|-------|-----------|---------|----------|
-| hagl_put_pixel()              | 12610 | 13341     | 13361   | 12324    |
-| hagl_draw_line()              | 95    | 134       | 93      | 203      |
-| hagl_draw_circle()            | 123   | 76        | 66      | 79       |
-| hagl_fill_circle()            | 207   | 228       | 223     | 197      |
-| hagl_draw_ellipse()           | 70    |           |         |          |
-| hagl_fill_ellipse()           | 96    |           |         |          |
-| hagl_draw_triangle()          | 31    | 46        | 31      | 67       |
-| hagl_fill_triangle()          | 61    | 94        | 79      | 141      |
-| hagl_draw_rectangle()         | 1997  | 2336      | 2076    | 2092     |
-| hagl_fill_rectangle()         | 75    | 127       | 99      | 171      |
-| hagl_draw_rounded_rectangle() | 380   |           |         |          |
-| hagl_fill_rounded_rectangle() | 78    |           |         |          |
-| hagl_draw_polygon()           | 19    | 27        | 19      | 42       |
-| hagl_fill_polygon()           | 36    | 57        | 48      | 85       |
-| hagl_put_char)                | 3093  | 2316      | 3028    | 1585     |
-| hagl_flush()                  | x     | x         | x       | x        |
+|                               | T4    | T-Display | M5Stack | M5StickC |
+|-------------------------------|-------|-----------|---------|----------|
+| hagl_put_pixel()              | 16041 |     15252 |   16044 |    24067 |
+| hagl_draw_line()              |   113 |       172 |     112 |      289 |
+| hagl_draw_circle()            |   148 |       173 |     145 |      230 |
+| hagl_fill_circle()            |   264 |       278 |     261 |      341 |
+| hagl_draw_ellipse()           |    84 |       103 |      85 |      179 |
+| hagl_fill_ellipse()           |   114 |       128 |     116 |      191 |
+| hagl_draw_triangle()          |    37 |        54 |      37 |      114 |
+| hagl_fill_triangle()          |    72 |       111 |      72 |      371 |
+| hagl_draw_rectangle()         |  2378 |      2481 |    2374 |     3482 |
+| hagl_fill_rectangle()         |    91 |       146 |      91 |      454 |
+| hagl_draw_rounded_rectangle() |   458 |       535 |     459 |      808 |
+| hagl_fill_rounded_rectangle() |    87 |       139 |      79 |      400 |
+| hagl_draw_polygon()           |    21 |        33 |      19 |       71 |
+| hagl_fill_polygon()           |    43 |        66 |      49 |      228 |
+| hagl_put_char)                |  4957 |      4264 |    4440 |     2474 |
+| hagl_flush()                  |     x |         x |       x |        x |
 
 You can run the speed tests yourself by checking out the [speedtest repository](https://github.com/tuupola/esp_gfx).
 
