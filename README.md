@@ -25,7 +25,7 @@ hagl_init();
 /* Main loop. */
 while (1) {
     hagl_clear_screen();
-    /* Draw next frame here. */
+    hagl_load_image(0, 0, "/sdcard/hello.jpg");
     hagl_flush();
 };
 
