@@ -15,6 +15,26 @@ To use HAGL you must provide a hardware absraction layer. HAL must provide atlea
 
 Guess what! Better docs to be written. High level functions are pretty self explanatory though. For example applications see [ESP GFX](https://github.com/tuupola/esp_gfx), [ESP Fire](https://github.com/tuupola/esp_fire), [M5Stack Mandelbrot](https://github.com/tuupola/esp-examples/tree/master/014-mandelbrot) and [ESP M5StickC](https://github.com/tuupola/esp_m5stick).
 
+### Lifecycle
+
+Before you start drawing you should call `hagl_init()`. Some HAL configurations require you to call `hagl_flush()` to update the contents of the screen. Before exiting your program it is good idea to call `hagl_close()`to clean things up.
+
+```c
+hagl_init();
+
+/* Main loop. */
+while (1) {
+    hagl_clear_screen();
+
+    /* Draw next frame here. */
+
+    hagl_flush();
+};
+
+hagl_close();
+```
+
+
 ### Put a pixel
 
 ```c
@@ -326,53 +346,30 @@ for (uint16_t i = 1; i < 10000; i++) {
     int16_t y0 = rand() % DISPLAY_HEIGHT;
     color_t color = rand() % 0xffff;
 
-    hagl_put_text("YO! MTV raps.", x0, y0, color, font8x8);
+    hagl_put_text(u"YO! MTV raps.", x0, y0, color, font6x9);
 }
 ```
 
 ![Random strings](https://appelsiini.net/img/2020/hagl-put-text-gh.png)
 
+### Blit a bitmap
+
+Blit copies a [bitmap](https://github.com/tuupola/hagl/blob/master/bitmap.c) to the screen.
+
 ```c
-void hagl_put_pixel(int16_t x0, int16_t y0, uint16_t color);
-void hagl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
-void hagl_draw_hline(int16_t x0, int16_t y0, uint16_t width, uint16_t color);
-void hagl_draw_vline(int16_t x0, int16_t y0, uint16_t height, uint16_t color);
-void hagl_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
-void hagl_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
-void hagl_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, uint16_t color);
-void hagl_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, uint16_t color);
-void hagl_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color);
-void hagl_fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
-void hagl_draw_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t color);
-void hagl_fill_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t color);
-void hagl_draw_polygon(int16_t amount, int16_t *vertices, uint16_t color);
-void hagl_fill_polygon(int16_t amount, int16_t *vertices, uint16_t color);
-void hagl_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
-void hagl_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
-
-
-uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, uint16_t color, const unsigned char *font);
-uint16_t hagl_put_text(const char16_t *str, int16_t x0, int16_t y0, uint16_t color, const unsigned char *font);
-
-void hagl_clear_clip_window();
-void hagl_clear_screen();
-void hagl_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
-
+int16_t x0 = rand() % DISPLAY_WIDTH;
+int16_t y0 = rand() % DISPLAY_HEIGHT;
+hagl_blit(x0, y0, &alien);
 ```
 
-Blit copies a [bitmap](https://github.com/tuupola/hagl/blob/master/bitmap.c) to the screen. You can also copy a bitmap scaled up or down.
+### Blit a bitmap scaled up or down
 
 ```c
-void hagl_blit(int16_t x0, int16_t y0, bitmap_t *source);
-void hagl_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source);
-```
-
-Depending on HAL, initialisation and flushing might be required. If HAL does not require them both functions are just a no-op.
-
-```c
-bitmap_t *hagl_init();
-void hagl_flush();
-void hagl_close();
+int16_t x0 = rand() % DISPLAY_WIDTH;
+int16_t y0 = rand() % DISPLAY_HEIGHT;
+uint8_t width = 40;
+uint8_t height = 40;
+hagl_scale_blit(x0, y0, width, heigth, &alien);
 ```
 
 ## Speed
