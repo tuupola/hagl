@@ -370,6 +370,20 @@ uint8_t height = 40;
 hagl_scale_blit(x0, y0, width, heigth, &alien);
 ```
 
+### Clip window
+
+You can restrict the area of drawing by setting a clip window. For if you had a 20 pixel status bars on top and bottom of the screen and you do not want to draw over them you could do something like following:
+
+```c
+hagl_set_clip_window(0, 20 , DISPLAY_WIDTH, DISPLAY_HEIGHT - 20);
+````
+
+If you want to cleant the contents of the clip window instead of clearing the whole screen call:
+
+```c
+hagl_clear_clip_window()
+```
+
 ## Speed
 
  First table numbers are operations per second with double buffering enabled. Bigger number is better. T-Display and M5StickC have higher numbers because they have smaller resolution. Smaller resolution means less bytes to push to the display.
