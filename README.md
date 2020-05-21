@@ -372,11 +372,22 @@ hagl_scale_blit(x0, y0, width, heigth, &alien);
 
 ### Clip window
 
-You can restrict the area of drawing by setting a clip window. For if you had a 20 pixel status bars on top and bottom of the screen and you do not want to draw over them you could do something like following:
+You can restrict the area of drawing by setting a clip window.
 
 ```c
-hagl_set_clip_window(0, 20 , DISPLAY_WIDTH, DISPLAY_HEIGHT - 20);
+hagl_set_clip_window(0, 40, DISPLAY_WIDTH, DISPLAY_HEIGHT - 40);
+
+for (uint16_t i = 1; i < 500; i++) {
+    int16_t x0 = rand() % DISPLAY_WIDTH;
+    int16_t y0 = rand() % DISPLAY_HEIGHT;
+    int16_t radius = rand() % 100;
+    color_t color = rand() % 0xffff;
+
+    hagl_fill_circle(x0, y0, radius, color);
+}
 ````
+
+![Clipped windows](https://appelsiini.net/img/2020/hagl-set-clip-window.png)
 
 If you want to cleant the contents of the clip window instead of clearing the whole screen call:
 
