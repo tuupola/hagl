@@ -32,6 +32,22 @@ while (1) {
 hagl_close();
 ```
 
+### Colors
+
+HAL defines what kind of color is used. Most common is RGB565 which is represented by two bytes. If you are sure you will be using only RGB565 colors you could use something like following to create a random color.
+
+```c
+color_t color = rand() % 0xffff;
+```
+
+To write portable code which can be run with different color systems use the following instead.
+
+```c
+uint8_t r = rand() % 255;
+uint8_t g = rand() % 255;
+uint8_t b = rand() % 255;
+color_t color = hagl_color(r, g, b);
+```
 
 ### Put a pixel
 
