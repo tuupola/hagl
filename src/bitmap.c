@@ -44,14 +44,12 @@ uint32_t bitmap_size(bitmap_t *bitmap) {
     return bitmap->width * (bitmap->depth / 8) * bitmap->height;
 };
 
-/* Initialise bitmap with given buffer set everything black. */
+/* Initialise bitmap with given buffer. */
 void bitmap_init(bitmap_t *bitmap, uint8_t *buffer)
 {
     bitmap->pitch = bitmap->width * (bitmap->depth / 8);
     bitmap->size = bitmap->pitch * bitmap->height;
     bitmap->buffer = buffer;
-
-    memset(bitmap->buffer, 0x00, bitmap->size);
 }
 
 /*
