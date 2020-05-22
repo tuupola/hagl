@@ -28,7 +28,6 @@ SOFTWARE.
 This file is part of the HAGL graphics library:
 https://github.com/tuupola/hagl
 
-
 Adapted from the blog post by ChaN:
 http://elm-chan.org/docs/dosv/fontx_e.html
 
@@ -36,28 +35,26 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_FONTX2_H
-#define _HAGL_FONTX2_H
+#ifndef _HAGL_FONTX_H
+#define _HAGL_FONTX_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define FONTX2_OK                   (0)
-#define FONTX2_ERR_GLYPH_NOT_FOUND  (1)
-#define FONTX2_NAME                 (6)
-#define FONTX2_WIDTH               (14)
-#define FONTX2_HEIGHT              (15)
-#define FONTX2_TYPE                (16)
-#define FONTX2_TYPE_SBCS            (0)
-#define FONTX2_TYPE_DBCS            (1)
-#define FONTX2_GLYPH_DATA_START    (17)
-#define FONTX2_BLOCK_TABLE_SIZE    (17)
-#define FONTX2_BLOCK_TABLE_START   (18)
+#define FONTX_OK                   (0)
+#define FONTX_ERR_GLYPH_NOT_FOUND  (1)
+#define FONTX_NAME                 (6)
+#define FONTX_WIDTH               (14)
+#define FONTX_HEIGHT              (15)
+#define FONTX_TYPE                (16)
+#define FONTX_TYPE_SBCS            (0)
+#define FONTX_TYPE_DBCS            (1)
+#define FONTX_GLYPH_DATA_START    (17)
+#define FONTX_BLOCK_TABLE_SIZE    (17)
+#define FONTX_BLOCK_TABLE_START   (18)
 
-#ifndef char16_t
 typedef uint16_t char16_t;
-#endif
 
 #include <stdint.h>
 
@@ -68,19 +65,19 @@ typedef struct{
     uint8_t size;
     uint8_t pitch;
     const uint8_t *buffer;
-} fontx2_glyph_t;
+} fontx_glyph_t;
 
 typedef struct{
     char name[9];
     uint8_t width;
     uint8_t height;
     uint8_t type;
-} fontx2_meta_t;
+} fontx_meta_t;
 
-uint8_t fontx2_meta(fontx2_meta_t *meta, const uint8_t *font);
-uint8_t fontx2_glyph(fontx2_glyph_t *glyph, char16_t code, const uint8_t *font);
+uint8_t fontx_meta(fontx_meta_t *meta, const uint8_t *font);
+uint8_t fontx_glyph(fontx_glyph_t *glyph, char16_t code, const uint8_t *font);
 
 #ifdef __cplusplus
 }
 #endif
-#endif /* _HAGL_FONTX2_H */
+#endif /* _HAGL_FONTX_H */

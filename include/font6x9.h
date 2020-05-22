@@ -1,6 +1,6 @@
 /*
 
-FONTX2 version of the Public Domain X11 misc-fixed typeface.
+FONTX version of the Public Domain X11 misc-fixed typeface.
 https://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html
 
 */

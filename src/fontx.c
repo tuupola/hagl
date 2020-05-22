@@ -39,26 +39,26 @@ SPDX-License-Identifier: MIT
 #include <stdint.h>
 #include <string.h>
 
-#include "fontx2.h"
+#include "fontx.h"
 
-uint8_t fontx2_meta(fontx2_meta_t *meta, const uint8_t *font) {
+uint8_t fontx_meta(fontx_meta_t *meta, const uint8_t *font) {
 
-    memcpy(meta->name, &font[FONTX2_NAME], 8);
-    meta->width = font[FONTX2_WIDTH];
-    meta->height = font[FONTX2_HEIGHT];
-    meta->type = font[FONTX2_TYPE];
+    memcpy(meta->name, &font[FONTX_NAME], 8);
+    meta->width = font[FONTX_WIDTH];
+    meta->height = font[FONTX_HEIGHT];
+    meta->type = font[FONTX_TYPE];
 
     return 0;
 }
 
 
-uint8_t fontx2_glyph(fontx2_glyph_t *glyph, uint16_t code, const uint8_t* font) {
+uint8_t fontx_glyph(fontx_glyph_t *glyph, uint16_t code, const uint8_t* font) {
     uint32_t nc, bc, sb, eb;
     uint8_t status;
     const uint8_t *block_table;
-    fontx2_meta_t meta;
+    fontx_meta_t meta;
 
-    status = fontx2_meta(&meta, font);
+    status = fontx_meta(&meta, font);
     if (0 != status) {
         return status;
     }
@@ -68,15 +68,15 @@ uint8_t fontx2_glyph(fontx2_glyph_t *glyph, uint16_t code, const uint8_t* font) 
     glyph->pitch = (meta.width + 7) / 8;
     glyph->size = glyph->pitch * meta.height;
 
-    if (FONTX2_TYPE_SBCS == meta.type) {
+    if (FONTX_TYPE_SBCS == meta.type) {
         if (code < 0x100) {
-            glyph->buffer = &font[FONTX2_GLYPH_DATA_START + code * glyph->size];
-            return FONTX2_OK;
+            glyph->buffer = &font[FONTX_GLYPH_DATA_START + code * glyph->size];
+            return FONTX_OK;
         }
     } else {
-        block_table = &font[FONTX2_BLOCK_TABLE_START];
+        block_table = &font[FONTX_BLOCK_TABLE_START];
         nc = 0;
-        bc = font[FONTX2_BLOCK_TABLE_SIZE];
+        bc = font[FONTX_BLOCK_TABLE_SIZE];
         while (bc--) {
             /* Get range of the code block_table. */
             sb = block_table[0] + block_table[1] * 0x100;
@@ -87,11 +87,11 @@ uint8_t fontx2_glyph(fontx2_glyph_t *glyph, uint16_t code, const uint8_t* font) 
                 /* Number of codes from top of the block_table. */
                 nc += code - sb;
                 glyph->buffer = &font[
-                    FONTX2_BLOCK_TABLE_START +
-                    4 * font[FONTX2_BLOCK_TABLE_SIZE] +
+                    FONTX_BLOCK_TABLE_START +
+                    4 * font[FONTX_BLOCK_TABLE_SIZE] +
                     nc * glyph->size
                 ];
-                return FONTX2_OK;
+                return FONTX_OK;
             }
             /* Number of codes in the previous block_tables. */
             nc += eb - sb + 1;
@@ -100,5 +100,5 @@ uint8_t fontx2_glyph(fontx2_glyph_t *glyph, uint16_t code, const uint8_t* font) 
         }
     }
 
-    return FONTX2_ERR_GLYPH_NOT_FOUND;
+    return FONTX_ERR_GLYPH_NOT_FOUND;
 }
