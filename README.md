@@ -368,23 +368,42 @@ for (uint16_t i = 1; i < 10000; i++) {
 
 ### Blit a bitmap
 
-Blit copies a [bitmap](https://github.com/tuupola/hagl/blob/master/bitmap.c) to the screen.
+Blit copies a [bitmap](https://github.com/tuupola/hagl/blob/master/bitmap.c) to the screen. This example uses a glyph bitmap which is extracted from a font.
 
 ```c
-int16_t x0 = rand() % DISPLAY_WIDTH;
-int16_t y0 = rand() % DISPLAY_HEIGHT;
-hagl_blit(x0, y0, &alien);
+bitmap_t bitmap;
+bitmap.buffer = (uint8_t *) malloc(6 * 9 * sizeof(color_t));
+
+for (uint16_t i = 1; i < 20000; i++) {
+    int16_t x0 = rand() % DISPLAY_WIDTH;
+    int16_t y0 = rand() % DISPLAY_HEIGHT;
+    uint16_t code = rand() % 0xffff;
+    hagl_get_glyph(code, color, &bitmap, font6x9);
+    hagl_blit(x0, y0, &bitmap);
+}
 ```
+
+![Random blits](https://appelsiini.net/img/2020/hagl-blit.png)
+
 
 ### Blit a bitmap scaled up or down
 
+Scale blit copies and scales a [bitmap](https://github.com/tuupola/hagl/blob/master/bitmap.c) to the screen. This example uses a glyph bitmap which is extracted from a font.
+
 ```c
-int16_t x0 = rand() % DISPLAY_WIDTH;
-int16_t y0 = rand() % DISPLAY_HEIGHT;
-uint8_t width = 40;
-uint8_t height = 40;
-hagl_scale_blit(x0, y0, width, heigth, &alien);
+bitmap_t bitmap;
+bitmap.buffer = (uint8_t *) malloc(6 * 9 * sizeof(color_t));
+
+for (uint16_t i = 1; i < 20000; i++) {
+    int16_t x0 = rand() % DISPLAY_WIDTH;
+    int16_t y0 = rand() % DISPLAY_HEIGHT;
+    uint16_t code = rand() % 0xffff;
+    hagl_get_glyph(code, color, &bitmap, font6x9);
+    hagl_scale_blit(x0, y0, 24, 36, &bitmap);
+}
 ```
+
+![Random blits](https://appelsiini.net/img/2020/hagl-scale-blit.png)
 
 ### Clip window
 
