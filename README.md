@@ -377,6 +377,7 @@ bitmap.buffer = (uint8_t *) malloc(6 * 9 * sizeof(color_t));
 for (uint16_t i = 1; i < 20000; i++) {
     int16_t x0 = rand() % DISPLAY_WIDTH;
     int16_t y0 = rand() % DISPLAY_HEIGHT;
+    color_t color = rand() % 0xffff;
     uint16_t code = rand() % 0xffff;
     hagl_get_glyph(code, color, &bitmap, font6x9);
     hagl_blit(x0, y0, &bitmap);
@@ -397,6 +398,7 @@ bitmap.buffer = (uint8_t *) malloc(6 * 9 * sizeof(color_t));
 for (uint16_t i = 1; i < 20000; i++) {
     int16_t x0 = rand() % DISPLAY_WIDTH;
     int16_t y0 = rand() % DISPLAY_HEIGHT;
+    color_t color = rand() % 0xffff;
     uint16_t code = rand() % 0xffff;
     hagl_get_glyph(code, color, &bitmap, font6x9);
     hagl_scale_blit(x0, y0, 24, 36, &bitmap);
