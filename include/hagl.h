@@ -71,7 +71,7 @@ void hagl_put_pixel(int16_t x0, int16_t y0, color_t color);
  * @param code Unicode code point
  * @param x0 X coordinate
  * @param y0 Y coorginate
- * @param color RGB565 color
+ * @param color
  * @param font Pointer to a FONTX font
  * @return Width of the drawn character
  */
@@ -83,11 +83,26 @@ uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, color_t color, cons
  * @param str Pointer to an Unicode string
  * @param x0 X coordinate
  * @param y0 Y coorginate
- * @param color RGB565 color
+ * @param color
  * @param font Pointer to a FONTX font
  * @return Width of the drawn string
  */
 uint16_t hagl_put_text(const char16_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
+
+/**
+ * Extract a glyph into a bitmap
+ *
+ * This can be used for example for extracting game sprites from fontsets
+ * such as UNSCII.
+ *
+ * @param code Unicode code point
+ * @param color
+ * @param bitmap Pointer to a bitmap
+ * @param font Pointer to a FONTX font
+ * @return Width of the drawn string
+ */
+uint8_t hagl_get_glyph(char16_t code, color_t color, bitmap_t *bitmap, const uint8_t *font);
+
 void hagl_blit(int16_t x0, int16_t y0, bitmap_t *source);
 void hagl_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source);
 
