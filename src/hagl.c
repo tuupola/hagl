@@ -286,10 +286,40 @@ void hagl_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t
     }
 }
 
-/*
- * Write a single character.
- *
- */
+uint8_t hagl_get_glyph(char16_t code, color_t color, bitmap_t *bitmap, const uint8_t *font)
+{
+    uint8_t status, set;
+    fontx_glyph_t glyph;
+
+    status = fontx_glyph(&glyph, code, font);
+
+    if (0 != status) {
+        return status;
+    }
+
+    /* Initialise bitmap dimensions. */
+    bitmap->depth = DISPLAY_DEPTH,
+    bitmap->width = glyph.width,
+    bitmap->height = glyph.height,
+    bitmap->pitch = bitmap->width * (bitmap->depth / 8);
+    bitmap->size = bitmap->pitch * bitmap->height;
+
+    color_t *ptr = (color_t *) bitmap->buffer;
+
+    for (uint8_t y = 0; y < glyph.height; y++) {
+        for (uint8_t x = 0; x < glyph.width; x++) {
+            set = *(glyph.buffer) & (0x80 >> (x % 8));
+            if (set) {
+                *(ptr++) = color;
+            } else {
+                *(ptr++) = 0x0000;
+            }
+        }
+        glyph.buffer += glyph.pitch;
+    }
+
+    return 0;
+}
 
 uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, color_t color, const uint8_t *font)
 {
@@ -326,7 +356,7 @@ uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, color_t color, cons
 
     hagl_blit(x0, y0, &bitmap);
 
-    return glyph.width;
+    return bitmap.width;
 }
 
 /*
