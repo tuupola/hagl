@@ -437,7 +437,19 @@ void hagl_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t 
 #ifdef HAGL_HAS_HAL_SCALE_BLIT
     hagl_hal_scale_blit(x0, y0, w, h, source);
 #else
-    /* TODO: Use pdo_put_pixel() to write to framebuffer. */
+    color_t color;
+    color_t *ptr = (color_t *) source->buffer;
+    uint32_t x_ratio = (uint32_t)((source->width << 16) / w);
+    uint32_t y_ratio = (uint32_t)((source->height << 16) / h);
+
+    for (uint16_t y = 0; y < h; y++) {
+        for (uint16_t x = 0; x < w; x++) {
+            uint16_t px = ((x * x_ratio) >> 16);
+            uint16_t py = ((y * y_ratio) >> 16);
+            color = ptr[(uint8_t)((py * source->width) + px)];
+            hagl_put_pixel(x0 + x, y0 + y, color);
+        }
+    }
 #endif
 };
 
