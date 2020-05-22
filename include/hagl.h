@@ -72,7 +72,7 @@ void hagl_put_pixel(int16_t x0, int16_t y0, color_t color);
  * @param x0 X coordinate
  * @param y0 Y coorginate
  * @param color RGB565 color
- * @param font Pointer to a FONTX2 font
+ * @param font Pointer to a FONTX font
  * @return Width of the drawn character
  */
 uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
@@ -84,7 +84,7 @@ uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, color_t color, cons
  * @param x0 X coordinate
  * @param y0 Y coorginate
  * @param color RGB565 color
- * @param font Pointer to a FONTX2 font
+ * @param font Pointer to a FONTX font
  * @return Width of the drawn string
  */
 uint16_t hagl_put_text(const char16_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font);

@@ -41,7 +41,7 @@ SPDX-License-Identifier: MIT
 #include "bitmap.h"
 #include "rgb332.h"
 #include "rgb565.h"
-#include "fontx2.h"
+#include "fontx.h"
 #include "clip.h"
 #include "tjpgd.h"
 #include "window.h"
@@ -296,9 +296,9 @@ uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, color_t color, cons
     uint8_t set, status;
     color_t buffer[HAGL_CHAR_BUFFER_SIZE];
     bitmap_t bitmap;
-    fontx2_glyph_t glyph;
+    fontx_glyph_t glyph;
 
-    status = fontx2_glyph(&glyph, code, font);
+    status = fontx_glyph(&glyph, code, font);
 
     if (0 != status) {
         return 0;
@@ -339,9 +339,9 @@ uint16_t hagl_put_text(const char16_t *str, int16_t x0, int16_t y0, color_t colo
     char16_t temp;
     uint8_t status;
     uint16_t original = x0;
-    fontx2_meta_t meta;
+    fontx_meta_t meta;
 
-    status = fontx2_meta(&meta, font);
+    status = fontx_meta(&meta, font);
     if (0 != status) {
         return 0;
     }
