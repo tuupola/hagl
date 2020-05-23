@@ -20,6 +20,9 @@ High level functions are pretty self explanatory. For example applications see [
 Before you start drawing you should call `hagl_init()`. Some HAL configurations require you to call `hagl_flush()` to update the contents of the screen. Before exiting your program it is good idea to call `hagl_close()`to clean things up.
 
 ```c
+#include <hagl_hal.h>
+#include <hagl.h>
+
 hagl_init();
 
 /* Main loop. */
