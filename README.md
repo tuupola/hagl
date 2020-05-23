@@ -342,9 +342,9 @@ for (uint16_t i = 1; i < 10000; i++) {
     int16_t x0 = rand() % DISPLAY_WIDTH;
     int16_t y0 = rand() % DISPLAY_HEIGHT;
     color_t color = rand() % 0xffff;
-    char ascii = rand() % 127;
+    char code = rand() % 255;
 
-    hagl_put_char(ascii, x0, y0, color, font8x8);
+    hagl_put_char(code, x0, y0, color, font8x8);
 }
 ```
 
