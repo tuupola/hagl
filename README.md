@@ -1,6 +1,6 @@
 # Hardware Agnostic Graphics Library
 
-HAGL is a lightweight hardware agnostics graphics library. It supports basic geometric primitives, bitmaps, blitting, fixed width fonts and an optional framebuffer. Everything is still work in progress. Things will change without warning.
+HAGL is a lightweight hardware agnostics graphics library. It supports basic geometric primitives, bitmaps, blitting, fixed width fonts and baseline jpg images. The API is 80% stable but can still be considered work in progress.
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
@@ -34,13 +34,13 @@ hagl_close();
 
 ### Colors
 
-HAL defines what kind of color is used. Most common is RGB565 which is represented by two bytes. If you are sure you will be using only RGB565 colors you could use something like following to create a random color.
+HAL defines what kind of pixel format is used. Most common is RGB565 which is represented by two bytes. If you are sure you will be using only RGB565 colors you could use the following shortcut to create a random color.
 
 ```c
 color_t color = rand() % 0xffff;
 ```
 
-To write portable code which can be run with different color systems use the following instead.
+To write portable code which can be run with different pixel formats use the following instead.
 
 ```c
 uint8_t r = rand() % 255;
