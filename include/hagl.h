@@ -108,6 +108,20 @@ uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, color_t color, cons
 uint16_t hagl_put_text(const char16_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
 
 /**
+ * Extract a glyph into a bitmap
+ *
+ * This can be used for example for extracting game sprites from fontsets
+ * such as UNSCII.
+ *
+ * @param code Unicode code point
+ * @param color
+ * @param bitmap Pointer to a bitmap
+ * @param font Pointer to a FONTX font
+ * @return Width of the drawn string
+ */
+uint8_t hagl_get_glyph(char16_t code, color_t color, bitmap_t *bitmap, const uint8_t *font);
+
+/**
  * Blit a bitmap to the display
  *
  * Output will be clipped to the current clip window.

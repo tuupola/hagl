@@ -1,6 +1,6 @@
 # Hardware Agnostic Graphics Library
 
-HAGL is a lightweight hardware agnostics graphics library. It supports basic geometric primitives, bitmaps, blitting, fixed width fonts and an optional framebuffer. Everything is still work in progress. Things will change without warning.
+HAGL is a lightweight hardware agnostics graphics library. It supports basic geometric primitives, bitmaps, blitting, fixed width fonts and baseline jpg images. The API is 80% stable but can still be considered work in progress.
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
@@ -13,49 +13,426 @@ To use HAGL you must provide a hardware absraction layer. HAL must provide atlea
 
 ## Usage
 
-Guess what! Better docs to be written. High level functions are pretty self explanatory though. For example applications see [ESP GFX](https://github.com/tuupola/esp_gfx), [ESP Fire](https://github.com/tuupola/esp_fire), [M5Stack Mandelbrot](https://github.com/tuupola/esp-examples/tree/master/014-mandelbrot) and [ESP M5StickC](https://github.com/tuupola/esp_m5stick).
+High level functions are pretty self explanatory. For example applications see [ESP Effects](https://github.com/tuupola/esp_effects), [SDL2 Effects](https://github.com/tuupola/sdl2_effects), [ESP GFX](https://github.com/tuupola/esp_gfx), and [ESP M5StickC](https://github.com/tuupola/esp_m5stick).
+
+### Lifecycle
+
+Before you start drawing you should call `hagl_init()`. Some HAL configurations require you to call `hagl_flush()` to update the contents of the screen. Before exiting your program it is good idea to call `hagl_close()`to clean things up.
 
 ```c
-void hagl_put_pixel(int16_t x0, int16_t y0, uint16_t color);
-void hagl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
-void hagl_draw_hline(int16_t x0, int16_t y0, uint16_t width, uint16_t color);
-void hagl_draw_vline(int16_t x0, int16_t y0, uint16_t height, uint16_t color);
-void hagl_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
-void hagl_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
-void hagl_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, uint16_t color);
-void hagl_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, uint16_t color);
-void hagl_draw_circle(int16_t xc, int16_t yc, int16_t r, uint16_t color);
-void hagl_fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
-void hagl_draw_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t color);
-void hagl_fill_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, uint16_t color);
-void hagl_draw_polygon(int16_t amount, int16_t *vertices, uint16_t color);
-void hagl_fill_polygon(int16_t amount, int16_t *vertices, uint16_t color);
-void hagl_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
-void hagl_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
+#include <hagl_hal.h>
+#include <hagl.h>
 
+hagl_init();
 
-uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, uint16_t color, const unsigned char *font);
-uint16_t hagl_put_text(const char16_t *str, int16_t x0, int16_t y0, uint16_t color, const unsigned char *font);
+/* Main loop. */
+while (1) {
+    hagl_clear_screen();
+    hagl_load_image(0, 0, "/sdcard/hello.jpg");
+    hagl_flush();
+};
 
-void hagl_clear_clip_window();
-void hagl_clear_screen();
-void hagl_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
-
+hagl_close();
 ```
 
-Blit copies a [bitmap](https://github.com/tuupola/hagl/blob/master/bitmap.c) to the screen. You can also copy a bitmap scaled up or down.
+### Colors
+
+HAL defines what kind of pixel format is used. Most common is RGB565 which is represented by two bytes. If you are sure you will be using only RGB565 colors you could use the following shortcut to create a random color.
 
 ```c
-void hagl_blit(int16_t x0, int16_t y0, bitmap_t *source);
-void hagl_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source);
+color_t color = rand() % 0xffff;
 ```
 
-Depending on HAL, initialisation and flushing might be required. If HAL does not require them both functions are just a no-op.
+To write portable code which can be run with different pixel formats use the following instead.
 
 ```c
-bitmap_t *hagl_init();
-void hagl_flush();
-void hagl_close();
+uint8_t r = rand() % 255;
+uint8_t g = rand() % 255;
+uint8_t b = rand() % 255;
+color_t color = hagl_color(r, g, b);
+```
+
+### Put a pixel
+
+```c
+for (uint32_t i = 1; i < 100000; i++) {
+    int16_t x0 = rand() % DISPLAY_WIDTH;
+    int16_t y0 = rand() % DISPLAY_HEIGHT;
+    color_t color = rand() % 0xffff;
+
+    hagl_put_pixel(x0, y0, color);
+}
+```
+![Random pixels](https://appelsiini.net/img/2020/hagl-put-pixel-gh.png)
+
+### Draw a line
+
+
+```c
+for (uint16_t i = 1; i < 1000; i++) {
+    int16_t x0 = rand() % DISPLAY_WIDTH;
+    int16_t y0 = rand() % DISPLAY_HEIGHT;
+    int16_t x1 = rand() % DISPLAY_WIDTH;
+    int16_t y1 = rand() % DISPLAY_HEIGHT;
+    color_t color = rand() % 0xffff;
+
+    hagl_draw_line(x0, y0, x1, y1, color);
+}
+```
+
+![Random lines](https://appelsiini.net/img/2020/pod-draw-line.png)
+
+### Draw a line
+
+```c
+for (uint16_t i = 1; i < 1000; i++) {
+    int16_t x0 = rand() % DISPLAY_WIDTH;
+    int16_t y0 = rand() % DISPLAY_HEIGHT;
+    int16_t x1 = rand() % DISPLAY_WIDTH;
+    int16_t y1 = rand() % DISPLAY_HEIGHT;
+    color_t color = rand() % 0xffff;
+
+    hagl_draw_line(x0, y0, x1, y1, color);
+}
+```
+
+![Random lines](https://appelsiini.net/img/2020/pod-draw-line.png)
+
+### Draw a horizontal line
+
+```c
+for (uint16_t i = 1; i < 1000; i++) {
+    int16_t x0 = rand() % (DISPLAY_WIDTH / 2);
+    int16_t y0 = rand() % DISPLAY_HEIGHT;
+    int16_t width = rand() % (DISPLAY_WIDTH - x0);
+    color_t color = rand() % 0xffff;
+
+    hagl_draw_hline(x0, y0, width, color);
+}
+```
+
+![Random horizontal lines](https://appelsiini.net/img/2020/pod-draw-hline.png)
+
+### Draw a vertical line
+
+```c
+for (uint16_t i = 1; i < 1000; i++) {
+    int16_t x0 = rand() % DISPLAY_WIDTH;
+    int16_t y0 = rand() % (DISPLAY_HEIGHT / 2);
+    int16_t height = rand() % (DISPLAY_HEIGHT - y0);
+    color_t color = rand() % 0xffff;
+
+    hagl_draw_vline(x0, y0, height, color);
+}
+```
+
+![Random vertical lines](https://appelsiini.net/img/2020/pod-draw-vline.png)
+
+### Draw a circle
+
+```c
+for (uint16_t i = 1; i < 500; i++) {
+    int16_t x0 = DISPLAY_WIDTH / 2;
+    int16_t y0 = DISPLAY_HEIGHT / 2;
+    int16_t radius = rand() % DISPLAY_WIDTH;
+    color_t color = rand() % 0xffff;
+
+    hagl_draw_circle(x0, y0, radius, color);
+}
+```
+
+![Random circle](https://appelsiini.net/img/2020/pod-draw-circle.png)
+
+### Draw a filled circle
+
+```c
+for (uint16_t i = 1; i < 500; i++) {
+    int16_t x0 = rand() % DISPLAY_WIDTH;
+    int16_t y0 = rand() % DISPLAY_HEIGHT;
+    int16_t radius = rand() % 100;
+    color_t color = rand() % 0xffff;
+
+    hagl_fill_circle(x0, y0, radius, color);
+}
+```
+
+![Random filled circle](https://appelsiini.net/img/2020/pod-fill-circle.png)
+
+### Draw an ellipse
+
+```c
+for (uint16_t i = 1; i < 500; i++) {
+    int16_t x0 = DISPLAY_WIDTH / 2;
+    int16_t y0 = DISPLAY_HEIGHT / 2;
+    int16_t rx = rand() % DISPLAY_WIDTH;
+    int16_t ry = rand() % DISPLAY_HEIGHT;
+    color_t color = rand() % 0xffff;
+
+    hagl_draw_ellipse(x0, y0, rx, ry, color);
+}
+```
+
+![Random ellipse](https://appelsiini.net/img/2020/hagl-draw-ellipse.png)
+
+### Draw a filled ellipse
+
+```c
+for (uint16_t i = 1; i < 500; i++) {
+    int16_t x0 = rand() % DISPLAY_WIDTH;
+    int16_t y0 = rand() % DISPLAY_HEIGHT;
+    int16_t rx = rand() % DISPLAY_WIDTH / 4;
+    int16_t ry = rand() % DISPLAY_HEIGHT / 4;
+    color_t color = rand() % 0xffff;
+
+    hagl_draw_ellipse(x0, y0, rx, ry, color);
+}
+```
+
+![Random filled ellipse](https://appelsiini.net/img/2020/hagl-fill-ellipse.png)
+
+### Draw a triangle
+
+```c
+int16_t x0 = rand() % DISPLAY_WIDTH;
+int16_t y0 = rand() % DISPLAY_HEIGHT;
+int16_t x1 = rand() % DISPLAY_WIDTH;
+int16_t y1 = rand() % DISPLAY_HEIGHT;
+int16_t x2 = rand() % DISPLAY_WIDTH;
+int16_t y2 = rand() % DISPLAY_HEIGHT;
+color_t color = rand() % 0xffff;
+
+hagl_draw_triangle(x0, y0, x1, y1, x2, y2, color);
+```
+
+![Random triangle](https://appelsiini.net/img/2020/pod-draw-triangle.png)
+
+### Draw a filled triangle
+
+```c
+int16_t x0 = rand() % DISPLAY_WIDTH;
+int16_t y0 = rand() % DISPLAY_HEIGHT;
+int16_t x1 = rand() % DISPLAY_WIDTH;
+int16_t y1 = rand() % DISPLAY_HEIGHT;
+int16_t x2 = rand() % DISPLAY_WIDTH;
+int16_t y2 = rand() % DISPLAY_HEIGHT;
+color_t color = rand() % 0xffff;
+
+hagl_fill_triangle(x0, y0, x1, y1, x2, y2, color);
+```
+
+![Random filled triangle](https://appelsiini.net/img/2020/pod-fill-triangle.png)
+
+### Draw a rectangle
+
+```c
+for (uint16_t i = 1; i < 50; i++) {
+    int16_t x0 = rand() % DISPLAY_WIDTH;
+    int16_t y0 = rand() % DISPLAY_HEIGHT;
+    int16_t x1 = rand() % DISPLAY_WIDTH;
+    int16_t y1 = rand() % DISPLAY_HEIGHT;
+    color_t color = rand() % 0xffff;
+
+    hagl_draw_rectangle(x0, y0, x1, y1, color);
+}
+```
+
+![Random rectangle](https://appelsiini.net/img/2020/pod-draw-rectangle.png)
+
+### Draw a filled rectangle
+
+```c
+for (uint16_t i = 1; i < 10; i++) {
+    int16_t x0 = rand() % DISPLAY_WIDTH;
+    int16_t y0 = rand() % DISPLAY_HEIGHT;
+    int16_t x1 = rand() % DISPLAY_WIDTH;
+    int16_t y1 = rand() % DISPLAY_HEIGHT;
+    color_t color = rand() % 0xffff;
+
+    hagl_fill_rectangle(x0, y0, x1, y1, color);
+}
+```
+
+![Random filled rectangle](https://appelsiini.net/img/2020/pod-fill-rectangle.png)
+
+
+### Draw a rounded rectangle
+
+```c
+for (uint16_t i = 1; i < 30; i++) {
+    int16_t x0 = rand() % DISPLAY_WIDTH;
+    int16_t y0 = rand() % DISPLAY_HEIGHT;
+    int16_t x1 = rand() % DISPLAY_WIDTH;
+    int16_t y1 = rand() % DISPLAY_HEIGHT;
+    int16_t r = 10
+    color_t color = rand() % 0xffff;
+
+    hagl_draw_rounded_rectangle(x0, y0, x1, y1, r, color);
+}
+```
+
+![Random rounded rectangle](https://appelsiini.net/img/2020/hagl-draw-rounded-rectangle.png)
+
+### Draw a filled rounded rectangle
+
+```c
+for (uint16_t i = 1; i < 30; i++) {
+    int16_t x0 = rand() % DISPLAY_WIDTH;
+    int16_t y0 = rand() % DISPLAY_HEIGHT;
+    int16_t x1 = rand() % DISPLAY_WIDTH;
+    int16_t y1 = rand() % DISPLAY_HEIGHT;
+    int16_t r = 10
+    color_t color = rand() % 0xffff;
+
+    hagl_fill_rounded_rectangle(x0, y0, x1, y1, r, color);
+}
+```
+
+![Random filled rounded rectangle](https://appelsiini.net/img/2020/hagl-fill-rounded-rectangle.png)
+
+### Draw a polygon
+
+You can draw polygons with unlimited number of vertices which are passed as an array. Pass the number of vertices as the first argument.
+
+```c
+int16_t x0 = rand() % DISPLAY_WIDTH;
+int16_t y0 = rand() % DISPLAY_HEIGHT;
+int16_t x1 = rand() % DISPLAY_WIDTH;
+int16_t y1 = rand() % DISPLAY_HEIGHT;
+int16_t x2 = rand() % DISPLAY_WIDTH;
+int16_t y2 = rand() % DISPLAY_HEIGHT;
+int16_t x3 = rand() % DISPLAY_WIDTH;
+int16_t y3 = rand() % DISPLAY_HEIGHT;
+int16_t x4 = rand() % DISPLAY_WIDTH;
+int16_t y4 = rand() % DISPLAY_HEIGHT;
+color_t color = rand() % 0xffff;
+int16_t vertices[10] = {x0, y0, x1, y1, x2, y2, x3, y3, x4, y4};
+
+hagl_draw_polygon(5, vertices, color);
+```
+
+![Random polygon](https://appelsiini.net/img/2020/pod-draw-polygon.png)
+
+### Draw a filled polygon
+
+You can draw filled polygons with up to 64 vertices which are passed as an array. First argument is the number of vertices. Polygon does **not** have to be concave.
+
+```c
+int16_t x0 = rand() % DISPLAY_WIDTH;
+int16_t y0 = rand() % DISPLAY_HEIGHT;
+int16_t x1 = rand() % DISPLAY_WIDTH;
+int16_t y1 = rand() % DISPLAY_HEIGHT;
+int16_t x2 = rand() % DISPLAY_WIDTH;
+int16_t y2 = rand() % DISPLAY_HEIGHT;
+int16_t x3 = rand() % DISPLAY_WIDTH;
+int16_t y3 = rand() % DISPLAY_HEIGHT;
+int16_t x4 = rand() % DISPLAY_WIDTH;
+int16_t y4 = rand() % DISPLAY_HEIGHT;
+color_t color = rand() % 0xffff;
+int16_t vertices[10] = {x0, y0, x1, y1, x2, y2, x3, y3, x4, y4};
+
+hagl_fill_polygon(5, vertices, color);
+```
+
+![Random filled polygon](https://appelsiini.net/img/2020/pod-fill-polygon.png)
+
+
+### Put a single char
+
+The library supports Unicode fonts in fontx format. It only includes three fonts by default. You can find more at [tuupola/embedded-fonts](https://github.com/tuupola/embedded-fonts) repository.
+
+```c
+for (uint16_t i = 1; i < 10000; i++) {
+    int16_t x0 = rand() % DISPLAY_WIDTH;
+    int16_t y0 = rand() % DISPLAY_HEIGHT;
+    color_t color = rand() % 0xffff;
+    char code = rand() % 255;
+
+    hagl_put_char(code, x0, y0, color, font8x8);
+}
+```
+
+![Random chars](https://appelsiini.net/img/2020/hagl-put-char-gh.png)
+
+### Put a string
+
+The library supports Unicode fonts in fontx format. It only includes three fonts by default. You can find more at [tuupola/embedded-fonts](https://github.com/tuupola/embedded-fonts) repository.
+
+```c
+for (uint16_t i = 1; i < 10000; i++) {
+    int16_t x0 = rand() % DISPLAY_WIDTH;
+    int16_t y0 = rand() % DISPLAY_HEIGHT;
+    color_t color = rand() % 0xffff;
+
+    hagl_put_text(u"YO! MTV raps.", x0, y0, color, font6x9);
+}
+```
+
+![Random strings](https://appelsiini.net/img/2020/hagl-put-text-gh.png)
+
+### Blit a bitmap
+
+Blit copies a [bitmap](https://github.com/tuupola/hagl/blob/master/bitmap.c) to the screen. This example uses a glyph bitmap which is extracted from a font.
+
+```c
+bitmap_t bitmap;
+bitmap.buffer = (uint8_t *) malloc(6 * 9 * sizeof(color_t));
+
+for (uint16_t i = 1; i < 20000; i++) {
+    int16_t x0 = rand() % DISPLAY_WIDTH;
+    int16_t y0 = rand() % DISPLAY_HEIGHT;
+    color_t color = rand() % 0xffff;
+    uint16_t code = rand() % 0xffff;
+    hagl_get_glyph(code, color, &bitmap, font6x9);
+    hagl_blit(x0, y0, &bitmap);
+}
+```
+
+![Random blits](https://appelsiini.net/img/2020/hagl-blit.png)
+
+
+### Blit a bitmap scaled up or down
+
+Scale blit copies and scales a [bitmap](https://github.com/tuupola/hagl/blob/master/bitmap.c) to the screen. This example uses a glyph bitmap which is extracted from a font.
+
+```c
+bitmap_t bitmap;
+bitmap.buffer = (uint8_t *) malloc(6 * 9 * sizeof(color_t));
+
+for (uint16_t i = 1; i < 20000; i++) {
+    int16_t x0 = rand() % DISPLAY_WIDTH;
+    int16_t y0 = rand() % DISPLAY_HEIGHT;
+    color_t color = rand() % 0xffff;
+    uint16_t code = rand() % 0xffff;
+    hagl_get_glyph(code, color, &bitmap, font6x9);
+    hagl_scale_blit(x0, y0, 24, 36, &bitmap);
+}
+```
+
+![Random blits](https://appelsiini.net/img/2020/hagl-scale-blit.png)
+
+### Clip window
+
+You can restrict the area of drawing by setting a clip window.
+
+```c
+hagl_set_clip_window(0, 40, DISPLAY_WIDTH, DISPLAY_HEIGHT - 40);
+
+for (uint16_t i = 1; i < 500; i++) {
+    int16_t x0 = rand() % DISPLAY_WIDTH;
+    int16_t y0 = rand() % DISPLAY_HEIGHT;
+    int16_t radius = rand() % 100;
+    color_t color = rand() % 0xffff;
+
+    hagl_fill_circle(x0, y0, radius, color);
+}
+````
+
+![Clipped windows](https://appelsiini.net/img/2020/hagl-set-clip-window.png)
+
+If you want to cleant the contents of the clip window instead of clearing the whole screen call:
+
+```c
+hagl_clear_clip_window()
 ```
 
 ## Speed
