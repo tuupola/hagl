@@ -48,13 +48,13 @@ extern "C" {
 /**
  * Anything per second counter
  *
- * Use to measure anything per second. For example always after downlaoding
+ * Use to measure anything per second. For example always after downloading
  * 1024 bytes you could get downloaded bytes per second with:
  *
  * float bps;
  * bps = aps(1024);
  *
- * You camn reset the counter by passing APS_RESET as the parameter.
+ * You can reset the counter by passing APS_RESET as the argument.
  *
  * bps = aps(APS_RESET);
  *

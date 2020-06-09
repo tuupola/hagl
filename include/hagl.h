@@ -63,29 +63,47 @@ extern void hagl_hal_vline(int16_t x0, int16_t y0, uint16_t width, color_t color
 extern void hagl_hal_flush();
 extern bitmap_t *hagl_hal_init();
 
+/**
+ * Put a single pixel
+ *
+ * Output will be clipped to the current clip window.
+ * @param x0
+ * @param y0
+ * @param color
+ */
 void hagl_put_pixel(int16_t x0, int16_t y0, color_t color);
 
 /**
  * Draw a single character
  *
- * @param code Unicode code point
- * @param x0 X coordinate
- * @param y0 Y coorginate
+ * Output will be clipped to the current clip window. Library itself
+ * includes only a couple of fonts. You can find more fonts at:
+ *
+ * https://github.com/tuupola/fonts
+ *
+ * @param code  unicode code point
+ * @param x0
+ * @param y0
  * @param color
- * @param font Pointer to a FONTX font
- * @return Width of the drawn character
+ * @param font  pointer to a FONTX font
+ * @return idth of the drawn character
  */
 uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
 
 /**
  * Draw a string
  *
- * @param str Pointer to an Unicode string
- * @param x0 X coordinate
- * @param y0 Y coorginate
+ * Output will be clipped to the current clip window. Library itself
+ * includes only a couple of fonts. You can find more fonts at:
+ *
+ * https://github.com/tuupola/fonts
+ *
+ * @param str pointer to an wide char string
+ * @param x0
+ * @param y0
  * @param color
- * @param font Pointer to a FONTX font
- * @return Width of the drawn string
+ * @param font pointer to a FONTX font
+ * @return width of the drawn string
  */
 uint16_t hagl_put_text(const char16_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
 
@@ -103,43 +121,280 @@ uint16_t hagl_put_text(const char16_t *str, int16_t x0, int16_t y0, color_t colo
  */
 uint8_t hagl_get_glyph(char16_t code, color_t color, bitmap_t *bitmap, const uint8_t *font);
 
+/**
+ * Blit a bitmap to the display
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param x0
+ * @param y0
+ * @param source pointer to a bitmap
+ */
 void hagl_blit(int16_t x0, int16_t y0, bitmap_t *source);
+
+/**
+ * Blit and scale a bitmap to the display
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param x0
+ * @param y0
+ * @param w target width
+ * @param h target height
+ * @param source pointer to a bitmap
+ */
 void hagl_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source);
 
+/**
+ * Draw a line
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param x0
+ * @param y0
+ * @param x1
+ * @param y1
+ * @param color
+ */
 void hagl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color);
+
+/**
+ * Draw a vertical line
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param x0
+ * @param y0
+ * @param width
+ * @param color
+ */
 void hagl_draw_hline(int16_t x0, int16_t y0, uint16_t width, color_t color);
+
+/**
+ * Draw a horizontal line
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param x0
+ * @param y0
+ * @param height
+ * @param color
+ */
 void hagl_draw_vline(int16_t x0, int16_t y0, uint16_t height, color_t color);
 
+/**
+ * Draw a rectangle
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param x0
+ * @param y0
+ * @param x1
+ * @param y1
+ * @param color
+ */
 void hagl_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color);
+
+/**
+ * Draw a filled rectangle
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param x0
+ * @param y0
+ * @param x1
+ * @param y1
+ * @param color
+ */
 void hagl_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color);
-void hagl_draw_circle(int16_t xc, int16_t yc, int16_t r, color_t color);
+
+/**
+ * Draw a circle
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param x0 center X
+ * @param y0 center Y
+ * @param r radius
+ * @param color
+ */
+void hagl_draw_circle(int16_t x0, int16_t y0, int16_t r, color_t color);
+
+/**
+ * Draw a filled circle
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param x0 center X
+ * @param y0 center Y
+ * @param r radius
+ * @param color
+ */
 void hagl_fill_circle(int16_t x0, int16_t y0, int16_t r, color_t color);
+
+/**
+ * Draw an ellipse
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param x0 center X
+ * @param y0 center Y
+ * @param a vertical radius
+ * @param b horizontal radius
+ * @param color
+ */
 void hagl_draw_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color);
+
+/**
+ * Draw a filled ellipse
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param x0 center X
+ * @param y0 center Y
+ * @param a vertical radius
+ * @param b horizontal radius
+ * @param color
+ */
 void hagl_fill_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color);
+
+/**
+ * Draw a polygon
+ *
+ * Output will be clipped to the current clip window. Polygon does
+ * not need to be convex. They can also be concave or complex.
+ *
+ * color_t color = hagl_color(0, 255, 0);
+ * int16_t vertices[10] = {x0, y0, x1, y1, x2, y2, x3, y3, x4, y4};
+ * hagl_draw_polygon(5, vertices, color);
+ *
+ * @param amount number of vertices
+ * @param vertices pointer to (an array) of vertices
+ * @param color
+ */
 void hagl_draw_polygon(int16_t amount, int16_t *vertices, color_t color);
+
+/**
+ * Draw a filled polygon
+ *
+ * Output will be clipped to the current clip window. Polygon does
+ * not need to be convex. They can also be concave or complex.
+ *
+ * color_t color = hagl_color(0, 255, 0);
+ * int16_t vertices[10] = {x0, y0, x1, y1, x2, y2, x3, y3, x4, y4};
+ * hagl_draw_polygon(5, vertices, color);
+ *
+ * @param amount number of vertices
+ * @param vertices pointer to (an array) of vertices
+ * @param color
+ */
 void hagl_fill_polygon(int16_t amount, int16_t *vertices, color_t color);
+
+/**
+ * Draw a triangle
+ *
+ * Output will be clipped to the current clip window. Internally
+ * uses hagl_draw_polygon() to draw the triangle.
+ *
+ * @param x0
+ * @param y0
+ * @param x1
+ * @param y1
+ * @param x2
+ * @param y3
+ * @param color
+ */
 void hagl_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color);
+
+/**
+ * Draw a filled triangle
+ *
+ * Output will be clipped to the current clip window. Internally
+ * uses hagl_fill_polygon() to draw the triangle.
+ *
+ * @param x0
+ * @param y0
+ * @param x1
+ * @param y1
+ * @param x2
+ * @param y3
+ * @param color
+ */
 void hagl_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color);
+
+/**
+ * Draw a rounded rectangle
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param x0
+ * @param y0
+ * @param x0
+ * @param y0
+ * @param r corner radius
+ * @param color
+ */
 void hagl_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color);
+
+/**
+ * Draw a filled rounded rectangle
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param x0
+ * @param y0
+ * @param x1
+ * @param y1
+ * @param r corner radius
+ * @param color
+ */
 void hagl_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color);
 
+/**
+ * Load an image
+ *
+ * Output will be clipped to the current clip window. Does not do
+ * any scaling. Currently supports only baseline jpg images.
+ *
+ * @param x0
+ * @param y0
+ * @param x1
+ * @param y1
+ * @param r corner radius
+ * @param color
+ */
 uint32_t hagl_load_image(int16_t x0, int16_t y0, const char *filename);
 
+/**
+ * Set the clip window
+ *
+ * Clip windows restricts the drawable area. It does not affect
+ * the coordinates.
+ *
+ * @param x0
+ * @param y0
+ * @param x1
+ * @param y1
+ */
 void hagl_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 
+/**
+ * Convert RGB to color
+ *
+ * Returns color type  defined by the HAL. Most often it is an
+ * uint16_t RGB565 color.
+ *
+ * @return color
+ */
 color_t hagl_color(uint8_t r, uint8_t g, uint8_t b);
 
 /**
  * Clear area of the current clip window
- *
- * @return void
  */
 void hagl_clear_clip_window();
 
 /**
- * Clear the whole display
- *
- * @return void
+ * Clear the display
  */
 void hagl_clear_screen();
 bitmap_t *hagl_init();

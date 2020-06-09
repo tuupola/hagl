@@ -8,7 +8,7 @@ HAGL is a lightweight hardware agnostics graphics library. It supports basic geo
 
 ## Hardware Abstraction Layer
 
-To use HAGL you must provide a hardware absraction layer. HAL must provide atleast the `hagl_hal_put_pixel(x0, y0, color)` function. If nothing else is provided all higher level graphical functions will use this function to draw the primitive. There are other optional HAL functions. While proper documentation is lacking see the example HAL implementations for [libgd](https://github.com/tuupola/hagl_gd), [libsdl2](https://github.com/tuupola/hagl_sdl2) and display drivers for [ESP-IDF supporting MIPI Display Command Set](https://github.com/tuupola/esp_mipi).
+To use HAGL you must provide a hardware absraction layer. The HAL must provide atleast a `hagl_hal_put_pixel(x0, y0, color)` function. If nothing else is provided all higher level graphical functions will use this function to draw the primitive. The HAL can override all functions if required (everything not implemented yet). While proper documentation is lacking see the example HAL implementations for [libgd](https://github.com/tuupola/hagl_gd), [libsdl2](https://github.com/tuupola/hagl_sdl2) and display drivers for [ESP-IDF and MIPI displays](https://github.com/tuupola/hagl_esp_mipi).
 
 
 ## Usage

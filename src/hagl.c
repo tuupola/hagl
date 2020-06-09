@@ -67,10 +67,6 @@ void hagl_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
     clip_window.y1 = y1;
 }
 
-/*
- * Puts a pixel RGB565 color. This is the only mandatory function HAL must
- * support.
- */
 void hagl_put_pixel(int16_t x0, int16_t y0, color_t color)
 {
     /* x0 or y0 is before the edge, nothing to do. */
@@ -87,10 +83,6 @@ void hagl_put_pixel(int16_t x0, int16_t y0, color_t color)
     hagl_hal_put_pixel(x0, y0, color);
 }
 
-/*
- * Draw a horizontal line with given color. If HAL supports it uses
- * hardware hline drawing. If not falls back to vanilla line drawing.
- */
 void hagl_draw_hline(int16_t x0, int16_t y0, uint16_t w, color_t color) {
 #ifdef HAGL_HAS_HAL_HLINE
     int16_t width = w;
