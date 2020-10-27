@@ -37,6 +37,7 @@ SPDX-License-Identifier: MIT
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stddef.h>
 
 #include "bitmap.h"
 #include "rgb332.h"
