@@ -36,6 +36,7 @@ SPDX-License-Identifier: MIT
 #define _HAGL_H
 
 #include <stdint.h>
+#include <stddef.h>
 
 #include "hagl_hal.h"
 #include "bitmap.h"
@@ -48,10 +49,6 @@ SPDX-License-Identifier: MIT
 #define HAGL_ERR_GENERAL         (1)
 #define HAGL_ERR_FILE_IO         (2)
 #define HAGL_ERR_TJPGD           (100)
-
-#ifndef char16_t
-typedef uint16_t char16_t;
-#endif
 
 /* This is the only mandatory function which HAL must provide. */
 extern void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color);
@@ -88,7 +85,7 @@ void hagl_put_pixel(int16_t x0, int16_t y0, color_t color);
  * @param font  pointer to a FONTX font
  * @return idth of the drawn character
  */
-uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
+uint8_t hagl_put_char(wchar_t code, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
 
 /**
  * Draw a string
@@ -105,7 +102,7 @@ uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, color_t color, cons
  * @param font pointer to a FONTX font
  * @return width of the drawn string
  */
-uint16_t hagl_put_text(const char16_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
+uint16_t hagl_put_text(const wchar_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
 
 /**
  * Extract a glyph into a bitmap
@@ -119,7 +116,7 @@ uint16_t hagl_put_text(const char16_t *str, int16_t x0, int16_t y0, color_t colo
  * @param font Pointer to a FONTX font
  * @return Width of the drawn string
  */
-uint8_t hagl_get_glyph(char16_t code, color_t color, bitmap_t *bitmap, const uint8_t *font);
+uint8_t hagl_get_glyph(wchar_t code, color_t color, bitmap_t *bitmap, const uint8_t *font);
 
 /**
  * Blit a bitmap to the display

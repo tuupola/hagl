@@ -37,6 +37,7 @@ SPDX-License-Identifier: MIT
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stddef.h>
 
 #include "bitmap.h"
 #include "rgb332.h"
@@ -278,7 +279,7 @@ void hagl_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t
     }
 }
 
-uint8_t hagl_get_glyph(char16_t code, color_t color, bitmap_t *bitmap, const uint8_t *font)
+uint8_t hagl_get_glyph(wchar_t code, color_t color, bitmap_t *bitmap, const uint8_t *font)
 {
     uint8_t status, set;
     fontx_glyph_t glyph;
@@ -313,7 +314,7 @@ uint8_t hagl_get_glyph(char16_t code, color_t color, bitmap_t *bitmap, const uin
     return 0;
 }
 
-uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, color_t color, const uint8_t *font)
+uint8_t hagl_put_char(wchar_t code, int16_t x0, int16_t y0, color_t color, const uint8_t *font)
 {
     uint8_t set, status;
     color_t buffer[HAGL_CHAR_BUFFER_SIZE];
@@ -356,9 +357,9 @@ uint8_t hagl_put_char(char16_t code, int16_t x0, int16_t y0, color_t color, cons
  * continue from the next line.
  */
 
-uint16_t hagl_put_text(const char16_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font)
+uint16_t hagl_put_text(const wchar_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font)
 {
-    char16_t temp;
+    wchar_t temp;
     uint8_t status;
     uint16_t original = x0;
     fontx_meta_t meta;
