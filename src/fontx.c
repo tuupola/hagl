@@ -37,6 +37,7 @@ SPDX-License-Identifier: MIT
 */
 
 #include <stdint.h>
+#include <stddef.h>
 #include <string.h>
 
 #include "fontx.h"
@@ -52,7 +53,7 @@ uint8_t fontx_meta(fontx_meta_t *meta, const uint8_t *font) {
 }
 
 
-uint8_t fontx_glyph(fontx_glyph_t *glyph, uint16_t code, const uint8_t* font) {
+uint8_t fontx_glyph(fontx_glyph_t *glyph, wchar_t code, const uint8_t* font) {
     uint32_t nc, bc, sb, eb;
     uint8_t status;
     const uint8_t *block_table;
