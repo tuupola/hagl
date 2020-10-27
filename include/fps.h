@@ -68,7 +68,7 @@ static inline float fps()
     float measured = 0.0;
 
     if (firstrun) {
-        start = clock();
+        start = clock() - 1;
         firstrun = false;
     }
     frames++;
