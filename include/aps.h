@@ -63,15 +63,15 @@ extern "C" {
  */
 static inline float aps(uint32_t add)
 {
-    static clock_t ticks;
     static clock_t start;
     static uint64_t value = 0;
-    static float current = 0;
+    static float current = 0.0;
     static bool firstrun = true;
+    clock_t ticks;
 
     /* Larger value is less smoothing. */
     float smoothing = 0.98;
-    float measured = 0;
+    float measured = 0.0;
 
     if (firstrun) {
         start = clock();
@@ -90,9 +90,9 @@ static inline float aps(uint32_t add)
 
     ticks = clock() - start;
     measured = value / (float) ticks * CLOCKS_PER_SEC;
-    measured = (measured * smoothing) + (current * (1.0 - smoothing));
+    current = (measured * smoothing) + (current * (1.0 - smoothing));
 
-    return measured;
+    return current;
 }
 
 #ifdef __cplusplus
