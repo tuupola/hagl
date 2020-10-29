@@ -74,12 +74,12 @@ static inline float aps(uint32_t add)
     float measured = 0.0;
 
     if (firstrun) {
-        start = clock();
+        start = clock() - 1;
         firstrun = false;
     }
 
     if (APS_RESET == add) {
-        start = clock();
+        start = clock() - 1;
         value = 0;
         current = 0;
         firstrun = false;
