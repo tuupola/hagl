@@ -8,12 +8,12 @@ HAGL is a lightweight hardware agnostics graphics library. It supports basic geo
 
 ## Hardware Abstraction Layer
 
-To use HAGL you must provide a hardware absraction layer. The HAL must provide atleast a `hagl_hal_put_pixel(x0, y0, color)` function. If nothing else is provided all higher level graphical functions will use this function to draw the primitive. The HAL can override all functions if required (everything not implemented yet). While proper documentation is lacking see the example HAL implementations for [libgd](https://github.com/tuupola/hagl_gd), [libsdl2](https://github.com/tuupola/hagl_sdl2) and display drivers for [ESP-IDF and MIPI displays](https://github.com/tuupola/hagl_esp_mipi).
+To use HAGL you must provide a hardware absraction layer. The HAL must provide atleast a `hagl_hal_put_pixel(x0, y0, color)` function. If nothing else is provided all higher level graphical functions will use this function to draw the primitive. The HAL can override all functions if required (everything not implemented yet). While proper documentation is lacking see the example HAL implementations for [libgd](https://github.com/tuupola/hagl_gd), [libsdl2](https://github.com/tuupola/hagl_sdl2), [ESP-IDF](https://github.com/tuupola/hagl_esp_mipi) and [Nuclei RISC-V SDK](https://github.com/tuupola/hagl_gd32v_mipi)
 
 
 ## Usage
 
-High level functions are pretty self explanatory. For example applications see [ESP Effects](https://github.com/tuupola/esp_effects), [SDL2 Effects](https://github.com/tuupola/sdl2_effects), [ESP GFX](https://github.com/tuupola/esp_gfx), and [ESP M5StickC](https://github.com/tuupola/esp_m5stick).
+High level functions are pretty self explanatory. For example applications see [ESP Effects](https://github.com/tuupola/esp_effects), [SDL2 Effects](https://github.com/tuupola/sdl2_effects), [ESP GFX](https://github.com/tuupola/esp_gfx), and [GD32V GFX](https://github.com/tuupola/gd32v_gfxP).
 
 ### Lifecycle
 
