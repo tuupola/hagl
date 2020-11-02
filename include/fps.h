@@ -57,36 +57,27 @@ extern "C" {
  */
 static inline float fps()
 {
-    static struct timespec start;
-    static uint32_t frames = 0;
+    static clock_t start;
+    static uint32_t frames = 1;
     static float current = 0.0;
     static bool firstrun = true;
-
-    struct timespec now;
-    uint32_t seconds;
-    float measured = 0.0;
+    clock_t ticks;
 
     /* Larger value is less smoothing. */
     float smoothing = 0.98;
-
+    float measured = 0.0;
 
     if (firstrun) {
-        clock_gettime(CLOCK_MONOTONIC, &start);
+        start = clock() - 1;
         firstrun = false;
     }
     frames++;
 
-    clock_gettime(CLOCK_MONOTONIC, &now);
-    seconds = now.tv_sec - start.tv_sec;
+    ticks = clock() - start;
+    measured = frames / (float) ticks * CLOCKS_PER_SEC;
+    current = (measured * smoothing) + (current * (1.0 - smoothing));
 
-    if (seconds) {
-        measured = frames / (float) seconds;
-        current = (measured * smoothing) + (current * (1.0 - smoothing));
-
-        return current;
-    }
-
-    return 0;
+    return current;
 }
 
 #ifdef __cplusplus

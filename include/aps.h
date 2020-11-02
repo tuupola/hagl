@@ -63,25 +63,23 @@ extern "C" {
  */
 static inline float aps(uint32_t add)
 {
-    static struct timespec start;
+    static clock_t start;
     static uint64_t value = 0;
     static float current = 0.0;
     static bool firstrun = true;
-
-    struct timespec now;
-    static uint32_t seconds;
-    float measured = 0.0;
+    clock_t ticks;
 
     /* Larger value is less smoothing. */
-    float smoothing = 0.95;
+    float smoothing = 0.98;
+    float measured = 0.0;
 
     if (firstrun) {
-        clock_gettime(CLOCK_MONOTONIC, &start);
+        start = clock() - 1;
         firstrun = false;
     }
 
     if (APS_RESET == add) {
-        clock_gettime(CLOCK_MONOTONIC, &start);
+        start = clock() - 1;
         value = 0;
         current = 0;
         firstrun = false;
@@ -90,17 +88,11 @@ static inline float aps(uint32_t add)
 
     value += add;
 
-    clock_gettime(CLOCK_MONOTONIC, &now);
-    seconds = now.tv_sec - start.tv_sec;
+    ticks = clock() - start;
+    measured = value / (float) ticks * CLOCKS_PER_SEC;
+    current = (measured * smoothing) + (current * (1.0 - smoothing));
 
-    if (seconds) {
-        measured = value / (float) seconds;
-        current = (measured * smoothing) + (current * (1.0 - smoothing));
-
-        return current;
-    }
-
-    return 0;
+    return current;
 }
 
 #ifdef __cplusplus
