@@ -100,7 +100,7 @@ color_t hagl_get_pixel(int16_t x0, int16_t y0)
 #ifdef HAGL_HAS_HAL_GET_PIXEL
     return hagl_hal_get_pixel(x0, y0);
 #else
-    return hagl_color(0, 0, 255);
+    return hagl_color(0, 0, 0);
 #endif /* HAGL_HAS_HAL_GET_PIXEL */
 }
 
