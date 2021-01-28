@@ -71,6 +71,17 @@ extern bitmap_t *hagl_hal_init();
 void hagl_put_pixel(int16_t x0, int16_t y0, color_t color);
 
 /**
+ * Get a single pixel
+ *
+ * Input will be clipped to the current clip window. In case of
+ * error or if HAL does not support this feature returns black.
+ * @param x0
+ * @param y0
+ * @return color at the given location
+ */
+color_t hagl_get_pixel(int16_t x0, int16_t y0);
+
+/**
  * Draw a single character
  *
  * Output will be clipped to the current clip window. Library itself
@@ -83,7 +94,7 @@ void hagl_put_pixel(int16_t x0, int16_t y0, color_t color);
  * @param y0
  * @param color
  * @param font  pointer to a FONTX font
- * @return idth of the drawn character
+ * @return width of the drawn character
  */
 uint8_t hagl_put_char(wchar_t code, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
 

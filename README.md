@@ -65,6 +65,17 @@ for (uint32_t i = 1; i < 100000; i++) {
 ```
 ![Random pixels](https://appelsiini.net/img/2020/hagl-put-pixel-gh.png)
 
+## Get a pixel
+
+```c
+int16_t x0 = rand() % DISPLAY_WIDTH;
+int16_t y0 = rand() % DISPLAY_HEIGHT;
+
+color_t pixel = hagl_get_pixel(x0, y0);
+```
+
+Note that if requesting coordinates outside the clip window color black is returned. This behaviour is unoptimal and might change in the future.
+
 ### Draw a line
 
 

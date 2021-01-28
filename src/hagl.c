@@ -47,6 +47,7 @@ SPDX-License-Identifier: MIT
 #include "tjpgd.h"
 #include "window.h"
 #include "hagl.h"
+#include "hagl_hal.h"
 
 typedef struct {
     FILE *fp;
@@ -82,6 +83,25 @@ void hagl_put_pixel(int16_t x0, int16_t y0, color_t color)
 
     /* If still in bounds set the pixel. */
     hagl_hal_put_pixel(x0, y0, color);
+}
+
+color_t hagl_get_pixel(int16_t x0, int16_t y0)
+{
+    /* x0 or y0 is before the edge, nothing to do. */
+    if ((x0 < clip_window.x0) || (y0 < clip_window.y0))  {
+        return hagl_color(0, 0, 0);
+    }
+
+    /* x0 or y0 is after the edge, nothing to do. */
+    if ((x0 > clip_window.x1) || (y0 > clip_window.y1)) {
+        return hagl_color(0, 0, 0);
+    }
+
+#ifdef HAGL_HAS_HAL_GET_PIXEL
+    return hagl_hal_get_pixel(x0, y0);
+#else
+    return hagl_color(0, 0, 0);
+#endif /* HAGL_HAS_HAL_GET_PIXEL */
 }
 
 void hagl_draw_hline(int16_t x0, int16_t y0, uint16_t w, color_t color) {
