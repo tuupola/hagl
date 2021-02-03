@@ -38,6 +38,7 @@ SPDX-License-Identifier: MIT
 #include <stdbool.h>
 #include <stdio.h>
 #include <stddef.h>
+#include <esp_log.h>
 
 #include "bitmap.h"
 #include "rgb332.h"
@@ -48,7 +49,7 @@ SPDX-License-Identifier: MIT
 #include "window.h"
 #include "hagl.h"
 #include "hagl_hal.h"
-
+static const char * TAG="hagl";
 typedef struct {
     FILE *fp;
     int16_t x0;
@@ -413,12 +414,23 @@ uint16_t hagl_put_text(const wchar_t *str, int16_t x0, int16_t y0, color_t color
 void hagl_blit(int16_t x0, int16_t y0, bitmap_t *source) {
 #ifdef HAGL_HAS_HAL_BLIT
     /* Check if bitmap is inside clip windows bounds */
+    //bug fix with clip_window width height calc
+
+
     if (
         (x0 < clip_window.x0) ||
         (y0 < clip_window.y0) ||
-        (x0 + source->width > clip_window.x1) ||
-        (y0 + source->height > clip_window.y1)
+        (x0 + source->width-1 > clip_window.x1) ||
+        (y0 + source->height-1 > clip_window.y1)
     ) {
+        while (0){ //prepare for batch process fallback ,pixel is too slow
+            int16_t offset_x=clip_window.x0-x0;
+            int16_t offset_y=clip_window.y0-y0;
+            int16_t offset_width=clip_window.x1- (x0 + source->width-1);
+            int16_t offset_height=clip_window.y1- (y0 + source->height-1);
+        }
+
+
         /* Out of bounds, use local pixel fallback. */
         color_t color;
         color_t *ptr = (color_t *) source->buffer;
