@@ -1,6 +1,8 @@
 # Hardware Agnostic Graphics Library
 
-HAGL is a lightweight hardware agnostics graphics library. It supports basic geometric primitives, bitmaps, blitting, fixed width fonts and baseline jpg images. The API is 80% stable but can still be considered work in progress.
+HAGL is a lightweight hardware agnostics graphics library. It supports basic geometric primitives, bitmaps, blitting, fixed width fonts. Library tries to stay lightweight but targets reasonably powerful microchips such as ESP32. There is no dynamic allocation.
+
+This can still be considered work in progress. API should be 90% stable.
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
