@@ -10,12 +10,12 @@ This can still be considered work in progress. API should be 90% stable.
 
 ## Hardware Abstraction Layer
 
-To use HAGL you must provide a hardware absraction layer. The HAL must provide atleast a `hagl_hal_put_pixel(x0, y0, color)` function. If nothing else is provided all higher level graphical functions will use this function to draw the primitive. The HAL can override all functions if required (everything not implemented yet). While proper documentation is lacking see the example HAL implementations for [libgd](https://github.com/tuupola/hagl_gd), [libsdl2](https://github.com/tuupola/hagl_sdl2), [ESP-IDF](https://github.com/tuupola/hagl_esp_mipi), [Nuclei RISC-V SDK](https://github.com/tuupola/hagl_gd32v_mipi) and [Raspberry Pi Pico SDK](https://github.com/tuupola/hagl_pico_mipi).
+To use HAGL you must provide a hardware absraction layer. The HAL must provide atleast a `hagl_hal_put_pixel(x0, y0, color)` function. If nothing else is provided all higher level graphical functions will use this function to draw the primitive. The HAL can override all functions if required (everything not implemented yet). While proper documentation is lacking see the example HAL implementations for [GD](https://github.com/tuupola/hagl_gd), [SDL2](https://github.com/tuupola/hagl_sdl2), [ESP-IDF](https://github.com/tuupola/hagl_esp_mipi), [Nuclei RISC-V SDK](https://github.com/tuupola/hagl_gd32v_mipi) and [Raspberry Pi Pico SDK](https://github.com/tuupola/hagl_pico_mipi).
 
 
 ## Usage
 
-High level functions are pretty self explanatory. For example applications see [ESP Effects](https://github.com/tuupola/esp_effects), [SDL2 Effects](https://github.com/tuupola/sdl2_effects), [ESP GFX](https://github.com/tuupola/esp_gfx), and [GD32V GFX](https://github.com/tuupola/gd32v_gfxP).
+High level functions are pretty self explanatory. For example applications see [ESP Effects](https://github.com/tuupola/esp_effects), [SDL2 Effects](https://github.com/tuupola/sdl2_effects), [ESP GFX](https://github.com/tuupola/esp_gfx), and [GD32V Effects](https://github.com/tuupola/gd32v_effects/).
 
 ### Lifecycle
 
