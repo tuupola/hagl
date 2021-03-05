@@ -467,6 +467,9 @@ void hagl_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t 
 };
 
 void hagl_clear_screen() {
+#ifdef HAGL_HAS_HAL_CLEAR_SCREEN
+    hagl_hal_clear_screen();
+#else
     uint16_t x0 = clip_window.x0;
     uint16_t y0 = clip_window.y0;
     uint16_t x1 = clip_window.x1;
@@ -475,6 +478,7 @@ void hagl_clear_screen() {
     hagl_set_clip_window(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1);
     hagl_fill_rectangle(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1, 0x00);
     hagl_set_clip_window(x0, y0, x1, y1);
+#endif
 }
 
 void hagl_clear_clip_window() {
