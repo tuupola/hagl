@@ -396,7 +396,7 @@ void hagl_clear_clip_window();
  */
 void hagl_clear_screen();
 bitmap_t *hagl_init();
-void hagl_flush();
+size_t hagl_flush();
 void hagl_close();
 
 #endif /* _HAGL_H */

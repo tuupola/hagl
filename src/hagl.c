@@ -1015,10 +1015,11 @@ bitmap_t *hagl_init() {
 #endif
 };
 
-void hagl_flush() {
+size_t hagl_flush() {
 #ifdef HAGL_HAS_HAL_FLUSH
-    hagl_hal_flush();
+    return hagl_hal_flush();
 #else
+    return 0;
 #endif
 };
 
