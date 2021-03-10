@@ -15,7 +15,7 @@ To use HAGL you must provide a hardware absraction layer. The HAL must provide a
 
 ## Usage
 
-High level functions are pretty self explanatory. For example applications see [ESP Effects](https://github.com/tuupola/esp_effects), [SDL2 Effects](https://github.com/tuupola/sdl2_effects), [ESP GFX](https://github.com/tuupola/esp_gfx), and [GD32V Effects](https://github.com/tuupola/gd32v_effects/).
+High level functions are pretty self explanatory. For example applications see [Pico Effects](https://github.com/tuupola/pico_effects), [ESP Effects](https://github.com/tuupola/esp_effects), [SDL2 Effects](https://github.com/tuupola/sdl2_effects), [ESP GFX](https://github.com/tuupola/esp_gfx), and [GD32V Effects](https://github.com/tuupola/gd32v_effects/).
 
 ### Lifecycle
 
