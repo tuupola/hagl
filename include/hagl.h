@@ -50,16 +50,6 @@ SPDX-License-Identifier: MIT
 #define HAGL_ERR_FILE_IO         (2)
 #define HAGL_ERR_TJPGD           (100)
 
-/* This is the only mandatory function which HAL must provide. */
-extern void hagl_hal_put_pixel(int16_t x0, int16_t y0, color_t color);
-
-
-extern void hagl_hal_blit(uint16_t x0, uint16_t y0, bitmap_t *source);
-extern void hagl_hal_hline(int16_t x0, int16_t y0, uint16_t width, color_t color);
-extern void hagl_hal_vline(int16_t x0, int16_t y0, uint16_t width, color_t color);
-extern void hagl_hal_flush();
-extern bitmap_t *hagl_hal_init();
-
 /**
  * Put a single pixel
  *
@@ -406,7 +396,7 @@ void hagl_clear_clip_window();
  */
 void hagl_clear_screen();
 bitmap_t *hagl_init();
-void hagl_flush();
+size_t hagl_flush();
 void hagl_close();
 
 #endif /* _HAGL_H */
