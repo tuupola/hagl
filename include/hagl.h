@@ -35,6 +35,10 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_H
 #define _HAGL_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 #include <stddef.h>
 
@@ -398,5 +402,9 @@ void hagl_clear_screen();
 bitmap_t *hagl_init();
 size_t hagl_flush();
 void hagl_close();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _HAGL_H */
