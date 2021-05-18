@@ -197,7 +197,7 @@ for (uint16_t i = 1; i < 500; i++) {
     int16_t ry = rand() % DISPLAY_HEIGHT / 4;
     color_t color = rand() % 0xffff;
 
-    hagl_draw_ellipse(x0, y0, rx, ry, color);
+    hagl_fill_ellipse(x0, y0, rx, ry, color);
 }
 ```
 
