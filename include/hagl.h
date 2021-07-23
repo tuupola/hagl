@@ -92,7 +92,7 @@ color_t hagl_get_pixel(int16_t x0, int16_t y0);
  */
 uint8_t hagl_put_char(wchar_t code, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
 
-uint8_t hagl_put_scaled_char(wchar_t code, int16_t x0, int16_t y0, uint16_t scalefactor, color_t color, const uint8_t *font);
+uint8_t hagl_put_scaled_char(wchar_t code, int16_t x0, int16_t y0, float scalefactor, color_t color, const uint8_t *font);
 
 /**
  * Draw a string
@@ -111,7 +111,7 @@ uint8_t hagl_put_scaled_char(wchar_t code, int16_t x0, int16_t y0, uint16_t scal
  */
 uint16_t hagl_put_text(const wchar_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
 
-uint16_t hagl_put_scaled_text(const wchar_t *str, int16_t x0, int16_t y0, int16_t scalefactor, color_t color, const unsigned char *font);
+uint16_t hagl_put_scaled_text(const wchar_t *str, int16_t x0, int16_t y0, float scalefactor, color_t color, const unsigned char *font);
 
 /**
  * Extract a glyph into a bitmap

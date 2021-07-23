@@ -339,7 +339,7 @@ uint8_t hagl_put_char(wchar_t code, int16_t x0, int16_t y0, color_t color, const
     return hagl_put_scaled_char(code, x0, y0, 1, color, font);
 }
 
-uint8_t hagl_put_scaled_char(wchar_t code, int16_t x0, int16_t y0, uint16_t scalefactor, color_t color, const uint8_t *font)
+uint8_t hagl_put_scaled_char(wchar_t code, int16_t x0, int16_t y0, float scalefactor, color_t color, const uint8_t *font)
 {
     uint8_t set, status;
     color_t buffer[HAGL_CHAR_BUFFER_SIZE];
@@ -372,13 +372,13 @@ uint8_t hagl_put_scaled_char(wchar_t code, int16_t x0, int16_t y0, uint16_t scal
         glyph.buffer += glyph.pitch;
     }
 
-    if (scalefactor == 1) {
+    if (scalefactor == 1.0) {
         hagl_blit(x0, y0, &bitmap);
     } else {
-        hagl_scale_blit(x0, y0, glyph.width*scalefactor, glyph.height*scalefactor, &bitmap);
+        hagl_scale_blit(x0, y0, (int)glyph.width*scalefactor, (int)glyph.height*scalefactor, &bitmap);
     }
 
-    return bitmap.width*scalefactor;
+    return (int)bitmap.width*scalefactor;
 }
 
 /*
@@ -391,7 +391,7 @@ uint16_t hagl_put_text(const wchar_t *str, int16_t x0, int16_t y0, color_t color
     return hagl_put_scaled_text(str, x0, y0, 1, color, font);
 }
 
-uint16_t hagl_put_scaled_text(const wchar_t *str, int16_t x0, int16_t y0, int16_t scalefactor, color_t color, const unsigned char *font)
+uint16_t hagl_put_scaled_text(const wchar_t *str, int16_t x0, int16_t y0, float scalefactor, color_t color, const unsigned char *font)
 {
     wchar_t temp;
     uint8_t status;
@@ -407,9 +407,9 @@ uint16_t hagl_put_scaled_text(const wchar_t *str, int16_t x0, int16_t y0, int16_
         temp = *str++;
         if (13 == temp || 10 == temp) {
             x0 = 0;
-            y0 += meta.height*scalefactor;
+            y0 += (int)meta.height*scalefactor;
         } else {
-            if (scalefactor == 1) {
+            if (scalefactor == 1.0) {
                 x0 += hagl_put_char(temp, x0, y0, color, font);
             } else {
                 x0 += hagl_put_scaled_char(temp, x0, y0, scalefactor, color, font);
