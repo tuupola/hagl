@@ -854,7 +854,7 @@ void hagl_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
 void hagl_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color) {
 
     uint16_t width, height;
-    int16_t rx0, ry0, rx1, ry1, x, y, d;
+    int16_t rx0, ry0, rx1, x, y, d;
 
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
