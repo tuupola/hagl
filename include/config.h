@@ -32,16 +32,16 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifdef NO_MENUCONFIG
-
-/* If you don't use menuconfig change the settings here. */
-#define TJPGD_NEEDS_BYTESWAP
-
-# else
-
+#ifdef HAGL_INCLUDE_SDKCONFIG_H
 #include "sdkconfig.h"
+
 #ifdef CONFIG_HAGL_TJPGD_NEEDS_BYTESWAP
 #define TJPGD_NEEDS_BYTESWAP
 #endif /* CONFIG_HAGL_TJPGD_NEEDS_BYTESWAP */
 
-#endif /* NO_MENUCONFIG */
+# else
+
+/* If you don't use menuconfig change the settings here. */
+#define TJPGD_NEEDS_BYTESWAP
+
+#endif /* HAGL_INCLUDE_SDKCONFIG_H */

@@ -4,6 +4,7 @@ if (ESP_PLATFORM)
         INCLUDE_DIRS "./include"
         REQUIRES hagl_hal
     )
+    add_definitions("-DHAGL_INCLUDE_SDKCONFIG_H")
 endif()
 
 if (PICO_SDK)
