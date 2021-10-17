@@ -403,6 +403,50 @@ uint16_t hagl_put_text(const wchar_t *str, int16_t x0, int16_t y0, color_t color
 }
 
 /*
+ * Write a string of text by calling hagl_put_char() repeadetly. CR and LF
+ * continue from the next line. If the text goes outside the window, 
+ * it will move the text to a new line
+ */
+uint16_t hagl_put_text_in_window(const wchar_t *str, window_t window, color_t color, const unsigned char *font)
+{
+    wchar_t temp;
+    uint8_t status;
+    fontx_meta_t meta;
+
+    status = fontx_meta(&meta, font);
+    if (0 != status) {
+        return 0;
+    }
+    
+    uint16_t x0 = window.x0;
+    uint16_t y0 = window.y0;
+    int16_t x_lim = window.x1 - meta.width + 1;
+    int16_t y_lim = window.y1 - meta.height + 1;
+
+    if ((x0 > x_lim) || (y0 > y_lim)) {
+        return 0;
+    }
+
+    do {
+        temp = *str++;
+        if (13 == temp || 10 == temp || x0 > x_lim) {
+            x0 = window.x0;
+            if (y0 > y_lim - meta.height) {
+                break;
+            }
+            y0 += meta.height;
+        }
+        if ((x0 == window.x0 && 32 == temp) || 13 == temp || 10 == temp) {
+            continue;
+        }
+        x0 += hagl_put_char(temp, x0, y0, color, font);
+    } while (*str != 0);
+
+    y0 += meta.height;
+    return y0;
+}
+
+/*
  * Blits a bitmap to a destination hardcoded in the HAL driver. Destination
  * parameter is left out intentionally to keep the API simpler. If you need
  * configurable source and destination see the file blit.c.

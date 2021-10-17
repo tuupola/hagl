@@ -44,6 +44,7 @@ extern "C" {
 
 #include "hagl_hal.h"
 #include "bitmap.h"
+#include "window.h"
 
 #define ABS(x)  ((x) > 0 ? (x) : -(x))
 
@@ -108,6 +109,22 @@ uint8_t hagl_put_char(wchar_t code, int16_t x0, int16_t y0, color_t color, const
  * @return width of the drawn string
  */
 uint16_t hagl_put_text(const wchar_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
+
+/**
+ * Draw a string in window
+ *
+ * Output will be move the text to a new line to fit it into the window.
+ * Library itself includes only a couple of fonts. You can find more fonts at:
+ * 
+ * https://github.com/tuupola/fonts
+ *
+ * @param str pointer to an wide char string
+ * @param window
+ * @param color
+ * @param font pointer to a FONTX font
+ * @return height of the drawn string
+ */
+uint16_t hagl_put_text_in_window(const wchar_t *str, window_t window, color_t color, const unsigned char *font);
 
 /**
  * Extract a glyph into a bitmap
