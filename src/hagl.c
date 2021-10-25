@@ -357,7 +357,7 @@ uint8_t hagl_put_char(wchar_t code, int16_t x0, int16_t y0, color_t color, const
 
     for (uint8_t y = 0; y < glyph.height; y++) {
         for (uint8_t x = 0; x < glyph.width; x++) {
-            set = *(glyph.buffer) & (0x80 >> (x % 8));
+            set = *(glyph.buffer + x / 8) & (0x80 >> (x % 8));
             if (set) {
                 *(ptr++) = color;
             } else {
