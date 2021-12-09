@@ -18,15 +18,18 @@ extern "C"
 {
 #endif
 
-#if defined(_WIN32) /* Main development platform */
-    typedef unsigned char uint8_t;
-    typedef unsigned short uint16_t;
-    typedef short int16_t;
-    typedef unsigned long uint32_t;
-    typedef long int32_t;
-#else
-#include "stdint.h"
-#endif
+//
+// We need follow <typedef data-type> from stdint.h to make it work.
+// the user could provide custom <typedef data-type> when port it to other platform.
+//
+// typedef unsigned char        uint8_t;
+// typedef unsigned short       uint16_t;
+// typedef short                int16_t;
+// typedef unsigned long        uint32_t;
+// typedef long                 int32_t;
+//
+#include <stdint.h>
+
 
     /* Error code */
     typedef enum
