@@ -4,7 +4,7 @@ HAGL is a lightweight hardware agnostics graphics library. It supports basic geo
 
 This can still be considered work in progress. API should be 90% stable.
 
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 
 ![Old school demo effects](https://appelsiini.net/img/2020/esp-effects.jpg)
 
