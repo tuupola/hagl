@@ -4,4 +4,4 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ## 0.5.0 - 2022-05-19
 
-Initial realese.
+Initial release.
