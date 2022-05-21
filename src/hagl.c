@@ -62,14 +62,14 @@ static window_t clip_window = {
     .y1 = DISPLAY_HEIGHT - 1,
 };
 
-void hagl_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
+void hagl_set_clip_window(hagl_backend_t *backend, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
     clip_window.x0 = x0;
     clip_window.y0 = y0;
     clip_window.x1 = x1;
     clip_window.y1 = y1;
 }
 
-void hagl_put_pixel(int16_t x0, int16_t y0, color_t color)
+void hagl_put_pixel(hagl_backend_t *backend, int16_t x0, int16_t y0, color_t color)
 {
     /* x0 or y0 is before the edge, nothing to do. */
     if ((x0 < clip_window.x0) || (y0 < clip_window.y0))  {
@@ -82,29 +82,29 @@ void hagl_put_pixel(int16_t x0, int16_t y0, color_t color)
     }
 
     /* If still in bounds set the pixel. */
-    hagl_hal_put_pixel(x0, y0, color);
+    backend->put_pixel(x0, y0, color);
 }
 
-color_t hagl_get_pixel(int16_t x0, int16_t y0)
+color_t hagl_get_pixel(hagl_backend_t *backend, int16_t x0, int16_t y0)
 {
     /* x0 or y0 is before the edge, nothing to do. */
     if ((x0 < clip_window.x0) || (y0 < clip_window.y0))  {
-        return hagl_color(0, 0, 0);
+        return hagl_color(backend, 0, 0, 0);
     }
 
     /* x0 or y0 is after the edge, nothing to do. */
     if ((x0 > clip_window.x1) || (y0 > clip_window.y1)) {
-        return hagl_color(0, 0, 0);
+        return hagl_color(backend, 0, 0, 0);
     }
 
 #ifdef HAGL_HAS_HAL_GET_PIXEL
-    return hagl_hal_get_pixel(x0, y0);
+    return backend->get_pixel(x0, y0);
 #else
-    return hagl_color(0, 0, 0);
+    return hagl_color(backend, 0, 0, 0);
 #endif /* HAGL_HAS_HAL_GET_PIXEL */
 }
 
-void hagl_draw_hline(int16_t x0, int16_t y0, uint16_t w, color_t color) {
+void hagl_draw_hline(hagl_backend_t *backend, int16_t x0, int16_t y0, uint16_t w, color_t color) {
 #ifdef HAGL_HAS_HAL_HLINE
     int16_t width = w;
 
@@ -129,9 +129,9 @@ void hagl_draw_hline(int16_t x0, int16_t y0, uint16_t w, color_t color) {
         width = width - (x0 + width - clip_window.x1);
     }
 
-    hagl_hal_hline(x0, y0, width, color);
+    hagl_hal_hline(backend, x0, y0, width, color);
 #else
-    hagl_draw_line(x0, y0, x0 + w, y0, color);
+    hagl_draw_line(backend, x0, y0, x0 + w, y0, color);
 #endif
 }
 
@@ -139,7 +139,7 @@ void hagl_draw_hline(int16_t x0, int16_t y0, uint16_t w, color_t color) {
  * Draw a vertical line with given color. If HAL supports it uses
  * hardware vline drawing. If not falls back to vanilla line drawing.
  */
-void hagl_draw_vline(int16_t x0, int16_t y0, uint16_t h, color_t color) {
+void hagl_draw_vline(hagl_backend_t *backend, int16_t x0, int16_t y0, uint16_t h, color_t color) {
 #ifdef HAGL_HAS_HAL_VLINE
     int16_t height = h;
 
@@ -164,16 +164,16 @@ void hagl_draw_vline(int16_t x0, int16_t y0, uint16_t h, color_t color) {
         height = height - (y0 + height - clip_window.y1);
     }
 
-    hagl_hal_vline(x0, y0, height, color);
+    hagl_hal_vline(backend, x0, y0, height, color);
 #else
-    hagl_draw_line(x0, y0, x0, y0 + h, color);
+    hagl_draw_line(backend, x0, y0, x0, y0 + h, color);
 #endif
 }
 
 /*
  * Draw a line using Bresenham's algorithm with given color.
  */
-void hagl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
+void hagl_draw_line(hagl_backend_t *backend, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
 {
     /* Clip coordinates to fit clip window. */
     if (false == clip_line(&x0, &y0, &x1, &y1, clip_window)) {
@@ -194,7 +194,7 @@ void hagl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t colo
     err = (dx > dy ? dx : -dy) / 2;
 
     while (1) {
-        hagl_put_pixel(x0, y0, color);
+        hagl_put_pixel(backend, x0, y0, color);
 
         if (x0 == x1 && y0 == y1) {
             break;
@@ -217,7 +217,7 @@ void hagl_draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t colo
 /*
  * Draw a rectangle with given color.
  */
-void hagl_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
+void hagl_draw_rectangle(hagl_backend_t *backend, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
 {
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
@@ -246,16 +246,16 @@ void hagl_draw_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t
     uint16_t width = x1 - x0 + 1;
     uint16_t height = y1 - y0 + 1;
 
-    hagl_draw_hline(x0, y0, width, color);
-    hagl_draw_hline(x0, y1, width, color);
-    hagl_draw_vline(x0, y0, height, color);
-    hagl_draw_vline(x1, y0, height, color);
+    hagl_draw_hline(backend, x0, y0, width, color);
+    hagl_draw_hline(backend, x0, y1, width, color);
+    hagl_draw_vline(backend, x0, y0, height, color);
+    hagl_draw_vline(backend, x1, y0, height, color);
 }
 
 /*
  * Draw a filled rectangle with given color.
  */
-void hagl_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
+void hagl_fill_rectangle(hagl_backend_t *backend, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
 {
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
@@ -292,14 +292,14 @@ void hagl_fill_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t
     for (uint16_t i = 0; i < height; i++) {
 #ifdef HAGL_HAS_HAL_HLINE
         /* Already clipped so can call HAL directly. */
-        hagl_hal_hline(x0, y0 + i, width, color);
+        hagl_hal_hline(backend, x0, y0 + i, width, color);
 #else
-        hagl_draw_hline(x0, y0 + i, width, color);
+        hagl_draw_hline(backend, x0, y0 + i, width, color);
 #endif
     }
 }
 
-uint8_t hagl_get_glyph(wchar_t code, color_t color, bitmap_t *bitmap, const uint8_t *font)
+uint8_t hagl_get_glyph(hagl_backend_t *backend, wchar_t code, color_t color, bitmap_t *bitmap, const uint8_t *font)
 {
     uint8_t status, set;
     fontx_glyph_t glyph;
@@ -334,7 +334,7 @@ uint8_t hagl_get_glyph(wchar_t code, color_t color, bitmap_t *bitmap, const uint
     return 0;
 }
 
-uint8_t hagl_put_char(wchar_t code, int16_t x0, int16_t y0, color_t color, const uint8_t *font)
+uint8_t hagl_put_char(hagl_backend_t *backend, wchar_t code, int16_t x0, int16_t y0, color_t color, const uint8_t *font)
 {
     uint8_t set, status;
     color_t buffer[HAGL_CHAR_BUFFER_SIZE];
@@ -367,17 +367,17 @@ uint8_t hagl_put_char(wchar_t code, int16_t x0, int16_t y0, color_t color, const
         glyph.buffer += glyph.pitch;
     }
 
-    hagl_blit(x0, y0, &bitmap);
+    hagl_blit(backend, x0, y0, &bitmap);
 
     return bitmap.width;
 }
 
 /*
- * Write a string of text by calling hagl_put_char() repeadetly. CR and LF
+ * Write a string of text by calling hagl_put_char(backend, ) repeadetly. CR and LF
  * continue from the next line.
  */
 
-uint16_t hagl_put_text(const wchar_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font)
+uint16_t hagl_put_text(hagl_backend_t *backend, const wchar_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font)
 {
     wchar_t temp;
     uint8_t status;
@@ -395,7 +395,7 @@ uint16_t hagl_put_text(const wchar_t *str, int16_t x0, int16_t y0, color_t color
             x0 = 0;
             y0 += meta.height;
         } else {
-            x0 += hagl_put_char(temp, x0, y0, color, font);
+            x0 += hagl_put_char(backend, temp, x0, y0, color, font);
         }
     } while (*str != 0);
 
@@ -410,7 +410,7 @@ uint16_t hagl_put_text(const wchar_t *str, int16_t x0, int16_t y0, color_t color
  * TODO: Handle transparency.
  */
 
-void hagl_blit(int16_t x0, int16_t y0, bitmap_t *source) {
+void hagl_blit(hagl_backend_t *backend, int16_t x0, int16_t y0, bitmap_t *source) {
 #ifdef HAGL_HAS_HAL_BLIT
     /* Check if bitmap is inside clip windows bounds */
     if (
@@ -426,7 +426,7 @@ void hagl_blit(int16_t x0, int16_t y0, bitmap_t *source) {
         for (uint16_t y = 0; y < source->height; y++) {
             for (uint16_t x = 0; x < source->width; x++) {
                 color = *(ptr++);
-                hagl_put_pixel(x0 + x, y0 + y, color);
+                hagl_put_pixel(backend, x0 + x, y0 + y, color);
             }
         }
     } else {
@@ -440,13 +440,13 @@ void hagl_blit(int16_t x0, int16_t y0, bitmap_t *source) {
     for (uint16_t y = 0; y < source->height; y++) {
         for (uint16_t x = 0; x < source->width; x++) {
             color = *(ptr++);
-            hagl_put_pixel(x0 + x, y0 + y, color);
+            hagl_put_pixel(backend, x0 + x, y0 + y, color);
         }
     }
 #endif
 };
 
-void hagl_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source) {
+void hagl_scale_blit(hagl_backend_t *backend, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source) {
 #ifdef HAGL_HAS_HAL_SCALE_BLIT
     hagl_hal_scale_blit(x0, y0, w, h, source);
 #else
@@ -460,13 +460,13 @@ void hagl_scale_blit(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t 
             uint16_t px = ((x * x_ratio) >> 16);
             uint16_t py = ((y * y_ratio) >> 16);
             color = ptr[(uint8_t)((py * source->width) + px)];
-            hagl_put_pixel(x0 + x, y0 + y, color);
+            hagl_put_pixel(backend, x0 + x, y0 + y, color);
         }
     }
 #endif
 };
 
-void hagl_clear_screen() {
+void hagl_clear_screen(hagl_backend_t *backend) {
 #ifdef HAGL_HAS_HAL_CLEAR_SCREEN
     hagl_hal_clear_screen();
 #else
@@ -475,32 +475,33 @@ void hagl_clear_screen() {
     uint16_t x1 = clip_window.x1;
     uint16_t y1 = clip_window.y1;
 
-    hagl_set_clip_window(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1);
-    hagl_fill_rectangle(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1, 0x00);
-    hagl_set_clip_window(x0, y0, x1, y1);
+    hagl_set_clip_window(backend, 0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1);
+    hagl_fill_rectangle(backend, 0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1, 0x00);
+    hagl_set_clip_window(backend, x0, y0, x1, y1);
 #endif
 }
 
-void hagl_clear_clip_window() {
+void hagl_clear_clip_window(hagl_backend_t *backend) {
     hagl_fill_rectangle(
+        backend,
         clip_window.x0, clip_window.y0, clip_window.x1, clip_window.y1,
         0x00
     );
 }
 
-void hagl_draw_circle(int16_t xc, int16_t yc, int16_t r, color_t color) {
+void hagl_draw_circle(hagl_backend_t *backend, int16_t xc, int16_t yc, int16_t r, color_t color) {
     int16_t x = 0;
     int16_t y = r;
     int16_t d = 3 - 2 * r;
 
-    hagl_put_pixel(xc + x, yc + y, color);
-    hagl_put_pixel(xc - x, yc + y, color);
-    hagl_put_pixel(xc + x, yc - y, color);
-    hagl_put_pixel(xc - x, yc - y, color);
-    hagl_put_pixel(xc + y, yc + x, color);
-    hagl_put_pixel(xc - y, yc + x, color);
-    hagl_put_pixel(xc + y, yc - x, color);
-    hagl_put_pixel(xc - y, yc - x, color);
+    hagl_put_pixel(backend, xc + x, yc + y, color);
+    hagl_put_pixel(backend, xc - x, yc + y, color);
+    hagl_put_pixel(backend, xc + x, yc - y, color);
+    hagl_put_pixel(backend, xc - x, yc - y, color);
+    hagl_put_pixel(backend, xc + y, yc + x, color);
+    hagl_put_pixel(backend, xc - y, yc + x, color);
+    hagl_put_pixel(backend, xc + y, yc - x, color);
+    hagl_put_pixel(backend, xc - y, yc - x, color);
 
     while (y >= x) {
         x++;
@@ -512,27 +513,27 @@ void hagl_draw_circle(int16_t xc, int16_t yc, int16_t r, color_t color) {
             d = d + 4 * x + 6;
         }
 
-        hagl_put_pixel(xc + x, yc + y, color);
-        hagl_put_pixel(xc - x, yc + y, color);
-        hagl_put_pixel(xc + x, yc - y, color);
-        hagl_put_pixel(xc - x, yc - y, color);
-        hagl_put_pixel(xc + y, yc + x, color);
-        hagl_put_pixel(xc - y, yc + x, color);
-        hagl_put_pixel(xc + y, yc - x, color);
-        hagl_put_pixel(xc - y, yc - x, color);
+        hagl_put_pixel(backend, xc + x, yc + y, color);
+        hagl_put_pixel(backend, xc - x, yc + y, color);
+        hagl_put_pixel(backend, xc + x, yc - y, color);
+        hagl_put_pixel(backend, xc - x, yc - y, color);
+        hagl_put_pixel(backend, xc + y, yc + x, color);
+        hagl_put_pixel(backend, xc - y, yc + x, color);
+        hagl_put_pixel(backend, xc + y, yc - x, color);
+        hagl_put_pixel(backend, xc - y, yc - x, color);
     }
 }
 
-void hagl_fill_circle(int16_t x0, int16_t y0, int16_t r, color_t color) {
+void hagl_fill_circle(hagl_backend_t *backend, int16_t x0, int16_t y0, int16_t r, color_t color) {
     int16_t x = 0;
     int16_t y = r;
     int16_t d = 3 - 2 * r;
 
     while (y >= x) {
-        hagl_draw_hline(x0 - x, y0 + y, x * 2, color);
-        hagl_draw_hline(x0 - x, y0 - y, x * 2, color);
-        hagl_draw_hline(x0 - y, y0 + x, y * 2, color);
-        hagl_draw_hline(x0 - y, y0 - x, y * 2, color);
+        hagl_draw_hline(backend, x0 - x, y0 + y, x * 2, color);
+        hagl_draw_hline(backend, x0 - x, y0 - y, x * 2, color);
+        hagl_draw_hline(backend, x0 - y, y0 + x, y * 2, color);
+        hagl_draw_hline(backend, x0 - y, y0 - x, y * 2, color);
         x++;
 
         if (d > 0) {
@@ -544,15 +545,15 @@ void hagl_fill_circle(int16_t x0, int16_t y0, int16_t r, color_t color) {
     }
 }
 
-void hagl_draw_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color) {
+void hagl_draw_ellipse(hagl_backend_t *backend, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color) {
     int16_t wx, wy;
     int32_t xa, ya;
     int32_t t;
     int32_t asq = a * a;
     int32_t bsq = b * b;
 
-    hagl_put_pixel(x0, y0 + b, color);
-    hagl_put_pixel(x0, y0 - b, color);
+    hagl_put_pixel(backend, x0, y0 + b, color);
+    hagl_put_pixel(backend, x0, y0 - b, color);
 
     wx = 0;
     wy = b;
@@ -576,14 +577,14 @@ void hagl_draw_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, color_t col
             break;
         }
 
-        hagl_put_pixel(x0 + wx, y0 - wy, color);
-        hagl_put_pixel(x0 - wx, y0 - wy, color);
-        hagl_put_pixel(x0 + wx, y0 + wy, color);
-        hagl_put_pixel(x0 - wx, y0 + wy, color);
+        hagl_put_pixel(backend, x0 + wx, y0 - wy, color);
+        hagl_put_pixel(backend, x0 - wx, y0 - wy, color);
+        hagl_put_pixel(backend, x0 + wx, y0 + wy, color);
+        hagl_put_pixel(backend, x0 - wx, y0 + wy, color);
     }
 
-    hagl_put_pixel(x0 + a, y0, color);
-    hagl_put_pixel(x0 - a, y0, color);
+    hagl_put_pixel(backend, x0 + a, y0, color);
+    hagl_put_pixel(backend, x0 - a, y0, color);
 
     wx = a;
     wy = 0;
@@ -608,22 +609,22 @@ void hagl_draw_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, color_t col
             break;
         }
 
-        hagl_put_pixel(x0 + wx, y0 - wy, color);
-        hagl_put_pixel(x0 - wx, y0 - wy, color);
-        hagl_put_pixel(x0 + wx, y0 + wy, color);
-        hagl_put_pixel(x0 - wx, y0 + wy, color);
+        hagl_put_pixel(backend, x0 + wx, y0 - wy, color);
+        hagl_put_pixel(backend, x0 - wx, y0 - wy, color);
+        hagl_put_pixel(backend, x0 + wx, y0 + wy, color);
+        hagl_put_pixel(backend, x0 - wx, y0 + wy, color);
     }
 }
 
-void hagl_fill_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color) {
+void hagl_fill_ellipse(hagl_backend_t *backend, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color) {
     int16_t wx, wy;
     int32_t xa, ya;
     int32_t t;
     int32_t asq = a * a;
     int32_t bsq = b * b;
 
-    hagl_put_pixel(x0, y0 + b, color);
-    hagl_put_pixel(x0, y0 - b, color);
+    hagl_put_pixel(backend, x0, y0 + b, color);
+    hagl_put_pixel(backend, x0, y0 - b, color);
 
     wx = 0;
     wy = b;
@@ -647,11 +648,11 @@ void hagl_fill_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, color_t col
             break;
         }
 
-        hagl_draw_hline(x0 - wx, y0 - wy, wx * 2, color);
-        hagl_draw_hline(x0 - wx, y0 + wy, wx * 2, color);
+        hagl_draw_hline(backend, x0 - wx, y0 - wy, wx * 2, color);
+        hagl_draw_hline(backend, x0 - wx, y0 + wy, wx * 2, color);
     }
 
-    hagl_draw_hline(x0 - a, y0, a * 2, color);
+    hagl_draw_hline(backend, x0 - a, y0, a * 2, color);
 
     wx = a;
     wy = 0;
@@ -676,16 +677,17 @@ void hagl_fill_ellipse(int16_t x0, int16_t y0, int16_t a, int16_t b, color_t col
             break;
         }
 
-        hagl_draw_hline(x0 - wx, y0 - wy, wx * 2, color);
-        hagl_draw_hline(x0 - wx, y0 + wy, wx * 2, color);
+        hagl_draw_hline(backend, x0 - wx, y0 - wy, wx * 2, color);
+        hagl_draw_hline(backend, x0 - wx, y0 + wy, wx * 2, color);
     }
 }
 
 
-void hagl_draw_polygon(int16_t amount, int16_t *vertices, color_t color) {
+void hagl_draw_polygon(hagl_backend_t *backend, int16_t amount, int16_t *vertices, color_t color) {
 
     for(int16_t i = 0; i < amount - 1; i++) {
         hagl_draw_line(
+            backend,
             vertices[(i << 1 ) + 0],
             vertices[(i << 1 ) + 1],
             vertices[(i << 1 ) + 2],
@@ -694,6 +696,7 @@ void hagl_draw_polygon(int16_t amount, int16_t *vertices, color_t color) {
         );
     }
     hagl_draw_line(
+        backend,
         vertices[0],
         vertices[1],
         vertices[(amount <<1 ) - 2],
@@ -703,7 +706,7 @@ void hagl_draw_polygon(int16_t amount, int16_t *vertices, color_t color) {
 }
 
 /* Adapted from  http://alienryderflex.com/polygon_fill/ */
-void hagl_fill_polygon(int16_t amount, int16_t *vertices, color_t color) {
+void hagl_fill_polygon(hagl_backend_t *backend, int16_t amount, int16_t *vertices, color_t color) {
     uint16_t nodes[64];
     int16_t y;
 
@@ -765,22 +768,22 @@ void hagl_fill_polygon(int16_t amount, int16_t *vertices, color_t color) {
         /* Draw lines between nodes. */
         for (int16_t i = 0; i < count; i += 2) {
             int16_t width = nodes[i + 1] - nodes[i];
-            hagl_draw_hline(nodes[i], y, width, color);
+            hagl_draw_hline(backend, nodes[i], y, width, color);
         }
     }
 }
 
-void hagl_draw_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color) {
+void hagl_draw_triangle(hagl_backend_t *backend, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color) {
     int16_t vertices[6] = {x0, y0, x1, y1, x2, y2};
-    hagl_draw_polygon(3, vertices, color);
+    hagl_draw_polygon(backend, 3, vertices, color);
 };
 
-void hagl_fill_triangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color) {
+void hagl_fill_triangle(hagl_backend_t *backend, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color) {
     int16_t vertices[6] = {x0, y0, x1, y1, x2, y2};
-    hagl_fill_polygon(3, vertices, color);
+    hagl_fill_polygon(backend, 3, vertices, color);
 }
 
-void hagl_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color) {
+void hagl_draw_rounded_rectangle(hagl_backend_t *backend, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color) {
 
     uint16_t width, height;
     int16_t x, y, d;
@@ -814,10 +817,10 @@ void hagl_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
     height = y1 - y0 + 1;
     r = min(r, min(width / 2, height / 2));
 
-    hagl_draw_hline(x0 + r, y0, width - 2 * r, color);
-    hagl_draw_hline(x0 + r, y1, width - 2 * r, color);
-    hagl_draw_vline(x0, y0 + r, height - 2 * r, color);
-    hagl_draw_vline(x1, y0 + r, height - 2 * r, color);
+    hagl_draw_hline(backend, x0 + r, y0, width - 2 * r, color);
+    hagl_draw_hline(backend, x0 + r, y1, width - 2 * r, color);
+    hagl_draw_vline(backend, x0, y0 + r, height - 2 * r, color);
+    hagl_draw_vline(backend, x1, y0 + r, height - 2 * r, color);
 
     x = 0;
     y = r;
@@ -834,24 +837,24 @@ void hagl_draw_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
         }
 
         /* Top right */
-        hagl_put_pixel(x1 - r + x, y0 + r - y, color);
-        hagl_put_pixel(x1 - r + y, y0 + r - x, color);
+        hagl_put_pixel(backend, x1 - r + x, y0 + r - y, color);
+        hagl_put_pixel(backend, x1 - r + y, y0 + r - x, color);
 
         /* Top left */
-        hagl_put_pixel(x0 + r - x, y0 + r - y, color);
-        hagl_put_pixel(x0 + r - y, y0 + r - x, color);
+        hagl_put_pixel(backend, x0 + r - x, y0 + r - y, color);
+        hagl_put_pixel(backend, x0 + r - y, y0 + r - x, color);
 
         /* Bottom right */
-        hagl_put_pixel(x1 - r + x, y1 - r + y, color);
-        hagl_put_pixel(x1 - r + y, y1 - r + x, color);
+        hagl_put_pixel(backend, x1 - r + x, y1 - r + y, color);
+        hagl_put_pixel(backend, x1 - r + y, y1 - r + x, color);
 
         /* Bottom left */
-        hagl_put_pixel(x0 + r - x, y1 - r + y, color);
-        hagl_put_pixel(x0 + r - y, y1 - r + x, color);
+        hagl_put_pixel(backend, x0 + r - x, y1 - r + y, color);
+        hagl_put_pixel(backend, x0 + r - y, y1 - r + x, color);
     }
 };
 
-void hagl_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color) {
+void hagl_fill_rounded_rectangle(hagl_backend_t *backend, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color) {
 
     uint16_t width, height;
     int16_t rx0, ry0, rx1, x, y, d;
@@ -904,128 +907,129 @@ void hagl_fill_rounded_rectangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
         rx0 = x0 + r - y;
         rx1 = x1 - r + y;
         width = rx1 -  rx0;
-        hagl_draw_hline(rx0, ry0, width, color);
+        hagl_draw_hline(backend, rx0, ry0, width, color);
 
         ry0 = y0 + r - y;
         rx0 = x0 + r - x;
         rx1 = x1 - r + x;
         width = rx1 -  rx0;
-        hagl_draw_hline(rx0, ry0, width, color);
+        hagl_draw_hline(backend, rx0, ry0, width, color);
 
         /* Bottom */
         ry0 = y1 - r + y;
         rx0 = x0 + r - x;
         rx1 = x1 - r + x;
         width = rx1 -  rx0;
-        hagl_draw_hline(rx0, ry0, width, color);
+        hagl_draw_hline(backend, rx0, ry0, width, color);
 
         ry0 = y1 - r + x;
         rx0 = x0 + r - y;
         rx1 = x1 - r + y;
         width = rx1 -  rx0;
-        hagl_draw_hline(rx0, ry0, width, color);
+        hagl_draw_hline(backend, rx0, ry0, width, color);
     }
 
     /* Center */
-    hagl_fill_rectangle(x0, y0 + r, x1, y1 - r, color);
+    hagl_fill_rectangle(backend, x0, y0 + r, x1, y1 - r, color);
 };
 
 
+// static uint16_t tjpgd_data_reader(JDEC *decoder, uint8_t *buffer, uint16_t size)
+// {
+//     tjpgd_iodev_t *device = (tjpgd_iodev_t *)decoder->device;
 
-static uint16_t tjpgd_data_reader(JDEC *decoder, uint8_t *buffer, uint16_t size)
-{
-    tjpgd_iodev_t *device = (tjpgd_iodev_t *)decoder->device;
+//     if (buffer) {
+//         /* Read bytes from input stream. */
+//         return (uint16_t)fread(buffer, 1, size, device->fp);
+//     } else {
+//         /* Skip bytes from input stream. */
+//         return fseek(device->fp, size, SEEK_CUR) ? 0 : size;
+//     }
+// }
 
-    if (buffer) {
-        /* Read bytes from input stream. */
-        return (uint16_t)fread(buffer, 1, size, device->fp);
-    } else {
-        /* Skip bytes from input stream. */
-        return fseek(device->fp, size, SEEK_CUR) ? 0 : size;
-    }
-}
+// static uint16_t tjpgd_data_writer(JDEC* decoder, void* bitmap, JRECT* rectangle)
+// {
+//     tjpgd_iodev_t *device = (tjpgd_iodev_t *)decoder->device;
+//     uint8_t width = (rectangle->right - rectangle->left) + 1;
+//     uint8_t height = (rectangle->bottom - rectangle->top) + 1;
 
-static uint16_t tjpgd_data_writer(JDEC* decoder, void* bitmap, JRECT* rectangle)
-{
-    tjpgd_iodev_t *device = (tjpgd_iodev_t *)decoder->device;
-    uint8_t width = (rectangle->right - rectangle->left) + 1;
-    uint8_t height = (rectangle->bottom - rectangle->top) + 1;
+//     bitmap_t block = {
+//         .width = width,
+//         .height = height,
+//         .depth = DISPLAY_DEPTH,
+//         .pitch = width * (DISPLAY_DEPTH / 8),
+//         .size =  width * (DISPLAY_DEPTH / 8) * height,
+//         .buffer = (uint8_t *)bitmap
+//     };
 
-    bitmap_t block = {
-        .width = width,
-        .height = height,
-        .depth = DISPLAY_DEPTH,
-        .pitch = width * (DISPLAY_DEPTH / 8),
-        .size =  width * (DISPLAY_DEPTH / 8) * height,
-        .buffer = (uint8_t *)bitmap
-    };
+//     hagl_blit(backend, rectangle->left + device->x0, rectangle->top + device->y0, &block);
 
-    hagl_blit(rectangle->left + device->x0, rectangle->top + device->y0, &block);
+//     return 1;
+// }
 
-    return 1;
-}
+// uint32_t hagl_load_image(hagl_backend_t *backend, int16_t x0, int16_t y0, const char *filename)
+// {
+//     uint8_t work[3100];
+//     JDEC decoder;
+//     JRESULT result;
+//     tjpgd_iodev_t device;
 
-uint32_t hagl_load_image(int16_t x0, int16_t y0, const char *filename)
-{
-    uint8_t work[3100];
-    JDEC decoder;
-    JRESULT result;
-    tjpgd_iodev_t device;
+//     device.x0 = x0;
+//     device.y0 = y0;
+//     device.fp = fopen(filename, "rb");
 
-    device.x0 = x0;
-    device.y0 = y0;
-    device.fp = fopen(filename, "rb");
+//     if (!device.fp) {
+//         return HAGL_ERR_FILE_IO;
+//     }
+//     result = jd_prepare(&decoder, tjpgd_data_reader, work, 3100, (void *)&device);
+//     if (result == JDR_OK) {
+//         result = jd_decomp(&decoder, tjpgd_data_writer, 0);
+//         if (JDR_OK != result) {
+//             fclose(device.fp);
+//             return HAGL_ERR_TJPGD + result;
+//         }
+//     } else {
+//         fclose(device.fp);
+//         return HAGL_ERR_TJPGD + result;
+//     }
 
-    if (!device.fp) {
-        return HAGL_ERR_FILE_IO;
-    }
-    result = jd_prepare(&decoder, tjpgd_data_reader, work, 3100, (void *)&device);
-    if (result == JDR_OK) {
-        result = jd_decomp(&decoder, tjpgd_data_writer, 0);
-        if (JDR_OK != result) {
-            fclose(device.fp);
-            return HAGL_ERR_TJPGD + result;
-        }
-    } else {
-        fclose(device.fp);
-        return HAGL_ERR_TJPGD + result;
-    }
+//     fclose(device.fp);
+//     return HAGL_OK;
+// }
 
-    fclose(device.fp);
-    return HAGL_OK;
-}
-
-color_t hagl_color(uint8_t r, uint8_t g, uint8_t b)
+color_t hagl_color(hagl_backend_t *backend, uint8_t r, uint8_t g, uint8_t b)
 {
 #ifdef HAGL_HAS_HAL_COLOR
-    return hagl_hal_color(r, g, b);
+    return backend->color(r, g, b);
 #else
     return rgb565(r, g, b);
 #endif
 }
 
-bitmap_t *hagl_init() {
+hagl_backend_t *hagl_init() {
 #ifdef HAGL_HAS_HAL_INIT
-    bitmap_t *bb = hagl_hal_init();
-    hagl_clear_screen();
-    return bb;
+    hagl_backend_t *backend = hagl_hal_init();
+    //hagl_clear_screen();
+    return backend;
 #else
     hagl_clear_screen();
     return NULL;
 #endif
 };
 
-size_t hagl_flush() {
+size_t hagl_flush(hagl_backend_t *backend) {
 #ifdef HAGL_HAS_HAL_FLUSH
-    return hagl_hal_flush();
+    // return hagl_hal_flush();
+    return backend->flush();
 #else
     return 0;
 #endif
 };
 
-void hagl_close() {
+void hagl_close(hagl_backend_t *backend) {
 #ifdef HAGL_HAS_HAL_CLOSE
-    hagl_hal_close();
+    backend->close();
+    // hagl_hal_close();
 #else
 #endif
 };
