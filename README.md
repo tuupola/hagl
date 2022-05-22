@@ -8,9 +8,9 @@ This can still be considered work in progress. API should be 90% stable.
 
 ![Old school demo effects](https://appelsiini.net/img/2020/esp-effects.jpg)
 
-## Hardware Abstraction Layer
+## Backend
 
-To use HAGL you must provide a hardware absraction layer. The HAL must provide atleast a `hagl_hal_put_pixel(x0, y0, color)` function. If nothing else is provided all higher level graphical functions will use this function to draw the primitive. The HAL can override all functions if required (everything not implemented yet). While proper documentation is lacking see the example HAL implementations for [GD](https://github.com/tuupola/hagl_gd), [SDL2](https://github.com/tuupola/hagl_sdl2), [ESP-IDF (Ilitek, Sitronix, Galaxycore)](https://github.com/tuupola/hagl_esp_mipi), [ESP-IDF (Solomon)](https://github.com/tuupola/hagl_esp_solomon), [Nuclei RISC-V SDK](https://github.com/tuupola/hagl_gd32v_mipi) and [Raspberry Pi Pico SDK](https://github.com/tuupola/hagl_pico_mipi).
+To use HAGL you must provide a backend. The backend must provide atleast a function for putting a pixel. If nothing else is provided all higher level graphical functions will use this function to draw the primitives. While proper documentation is lacking see the example backend implementations for [GD](https://github.com/tuupola/hagl_gd), [SDL2](https://github.com/tuupola/hagl_sdl2), [ESP-IDF (Ilitek, Sitronix, Galaxycore)](https://github.com/tuupola/hagl_esp_mipi), [ESP-IDF (Solomon)](https://github.com/tuupola/hagl_esp_solomon), [Nuclei RISC-V SDK](https://github.com/tuupola/hagl_gd32v_mipi) and [Raspberry Pi Pico SDK](https://github.com/tuupola/hagl_pico_mipi).
 
 
 ## Usage
@@ -25,16 +25,17 @@ Before you start drawing you should call `hagl_init()`. Some HAL configurations 
 #include <hagl_hal.h>
 #include <hagl.h>
 
-hagl_init();
+hagl_backend_t *backend = hagl_hal_init();
+hagl_surface_t *surface = hagl_init(backend);
 
 /* Main loop. */
 while (1) {
-    hagl_clear_screen();
-    hagl_load_image(0, 0, "/sdcard/hello.jpg");
-    hagl_flush();
+    hagl_clear_screen(surface);
+    hagl_load_image(surface, 0, 0, "/sdcard/hello.jpg");
+    hagl_flush(backend);
 };
 
-hagl_close();
+hagl_close(backend);
 ```
 
 ### Colors
@@ -51,7 +52,7 @@ To write portable code which can be run with different pixel formats use the fol
 uint8_t r = rand() % 255;
 uint8_t g = rand() % 255;
 uint8_t b = rand() % 255;
-color_t color = hagl_color(r, g, b);
+color_t color = hagl_color(surface, r, g, b);
 ```
 
 ### Put a pixel
@@ -62,7 +63,7 @@ for (uint32_t i = 1; i < 100000; i++) {
     int16_t y0 = rand() % DISPLAY_HEIGHT;
     color_t color = rand() % 0xffff;
 
-    hagl_put_pixel(x0, y0, color);
+    hagl_put_pixel(surface, x0, y0, color);
 }
 ```
 ![Random pixels](https://appelsiini.net/img/2020/hagl-put-pixel-gh.png)
@@ -73,7 +74,7 @@ for (uint32_t i = 1; i < 100000; i++) {
 int16_t x0 = rand() % DISPLAY_WIDTH;
 int16_t y0 = rand() % DISPLAY_HEIGHT;
 
-color_t pixel = hagl_get_pixel(x0, y0);
+color_t pixel = hagl_get_pixel(surface, x0, y0);
 ```
 
 Note that if requesting coordinates outside the clip window color black is returned. This behaviour is unoptimal and might change in the future.
@@ -89,7 +90,7 @@ for (uint16_t i = 1; i < 1000; i++) {
     int16_t y1 = rand() % DISPLAY_HEIGHT;
     color_t color = rand() % 0xffff;
 
-    hagl_draw_line(x0, y0, x1, y1, color);
+    hagl_draw_line(surface, x0, y0, x1, y1, color);
 }
 ```
 
@@ -105,7 +106,7 @@ for (uint16_t i = 1; i < 1000; i++) {
     int16_t y1 = rand() % DISPLAY_HEIGHT;
     color_t color = rand() % 0xffff;
 
-    hagl_draw_line(x0, y0, x1, y1, color);
+    hagl_draw_line(surface, x0, y0, x1, y1, color);
 }
 ```
 
@@ -120,7 +121,7 @@ for (uint16_t i = 1; i < 1000; i++) {
     int16_t width = rand() % (DISPLAY_WIDTH - x0);
     color_t color = rand() % 0xffff;
 
-    hagl_draw_hline(x0, y0, width, color);
+    hagl_draw_hline(surface, x0, y0, width, color);
 }
 ```
 
@@ -135,7 +136,7 @@ for (uint16_t i = 1; i < 1000; i++) {
     int16_t height = rand() % (DISPLAY_HEIGHT - y0);
     color_t color = rand() % 0xffff;
 
-    hagl_draw_vline(x0, y0, height, color);
+    hagl_draw_vline(surface, x0, y0, height, color);
 }
 ```
 
@@ -150,7 +151,7 @@ for (uint16_t i = 1; i < 500; i++) {
     int16_t radius = rand() % DISPLAY_WIDTH;
     color_t color = rand() % 0xffff;
 
-    hagl_draw_circle(x0, y0, radius, color);
+    hagl_draw_circle(surface, x0, y0, radius, color);
 }
 ```
 
@@ -165,7 +166,7 @@ for (uint16_t i = 1; i < 500; i++) {
     int16_t radius = rand() % 100;
     color_t color = rand() % 0xffff;
 
-    hagl_fill_circle(x0, y0, radius, color);
+    hagl_fill_circle(surface, x0, y0, radius, color);
 }
 ```
 
@@ -181,7 +182,7 @@ for (uint16_t i = 1; i < 500; i++) {
     int16_t ry = rand() % DISPLAY_HEIGHT;
     color_t color = rand() % 0xffff;
 
-    hagl_draw_ellipse(x0, y0, rx, ry, color);
+    hagl_draw_ellipse(surface, x0, y0, rx, ry, color);
 }
 ```
 
@@ -197,7 +198,7 @@ for (uint16_t i = 1; i < 500; i++) {
     int16_t ry = rand() % DISPLAY_HEIGHT / 4;
     color_t color = rand() % 0xffff;
 
-    hagl_fill_ellipse(x0, y0, rx, ry, color);
+    hagl_fill_ellipse(surface, x0, y0, rx, ry, color);
 }
 ```
 
@@ -214,7 +215,7 @@ int16_t x2 = rand() % DISPLAY_WIDTH;
 int16_t y2 = rand() % DISPLAY_HEIGHT;
 color_t color = rand() % 0xffff;
 
-hagl_draw_triangle(x0, y0, x1, y1, x2, y2, color);
+hagl_draw_triangle(surface, x0, y0, x1, y1, x2, y2, color);
 ```
 
 ![Random triangle](https://appelsiini.net/img/2020/pod-draw-triangle.png)
@@ -230,7 +231,7 @@ int16_t x2 = rand() % DISPLAY_WIDTH;
 int16_t y2 = rand() % DISPLAY_HEIGHT;
 color_t color = rand() % 0xffff;
 
-hagl_fill_triangle(x0, y0, x1, y1, x2, y2, color);
+hagl_fill_triangle(surface, x0, y0, x1, y1, x2, y2, color);
 ```
 
 ![Random filled triangle](https://appelsiini.net/img/2020/pod-fill-triangle.png)
@@ -245,7 +246,7 @@ for (uint16_t i = 1; i < 50; i++) {
     int16_t y1 = rand() % DISPLAY_HEIGHT;
     color_t color = rand() % 0xffff;
 
-    hagl_draw_rectangle(x0, y0, x1, y1, color);
+    hagl_draw_rectangle(surface, x0, y0, x1, y1, color);
 }
 ```
 
@@ -261,7 +262,7 @@ for (uint16_t i = 1; i < 10; i++) {
     int16_t y1 = rand() % DISPLAY_HEIGHT;
     color_t color = rand() % 0xffff;
 
-    hagl_fill_rectangle(x0, y0, x1, y1, color);
+    hagl_fill_rectangle(surface, x0, y0, x1, y1, color);
 }
 ```
 
@@ -279,7 +280,7 @@ for (uint16_t i = 1; i < 30; i++) {
     int16_t r = 10
     color_t color = rand() % 0xffff;
 
-    hagl_draw_rounded_rectangle(x0, y0, x1, y1, r, color);
+    hagl_draw_rounded_rectangle(surface, x0, y0, x1, y1, r, color);
 }
 ```
 
@@ -296,7 +297,7 @@ for (uint16_t i = 1; i < 30; i++) {
     int16_t r = 10
     color_t color = rand() % 0xffff;
 
-    hagl_fill_rounded_rectangle(x0, y0, x1, y1, r, color);
+    hagl_fill_rounded_rectangle(surface, x0, y0, x1, y1, r, color);
 }
 ```
 
@@ -320,7 +321,7 @@ int16_t y4 = rand() % DISPLAY_HEIGHT;
 color_t color = rand() % 0xffff;
 int16_t vertices[10] = {x0, y0, x1, y1, x2, y2, x3, y3, x4, y4};
 
-hagl_draw_polygon(5, vertices, color);
+hagl_draw_polygon(surface, 5, vertices, color);
 ```
 
 ![Random polygon](https://appelsiini.net/img/2020/pod-draw-polygon.png)
@@ -343,7 +344,7 @@ int16_t y4 = rand() % DISPLAY_HEIGHT;
 color_t color = rand() % 0xffff;
 int16_t vertices[10] = {x0, y0, x1, y1, x2, y2, x3, y3, x4, y4};
 
-hagl_fill_polygon(5, vertices, color);
+hagl_fill_polygon(surface, 5, vertices, color);
 ```
 
 ![Random filled polygon](https://appelsiini.net/img/2020/pod-fill-polygon.png)
@@ -360,7 +361,7 @@ for (uint16_t i = 1; i < 10000; i++) {
     color_t color = rand() % 0xffff;
     char code = rand() % 255;
 
-    hagl_put_char(code, x0, y0, color, font8x8);
+    hagl_put_char(surface, code, x0, y0, color, font8x8);
 }
 ```
 
@@ -376,7 +377,7 @@ for (uint16_t i = 1; i < 10000; i++) {
     int16_t y0 = rand() % DISPLAY_HEIGHT;
     color_t color = rand() % 0xffff;
 
-    hagl_put_text(u"YO! MTV raps.", x0, y0, color, font6x9);
+    hagl_put_text(surface, u"YO! MTV raps.", x0, y0, color, font6x9);
 }
 ```
 
@@ -395,8 +396,8 @@ for (uint16_t i = 1; i < 20000; i++) {
     int16_t y0 = rand() % DISPLAY_HEIGHT;
     color_t color = rand() % 0xffff;
     uint16_t code = rand() % 0xffff;
-    hagl_get_glyph(code, color, &bitmap, font6x9);
-    hagl_blit(x0, y0, &bitmap);
+    hagl_get_glyph(surface, code, color, &bitmap, font6x9);
+    hagl_blit(surface, x0, y0, &bitmap);
 }
 ```
 
@@ -416,8 +417,8 @@ for (uint16_t i = 1; i < 20000; i++) {
     int16_t y0 = rand() % DISPLAY_HEIGHT;
     color_t color = rand() % 0xffff;
     uint16_t code = rand() % 0xffff;
-    hagl_get_glyph(code, color, &bitmap, font6x9);
-    hagl_scale_blit(x0, y0, 24, 36, &bitmap);
+    hagl_get_glyph(surface, code, color, &bitmap, font6x9);
+    hagl_scale_blit(surface, x0, y0, 24, 36, &bitmap);
 }
 ```
 
@@ -436,7 +437,7 @@ for (uint16_t i = 1; i < 500; i++) {
     int16_t radius = rand() % 100;
     color_t color = rand() % 0xffff;
 
-    hagl_fill_circle(x0, y0, radius, color);
+    hagl_fill_circle(surface, x0, y0, radius, color);
 }
 ````
 
