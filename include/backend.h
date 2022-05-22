@@ -35,6 +35,8 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_BACKEND_H
 #define _HAGL_BACKEND_H
 
+#include <stddef.h>
+#include <bitmap.h>
 #include "hagl_hal_color.h"
 
 typedef struct {
@@ -42,7 +44,7 @@ typedef struct {
     int16_t height;
     void (*put_pixel)(int16_t x0, int16_t y0, color_t color);
     color_t (*get_pixel)(int16_t x0, int16_t y0);
-    // void (*init)(hagl_hal_t hal);
+    void (*blit)(uint16_t x0, uint16_t y0, bitmap_t *src);
     size_t (*flush)(void);
     void (*close)(void);
     color_t (*color)(uint8_t r, uint8_t g, uint8_t b);
