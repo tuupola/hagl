@@ -97,42 +97,42 @@ color_t hagl_get_pixel(hagl_surface_t *surface, int16_t x0, int16_t y0)
         return hagl_color(surface, 0, 0, 0);
     }
 
-#ifdef HAGL_HAS_HAL_GET_PIXEL
-    return surface->get_pixel(x0, y0);
-#else
-    return hagl_color(backend, 0, 0, 0);
-#endif /* HAGL_HAS_HAL_GET_PIXEL */
+    if (surface->get_pixel) {
+        return surface->get_pixel(x0, y0);
+    }
+
+    return hagl_color(surface, 0, 0, 0);
 }
 
 void hagl_draw_hline(hagl_surface_t *surface, int16_t x0, int16_t y0, uint16_t w, color_t color) {
-#ifdef HAGL_HAS_HAL_HLINE
-    int16_t width = w;
+    if (surface->hline) {
+        int16_t width = w;
 
-    /* x0 or y0 is over the edge, nothing to do. */
-    if ((x0 > clip_window.x1) || (y0 > clip_window.y1) || (y0 < clip_window.y0))  {
-        return;
+        /* x0 or y0 is over the edge, nothing to do. */
+        if ((x0 > clip_window.x1) || (y0 > clip_window.y1) || (y0 < clip_window.y0))  {
+            return;
+        }
+
+        /* x0 is left of clip window, ignore start part. */
+        if (x0 < clip_window.x0) {
+            width = width + x0;
+            x0 = clip_window.x0;
+        }
+
+        /* Everything outside clip window, nothing to do. */
+        if (width < 0)  {
+            return;
+        }
+
+        /* Cut anything going over right edge of clip window. */
+        if (((x0 + width) > clip_window.x1)) {
+            width = width - (x0 + width - clip_window.x1);
+        }
+
+        surface->hline(x0, y0, width, color);
+    } else {
+        hagl_draw_line(surface, x0, y0, x0 + w, y0, color);
     }
-
-    /* x0 is left of clip window, ignore start part. */
-    if (x0 < clip_window.x0) {
-        width = width + x0;
-        x0 = clip_window.x0;
-    }
-
-    /* Everything outside clip window, nothing to do. */
-    if (width < 0)  {
-        return;
-    }
-
-    /* Cut anything going over right edge of clip window. */
-    if (((x0 + width) > clip_window.x1)) {
-        width = width - (x0 + width - clip_window.x1);
-    }
-
-    hagl_hal_hline(surface, x0, y0, width, color);
-#else
-    hagl_draw_line(surface, x0, y0, x0 + w, y0, color);
-#endif
 }
 
 /*
@@ -140,34 +140,34 @@ void hagl_draw_hline(hagl_surface_t *surface, int16_t x0, int16_t y0, uint16_t w
  * hardware vline drawing. If not falls back to vanilla line drawing.
  */
 void hagl_draw_vline(hagl_surface_t *surface, int16_t x0, int16_t y0, uint16_t h, color_t color) {
-#ifdef HAGL_HAS_HAL_VLINE
-    int16_t height = h;
+    if (surface->vline) {
+        int16_t height = h;
 
-    /* x0 or y0 is over the edge, nothing to do. */
-    if ((x0 > clip_window.x1) || (x0 < clip_window.x0) || (y0 > clip_window.y1))  {
-        return;
+        /* x0 or y0 is over the edge, nothing to do. */
+        if ((x0 > clip_window.x1) || (x0 < clip_window.x0) || (y0 > clip_window.y1))  {
+            return;
+        }
+
+        /* y0 is top of clip window, ignore start part. */
+        if (y0 < clip_window.y0) {
+            height = height + y0;
+            y0 = clip_window.y0;
+        }
+
+        /* Everything outside clip window, nothing to do. */
+        if (height < 0)  {
+            return;
+        }
+
+        /* Cut anything going over right edge. */
+        if (((y0 + height) > clip_window.y1))  {
+            height = height - (y0 + height - clip_window.y1);
+        }
+
+        surface->vline(x0, y0, height, color);
+    } else {
+        hagl_draw_line(surface, x0, y0, x0, y0 + h, color);
     }
-
-    /* y0 is top of clip window, ignore start part. */
-    if (y0 < clip_window.y0) {
-        height = height + y0;
-        y0 = clip_window.y0;
-    }
-
-    /* Everything outside clip window, nothing to do. */
-    if (height < 0)  {
-        return;
-    }
-
-    /* Cut anything going over right edge. */
-    if (((y0 + height) > clip_window.y1))  {
-        height = height - (y0 + height - clip_window.y1);
-    }
-
-    hagl_hal_vline(surface, x0, y0, height, color);
-#else
-    hagl_draw_line(surface, x0, y0, x0, y0 + h, color);
-#endif
 }
 
 /*
@@ -290,12 +290,12 @@ void hagl_fill_rectangle(hagl_surface_t *surface, int16_t x0, int16_t y0, int16_
     uint16_t height = y1 - y0 + 1;
 
     for (uint16_t i = 0; i < height; i++) {
-#ifdef HAGL_HAS_HAL_HLINE
-        /* Already clipped so can call HAL directly. */
-        hagl_hal_hline(backend, x0, y0 + i, width, color);
-#else
-        hagl_draw_hline(surface, x0, y0 + i, width, color);
-#endif
+        if (surface->hline) {
+            /* Already clipped so can call HAL directly. */
+            surface->hline(x0, y0 + i, width, color);
+        } else {
+            hagl_draw_hline(surface, x0, y0 + i, width, color);
+        }
     }
 }
 
@@ -411,15 +411,29 @@ uint16_t hagl_put_text(hagl_surface_t *surface, const wchar_t *str, int16_t x0, 
  */
 
 void hagl_blit(hagl_surface_t *surface, int16_t x0, int16_t y0, bitmap_t *source) {
-#ifdef HAGL_HAS_HAL_BLIT
-    /* Check if bitmap is inside clip windows bounds */
-    if (
-        (x0 < clip_window.x0) ||
-        (y0 < clip_window.y0) ||
-        (x0 + source->width > clip_window.x1) ||
-        (y0 + source->height > clip_window.y1)
-    ) {
-        /* Out of bounds, use local pixel fallback. */
+    if (surface->blit) {
+        /* Check if bitmap is inside clip windows bounds */
+        if (
+            (x0 < clip_window.x0) ||
+            (y0 < clip_window.y0) ||
+            (x0 + source->width > clip_window.x1) ||
+            (y0 + source->height > clip_window.y1)
+        ) {
+            /* Out of bounds, use local putpixel fallback. */
+            color_t color;
+            color_t *ptr = (color_t *) source->buffer;
+
+            for (uint16_t y = 0; y < source->height; y++) {
+                for (uint16_t x = 0; x < source->width; x++) {
+                    color = *(ptr++);
+                    hagl_put_pixel(surface, x0 + x, y0 + y, color);
+                }
+            }
+        } else {
+            /* Inside of bounds, can use HAL provided blit. */
+            surface->blit(x0, y0, source);
+        }
+    } else {
         color_t color;
         color_t *ptr = (color_t *) source->buffer;
 
@@ -429,47 +443,30 @@ void hagl_blit(hagl_surface_t *surface, int16_t x0, int16_t y0, bitmap_t *source
                 hagl_put_pixel(surface, x0 + x, y0 + y, color);
             }
         }
-    } else {
-        /* Inside of bounds, can use HAL provided blit. */
-        hagl_hal_blit(x0, y0, source);
     }
-#else
-    color_t color;
-    color_t *ptr = (color_t *) source->buffer;
-
-    for (uint16_t y = 0; y < source->height; y++) {
-        for (uint16_t x = 0; x < source->width; x++) {
-            color = *(ptr++);
-            hagl_put_pixel(surface, x0 + x, y0 + y, color);
-        }
-    }
-#endif
 };
 
 void hagl_scale_blit(hagl_surface_t *surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source) {
-#ifdef HAGL_HAS_HAL_SCALE_BLIT
-    hagl_hal_scale_blit(x0, y0, w, h, source);
-#else
-    color_t color;
-    color_t *ptr = (color_t *) source->buffer;
-    uint32_t x_ratio = (uint32_t)((source->width << 16) / w);
-    uint32_t y_ratio = (uint32_t)((source->height << 16) / h);
+    if (surface->scale_blit) {
+        surface->scale_blit(x0, y0, w, h, source);
+    } else {
+        color_t color;
+        color_t *ptr = (color_t *) source->buffer;
+        uint32_t x_ratio = (uint32_t)((source->width << 16) / w);
+        uint32_t y_ratio = (uint32_t)((source->height << 16) / h);
 
-    for (uint16_t y = 0; y < h; y++) {
-        for (uint16_t x = 0; x < w; x++) {
-            uint16_t px = ((x * x_ratio) >> 16);
-            uint16_t py = ((y * y_ratio) >> 16);
-            color = ptr[(uint8_t)((py * source->width) + px)];
-            hagl_put_pixel(surface, x0 + x, y0 + y, color);
+        for (uint16_t y = 0; y < h; y++) {
+            for (uint16_t x = 0; x < w; x++) {
+                uint16_t px = ((x * x_ratio) >> 16);
+                uint16_t py = ((y * y_ratio) >> 16);
+                color = ptr[(uint8_t)((py * source->width) + px)];
+                hagl_put_pixel(surface, x0 + x, y0 + y, color);
+            }
         }
     }
-#endif
 };
 
 void hagl_clear_screen(hagl_surface_t *surface) {
-#ifdef HAGL_HAS_HAL_CLEAR_SCREEN
-    hagl_hal_clear_screen();
-#else
     uint16_t x0 = clip_window.x0;
     uint16_t y0 = clip_window.y0;
     uint16_t x1 = clip_window.x1;
@@ -478,7 +475,6 @@ void hagl_clear_screen(hagl_surface_t *surface) {
     hagl_set_clip_window(surface, 0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1);
     hagl_fill_rectangle(surface, 0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1, 0x00);
     hagl_set_clip_window(surface, x0, y0, x1, y1);
-#endif
 }
 
 void hagl_clear_clip_window(hagl_surface_t *surface) {
@@ -999,17 +995,13 @@ void hagl_fill_rounded_rectangle(hagl_surface_t *surface, int16_t x0, int16_t y0
 
 color_t hagl_color(hagl_surface_t *surface, uint8_t r, uint8_t g, uint8_t b)
 {
-#ifdef HAGL_HAS_HAL_COLOR
-    return surface->color(r, g, b);
-#else
+    if (surface->color) {
+        return surface->color(r, g, b);
+    }
     return rgb565(r, g, b);
-#endif
 }
 
 hagl_surface_t *hagl_init(hagl_backend_t *backend) {
-#ifdef HAGL_HAS_HAL_INIT
-    // hagl_backend_t *backend = hagl_hal_init();
-
     static hagl_surface_t surface;
     memset(&surface, 0, sizeof(hagl_surface_t));
 
@@ -1018,27 +1010,20 @@ hagl_surface_t *hagl_init(hagl_backend_t *backend) {
     surface.put_pixel = backend->put_pixel;
     surface.get_pixel = backend->get_pixel;
     surface.color = backend->color;
+    surface.blit = backend->blit;
     //hagl_clear_screen();
     return &surface;
-#else
-    hagl_clear_screen();
-    return NULL;
-#endif
 };
 
 size_t hagl_flush(hagl_backend_t *backend) {
-#ifdef HAGL_HAS_HAL_FLUSH
-    // return hagl_hal_flush();
-    return backend->flush();
-#else
+    if (backend->flush) {
+        return backend->flush();
+    }
     return 0;
-#endif
 };
 
 void hagl_close(hagl_backend_t *backend) {
-#ifdef HAGL_HAS_HAL_CLOSE
-    backend->close();
-    // hagl_hal_close();
-#else
-#endif
+    if (backend->close) {
+        backend->close();
+    }
 };
