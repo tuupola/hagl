@@ -55,12 +55,16 @@ typedef struct {
     int16_t y0;
 } tjpgd_iodev_t;
 
-static window_t clip_window = {
-    .x0 = 0,
-    .y0 = 0,
-    .x1 = DISPLAY_WIDTH - 1,
-    .y1 = DISPLAY_HEIGHT - 1,
-};
+#ifdef HAGL_HAS_HAL_VARIABLE_DISPLAY_SIZE
+	static window_t clip_window;
+#else
+	static window_t clip_window = {
+		.x0 = 0,
+		.y0 = 0,
+		.x1 = DISPLAY_WIDTH - 1,
+		.y1 = DISPLAY_HEIGHT - 1,
+	};
+#endif
 
 void hagl_set_clip_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
     clip_window.x0 = x0;
