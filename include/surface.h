@@ -35,6 +35,7 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_SURFACE_H
 #define _HAGL_SURFACE_H
 
+#include <bitmap.h>
 #include "hagl_hal_color.h"
 
 typedef struct {
@@ -43,6 +44,10 @@ typedef struct {
     void (*put_pixel)(int16_t x0, int16_t y0, color_t color);
     color_t (*get_pixel)(int16_t x0, int16_t y0);
     color_t (*color)(uint8_t r, uint8_t g, uint8_t b);
+    void (*blit)(uint16_t x0, uint16_t y0, bitmap_t *src);
+    void (*scale_blit)(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *src);
+    void (*hline)(int16_t x0, int16_t y0, uint16_t width, color_t color);
+    void (*vline)(int16_t x0, int16_t y0, uint16_t height, color_t color);
 } hagl_surface_t;
 
 // hagl_surface_t *hagl_surface_init(bitmap_t *bitmap);
