@@ -48,6 +48,8 @@ typedef struct {
     size_t (*flush)(void);
     void (*close)(void);
     color_t (*color)(uint8_t r, uint8_t g, uint8_t b);
+    void (*hline)(int16_t x0, int16_t y0, uint16_t width, color_t color);
+    void (*vline)(int16_t x0, int16_t y0, uint16_t height, color_t color);
 } hagl_backend_t;
 
 #endif /* _HAGL_BACKEND_H */
