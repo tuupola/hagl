@@ -32,6 +32,7 @@ SPDX-License-Identifier: MIT
 */
 
 #include <stdint.h>
+#include <hagl_hal_color.h>
 
 #ifndef _BITMAP_H
 #define _BITMAP_H
@@ -55,5 +56,9 @@ uint32_t bitmap_size(bitmap_t *bitmap);
 void bitmap_init(bitmap_t *bitmap, uint8_t *buffer);
 void bitmap_blit(int16_t x0, int16_t y0, bitmap_t *src, bitmap_t *dst);
 void bitmap_scale_blit(int16_t x0, int16_t y0, uint16_t w, uint16_t h, bitmap_t *src, bitmap_t *dst);
+void bitmap_put_pixel(bitmap_t *bitmap, int16_t x0, int16_t y0, color_t color);
+color_t bitmap_get_pixel(bitmap_t const *bitmap, int16_t x0, int16_t y0);
+void bitmap_hline(bitmap_t *bitmap, int16_t x0, int16_t y0, uint16_t width, color_t color);
+void bitmap_vline(bitmap_t *bitmap, int16_t x0, int16_t y0, uint16_t height, color_t color);
 
 #endif /* _BITMAP_H */
