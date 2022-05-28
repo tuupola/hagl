@@ -52,8 +52,40 @@ void bitmap_init(bitmap_t *bitmap, uint8_t *buffer)
     bitmap->buffer = buffer;
 }
 
+void
+bitmap_put_pixel(bitmap_t *bitmap, int16_t x0, int16_t y0, color_t color)
+{
+    color_t *ptr = (color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
+    *ptr = color;
+}
+
+color_t
+bitmap_get_pixel(bitmap_t const *bitmap, int16_t x0, int16_t y0)
+{
+    return *(color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
+}
+
+void
+bitmap_hline(bitmap_t *bitmap, int16_t x0, int16_t y0, uint16_t width, color_t color)
+{
+    color_t *ptr = (color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
+    for (uint16_t x = 0; x < width; x++) {
+        *ptr++ = color;
+    }
+}
+
+void
+bitmap_vline(bitmap_t *bitmap, int16_t x0, int16_t y0, uint16_t height, color_t color)
+{
+    color_t *ptr = (color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
+    for (uint16_t y = 0; y < height; y++) {
+        *ptr = color;
+        ptr += bitmap->pitch / (bitmap->depth / 8);
+    }
+}
+
 /*
- * Blit source bitmap to a destination bitmap.
+ * Blit source bitmap to a destination bitmap->
  */
 
 void bitmap_blit(int16_t x0, int16_t y0, bitmap_t *src, bitmap_t *dst)
