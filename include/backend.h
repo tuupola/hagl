@@ -44,12 +44,14 @@ typedef struct {
     int16_t height;
     void (*put_pixel)(int16_t x0, int16_t y0, color_t color);
     color_t (*get_pixel)(int16_t x0, int16_t y0);
-    void (*blit)(uint16_t x0, uint16_t y0, bitmap_t *src);
-    size_t (*flush)(void);
-    void (*close)(void);
     color_t (*color)(uint8_t r, uint8_t g, uint8_t b);
+    void (*blit)(uint16_t x0, uint16_t y0, bitmap_t *src);
+    void (*scale_blit)(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *src);
     void (*hline)(int16_t x0, int16_t y0, uint16_t width, color_t color);
     void (*vline)(int16_t x0, int16_t y0, uint16_t height, color_t color);
+
+    size_t (*flush)(void);
+    void (*close)(void);
 } hagl_backend_t;
 
 #endif /* _HAGL_BACKEND_H */
