@@ -62,15 +62,17 @@ static window_t clip_window = {
     .y1 = DISPLAY_HEIGHT - 1,
 };
 
-void hagl_set_clip_window(hagl_surface_t const *surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
+void hagl_set_clip_window(void const *surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
     clip_window.x0 = x0;
     clip_window.y0 = y0;
     clip_window.x1 = x1;
     clip_window.y1 = y1;
 }
 
-void hagl_put_pixel(hagl_surface_t const *surface, int16_t x0, int16_t y0, color_t color)
+void hagl_put_pixel(void const *_surface, int16_t x0, int16_t y0, color_t color)
 {
+    const hagl_surface_t *surface = _surface;
+
     /* x0 or y0 is before the edge, nothing to do. */
     if ((x0 < clip_window.x0) || (y0 < clip_window.y0))  {
         return;
@@ -85,8 +87,9 @@ void hagl_put_pixel(hagl_surface_t const *surface, int16_t x0, int16_t y0, color
     surface->put_pixel(x0, y0, color);
 }
 
-color_t hagl_get_pixel(hagl_surface_t const *surface, int16_t x0, int16_t y0)
+color_t hagl_get_pixel(void const *_surface, int16_t x0, int16_t y0)
 {
+    const hagl_surface_t *surface = _surface;
     /* x0 or y0 is before the edge, nothing to do. */
     if ((x0 < clip_window.x0) || (y0 < clip_window.y0))  {
         return hagl_color(surface, 0, 0, 0);
@@ -104,7 +107,9 @@ color_t hagl_get_pixel(hagl_surface_t const *surface, int16_t x0, int16_t y0)
     return hagl_color(surface, 0, 0, 0);
 }
 
-void hagl_draw_hline(hagl_surface_t const *surface, int16_t x0, int16_t y0, uint16_t w, color_t color) {
+void hagl_draw_hline(void const *_surface, int16_t x0, int16_t y0, uint16_t w, color_t color) {
+    const hagl_surface_t *surface = _surface;
+
     if (surface->hline) {
         int16_t width = w;
 
@@ -139,7 +144,9 @@ void hagl_draw_hline(hagl_surface_t const *surface, int16_t x0, int16_t y0, uint
  * Draw a vertical line with given color. If HAL supports it uses
  * hardware vline drawing. If not falls back to vanilla line drawing.
  */
-void hagl_draw_vline(hagl_surface_t const *surface, int16_t x0, int16_t y0, uint16_t h, color_t color) {
+void hagl_draw_vline(void const *_surface, int16_t x0, int16_t y0, uint16_t h, color_t color) {
+    const hagl_surface_t *surface = _surface;
+
     if (surface->vline) {
         int16_t height = h;
 
@@ -173,7 +180,7 @@ void hagl_draw_vline(hagl_surface_t const *surface, int16_t x0, int16_t y0, uint
 /*
  * Draw a line using Bresenham's algorithm with given color.
  */
-void hagl_draw_line(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
+void hagl_draw_line(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
 {
     /* Clip coordinates to fit clip window. */
     if (false == clip_line(&x0, &y0, &x1, &y1, clip_window)) {
@@ -217,7 +224,7 @@ void hagl_draw_line(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16
 /*
  * Draw a rectangle with given color.
  */
-void hagl_draw_rectangle(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
+void hagl_draw_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
 {
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
@@ -255,8 +262,10 @@ void hagl_draw_rectangle(hagl_surface_t const *surface, int16_t x0, int16_t y0, 
 /*
  * Draw a filled rectangle with given color.
  */
-void hagl_fill_rectangle(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
+void hagl_fill_rectangle(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
 {
+    const hagl_surface_t *surface = _surface;
+
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
         x0 = x0 + x1;
@@ -299,7 +308,7 @@ void hagl_fill_rectangle(hagl_surface_t const *surface, int16_t x0, int16_t y0, 
     }
 }
 
-uint8_t hagl_get_glyph(hagl_surface_t const *surface, wchar_t code, color_t color, bitmap_t *bitmap, const uint8_t *font)
+uint8_t hagl_get_glyph(void const *surface, wchar_t code, color_t color, bitmap_t *bitmap, const uint8_t *font)
 {
     uint8_t status, set;
     fontx_glyph_t glyph;
@@ -334,7 +343,7 @@ uint8_t hagl_get_glyph(hagl_surface_t const *surface, wchar_t code, color_t colo
     return 0;
 }
 
-uint8_t hagl_put_char(hagl_surface_t const *surface, wchar_t code, int16_t x0, int16_t y0, color_t color, const uint8_t *font)
+uint8_t hagl_put_char(void const *surface, wchar_t code, int16_t x0, int16_t y0, color_t color, const uint8_t *font)
 {
     uint8_t set, status;
     color_t buffer[HAGL_CHAR_BUFFER_SIZE];
@@ -377,7 +386,7 @@ uint8_t hagl_put_char(hagl_surface_t const *surface, wchar_t code, int16_t x0, i
  * continue from the next line.
  */
 
-uint16_t hagl_put_text(hagl_surface_t const *surface, const wchar_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font)
+uint16_t hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font)
 {
     wchar_t temp;
     uint8_t status;
@@ -410,7 +419,9 @@ uint16_t hagl_put_text(hagl_surface_t const *surface, const wchar_t *str, int16_
  * TODO: Handle transparency.
  */
 
-void hagl_blit(hagl_surface_t const *surface, int16_t x0, int16_t y0, bitmap_t *source) {
+void hagl_blit(void const *_surface, int16_t x0, int16_t y0, bitmap_t *source) {
+    const hagl_surface_t *surface = _surface;
+
     if (surface->blit) {
         /* Check if bitmap is inside clip windows bounds */
         if (
@@ -446,7 +457,9 @@ void hagl_blit(hagl_surface_t const *surface, int16_t x0, int16_t y0, bitmap_t *
     }
 };
 
-void hagl_scale_blit(hagl_surface_t const *surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source) {
+void hagl_scale_blit(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source) {
+    const hagl_surface_t *surface = _surface;
+
     if (surface->scale_blit) {
         surface->scale_blit(x0, y0, w, h, source);
     } else {
@@ -466,7 +479,7 @@ void hagl_scale_blit(hagl_surface_t const *surface, uint16_t x0, uint16_t y0, ui
     }
 };
 
-void hagl_clear_screen(hagl_surface_t const *surface) {
+void hagl_clear_screen(void const *surface) {
     uint16_t x0 = clip_window.x0;
     uint16_t y0 = clip_window.y0;
     uint16_t x1 = clip_window.x1;
@@ -485,7 +498,7 @@ void hagl_clear_clip_window(hagl_surface_t *surface) {
     );
 }
 
-void hagl_draw_circle(hagl_surface_t const *surface, int16_t xc, int16_t yc, int16_t r, color_t color) {
+void hagl_draw_circle(void const *surface, int16_t xc, int16_t yc, int16_t r, color_t color) {
     int16_t x = 0;
     int16_t y = r;
     int16_t d = 3 - 2 * r;
@@ -520,7 +533,7 @@ void hagl_draw_circle(hagl_surface_t const *surface, int16_t xc, int16_t yc, int
     }
 }
 
-void hagl_fill_circle(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t r, color_t color) {
+void hagl_fill_circle(void const *surface, int16_t x0, int16_t y0, int16_t r, color_t color) {
     int16_t x = 0;
     int16_t y = r;
     int16_t d = 3 - 2 * r;
@@ -541,7 +554,7 @@ void hagl_fill_circle(hagl_surface_t const *surface, int16_t x0, int16_t y0, int
     }
 }
 
-void hagl_draw_ellipse(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color) {
+void hagl_draw_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color) {
     int16_t wx, wy;
     int32_t xa, ya;
     int32_t t;
@@ -612,7 +625,7 @@ void hagl_draw_ellipse(hagl_surface_t const *surface, int16_t x0, int16_t y0, in
     }
 }
 
-void hagl_fill_ellipse(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color) {
+void hagl_fill_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color) {
     int16_t wx, wy;
     int32_t xa, ya;
     int32_t t;
@@ -679,7 +692,7 @@ void hagl_fill_ellipse(hagl_surface_t const *surface, int16_t x0, int16_t y0, in
 }
 
 
-void hagl_draw_polygon(hagl_surface_t const *surface, int16_t amount, int16_t *vertices, color_t color) {
+void hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, color_t color) {
 
     for(int16_t i = 0; i < amount - 1; i++) {
         hagl_draw_line(
@@ -702,7 +715,7 @@ void hagl_draw_polygon(hagl_surface_t const *surface, int16_t amount, int16_t *v
 }
 
 /* Adapted from  http://alienryderflex.com/polygon_fill/ */
-void hagl_fill_polygon(hagl_surface_t const *surface, int16_t amount, int16_t *vertices, color_t color) {
+void hagl_fill_polygon(void const *surface, int16_t amount, int16_t *vertices, color_t color) {
     uint16_t nodes[64];
     int16_t y;
 
@@ -769,17 +782,17 @@ void hagl_fill_polygon(hagl_surface_t const *surface, int16_t amount, int16_t *v
     }
 }
 
-void hagl_draw_triangle(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color) {
+void hagl_draw_triangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color) {
     int16_t vertices[6] = {x0, y0, x1, y1, x2, y2};
     hagl_draw_polygon(surface, 3, vertices, color);
 };
 
-void hagl_fill_triangle(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color) {
+void hagl_fill_triangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color) {
     int16_t vertices[6] = {x0, y0, x1, y1, x2, y2};
     hagl_fill_polygon(surface, 3, vertices, color);
 }
 
-void hagl_draw_rounded_rectangle(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color) {
+void hagl_draw_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color) {
 
     uint16_t width, height;
     int16_t x, y, d;
@@ -850,7 +863,7 @@ void hagl_draw_rounded_rectangle(hagl_surface_t const *surface, int16_t x0, int1
     }
 };
 
-void hagl_fill_rounded_rectangle(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color) {
+void hagl_fill_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color) {
 
     uint16_t width, height;
     int16_t rx0, ry0, rx1, x, y, d;
@@ -963,7 +976,7 @@ void hagl_fill_rounded_rectangle(hagl_surface_t const *surface, int16_t x0, int1
 //     return 1;
 // }
 
-// uint32_t hagl_load_image(hagl_surface_t const *surface, int16_t x0, int16_t y0, const char *filename)
+// uint32_t hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char *filename)
 // {
 //     uint8_t work[3100];
 //     JDEC decoder;
@@ -993,28 +1006,30 @@ void hagl_fill_rounded_rectangle(hagl_surface_t const *surface, int16_t x0, int1
 //     return HAGL_OK;
 // }
 
-color_t hagl_color(hagl_surface_t const *surface, uint8_t r, uint8_t g, uint8_t b)
+color_t hagl_color(void const *_surface, uint8_t r, uint8_t g, uint8_t b)
 {
+    const hagl_surface_t *surface = _surface;
     if (surface->color) {
         return surface->color(r, g, b);
     }
     return rgb565(r, g, b);
 }
 
-hagl_surface_t *hagl_init(hagl_backend_t *backend) {
-    static hagl_surface_t surface;
-    memset(&surface, 0, sizeof(hagl_surface_t));
+hagl_backend_t *hagl_init(hagl_backend_t *backend) {
+    // static hagl_surface_t surface;
+    // memset(&surface, 0, sizeof(hagl_surface_t));
 
-    surface.width = backend->width;
-    surface.height = backend->height;
-    surface.put_pixel = backend->put_pixel;
-    surface.get_pixel = backend->get_pixel;
-    surface.hline = backend->hline;
-    surface.vline = backend->vline;
-    surface.color = backend->color;
-    surface.blit = backend->blit;
-    //hagl_clear_screen();
-    return &surface;
+    // surface.width = backend->width;
+    // surface.height = backend->height;
+    // surface.put_pixel = backend->put_pixel;
+    // surface.get_pixel = backend->get_pixel;
+    // surface.hline = backend->hline;
+    // surface.vline = backend->vline;
+    // surface.color = backend->color;
+    // surface.blit = backend->blit;
+    // //hagl_clear_screen();
+    // // return &surface;
+    return backend;
 };
 
 size_t hagl_flush(hagl_backend_t *backend) {
