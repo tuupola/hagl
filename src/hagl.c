@@ -1015,21 +1015,12 @@ color_t hagl_color(void const *_surface, uint8_t r, uint8_t g, uint8_t b)
     return rgb565(r, g, b);
 }
 
-hagl_backend_t *hagl_init(hagl_backend_t *backend) {
-    // static hagl_surface_t surface;
-    // memset(&surface, 0, sizeof(hagl_surface_t));
+hagl_backend_t *hagl_init(void) {
+    static hagl_backend_t backend;
+    memset(&backend, 0, sizeof(hagl_backend_t));
 
-    // surface.width = backend->width;
-    // surface.height = backend->height;
-    // surface.put_pixel = backend->put_pixel;
-    // surface.get_pixel = backend->get_pixel;
-    // surface.hline = backend->hline;
-    // surface.vline = backend->vline;
-    // surface.color = backend->color;
-    // surface.blit = backend->blit;
-    // //hagl_clear_screen();
-    // // return &surface;
-    return backend;
+    hagl_hal_init(&backend);
+    return &backend;
 };
 
 size_t hagl_flush(hagl_backend_t *backend) {

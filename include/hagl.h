@@ -401,7 +401,7 @@ void hagl_clear_clip_window();
  * Clear the display
  */
 void hagl_clear_screen(void const *surface);
-hagl_backend_t *hagl_init(hagl_backend_t *backend);
+hagl_backend_t *hagl_init(void);
 size_t hagl_flush(hagl_backend_t *backend);
 void hagl_close(hagl_backend_t *backend);
 

@@ -25,7 +25,7 @@ Before you start drawing you should call `hagl_init()`. Some HAL configurations 
 #include <hagl_hal.h>
 #include <hagl.h>
 
-hagl_backend_t *display = hagl_hal_init();
+hagl_backend_t *display = hagl_init();
 
 /* Main loop. */
 while (1) {
