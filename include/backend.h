@@ -42,9 +42,9 @@ SPDX-License-Identifier: MIT
 
 typedef struct {
     /* Common to all surfaces. */
-    int16_t (*width)(void);
-    int16_t (*height)(void);
-    uint8_t (*depth)(void);
+    int16_t width;
+    int16_t height;
+    uint8_t depth;
     void (*put_pixel)(int16_t x0, int16_t y0, color_t color);
     color_t (*get_pixel)(int16_t x0, int16_t y0);
     color_t (*color)(uint8_t r, uint8_t g, uint8_t b);
