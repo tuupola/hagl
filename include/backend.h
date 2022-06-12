@@ -37,6 +37,7 @@ SPDX-License-Identifier: MIT
 
 #include <stddef.h>
 #include <bitmap.h>
+#include <backend.h>
 #include "hagl_hal_color.h"
 
 typedef struct {
@@ -52,7 +53,7 @@ typedef struct {
     void (*vline)(int16_t x0, int16_t y0, uint16_t height, color_t color);
 
     /* Specific to backend. */
-    size_t (*flush)(void);
+    size_t (*flush)(void *backend);
     void (*close)(void);
     uint8_t *buffer;
     uint8_t *buffer2;

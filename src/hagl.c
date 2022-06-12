@@ -1025,7 +1025,7 @@ hagl_backend_t *hagl_init(void) {
 
 size_t hagl_flush(hagl_backend_t *backend) {
     if (backend->flush) {
-        return backend->flush();
+        return backend->flush(backend);
     }
     return 0;
 };
