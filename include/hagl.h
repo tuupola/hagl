@@ -64,7 +64,7 @@ extern "C" {
  * @param y0
  * @param color
  */
-void hagl_put_pixel(hagl_surface_t const *surface, int16_t x0, int16_t y0, color_t color);
+void hagl_put_pixel(void const *surface, int16_t x0, int16_t y0, color_t color);
 
 /**
  * Get a single pixel
@@ -75,7 +75,7 @@ void hagl_put_pixel(hagl_surface_t const *surface, int16_t x0, int16_t y0, color
  * @param y0
  * @return color at the given location
  */
-color_t hagl_get_pixel(hagl_surface_t const *surface, int16_t x0, int16_t y0);
+color_t hagl_get_pixel(void const *surface, int16_t x0, int16_t y0);
 
 /**
  * Draw a single character
@@ -92,7 +92,7 @@ color_t hagl_get_pixel(hagl_surface_t const *surface, int16_t x0, int16_t y0);
  * @param font  pointer to a FONTX font
  * @return width of the drawn character
  */
-uint8_t hagl_put_char(hagl_surface_t const *surface, wchar_t code, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
+uint8_t hagl_put_char(void const *surface, wchar_t code, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
 
 /**
  * Draw a string
@@ -109,7 +109,7 @@ uint8_t hagl_put_char(hagl_surface_t const *surface, wchar_t code, int16_t x0, i
  * @param font pointer to a FONTX font
  * @return width of the drawn string
  */
-uint16_t hagl_put_text(hagl_surface_t const *surface, const wchar_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
+uint16_t hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
 
 /**
  * Extract a glyph into a bitmap
@@ -123,7 +123,7 @@ uint16_t hagl_put_text(hagl_surface_t const *surface, const wchar_t *str, int16_
  * @param font Pointer to a FONTX font
  * @return Width of the drawn string
  */
-uint8_t hagl_get_glyph(hagl_surface_t const *surface, wchar_t code, color_t color, bitmap_t *bitmap, const uint8_t *font);
+uint8_t hagl_get_glyph(void const *surface, wchar_t code, color_t color, bitmap_t *bitmap, const uint8_t *font);
 
 /**
  * Blit a bitmap to the display
@@ -134,7 +134,7 @@ uint8_t hagl_get_glyph(hagl_surface_t const *surface, wchar_t code, color_t colo
  * @param y0
  * @param source pointer to a bitmap
  */
-void hagl_blit(hagl_surface_t const *surface, int16_t x0, int16_t y0, bitmap_t *source);
+void hagl_blit(void const *surface, int16_t x0, int16_t y0, bitmap_t *source);
 
 /**
  * Blit and scale a bitmap to the display
@@ -147,7 +147,7 @@ void hagl_blit(hagl_surface_t const *surface, int16_t x0, int16_t y0, bitmap_t *
  * @param h target height
  * @param source pointer to a bitmap
  */
-void hagl_scale_blit(hagl_surface_t const *surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source);
+void hagl_scale_blit(void const *surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source);
 
 /**
  * Draw a line
@@ -160,7 +160,7 @@ void hagl_scale_blit(hagl_surface_t const *surface, uint16_t x0, uint16_t y0, ui
  * @param y1
  * @param color
  */
-void hagl_draw_line(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color);
+void hagl_draw_line(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color);
 
 /**
  * Draw a vertical line
@@ -172,7 +172,7 @@ void hagl_draw_line(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16
  * @param width
  * @param color
  */
-void hagl_draw_hline(hagl_surface_t const *surface, int16_t x0, int16_t y0, uint16_t width, color_t color);
+void hagl_draw_hline(void const *surface, int16_t x0, int16_t y0, uint16_t width, color_t color);
 
 /**
  * Draw a horizontal line
@@ -184,7 +184,7 @@ void hagl_draw_hline(hagl_surface_t const *surface, int16_t x0, int16_t y0, uint
  * @param height
  * @param color
  */
-void hagl_draw_vline(hagl_surface_t const *surface, int16_t x0, int16_t y0, uint16_t height, color_t color);
+void hagl_draw_vline(void const *surface, int16_t x0, int16_t y0, uint16_t height, color_t color);
 
 /**
  * Draw a rectangle
@@ -197,7 +197,7 @@ void hagl_draw_vline(hagl_surface_t const *surface, int16_t x0, int16_t y0, uint
  * @param y1
  * @param color
  */
-void hagl_draw_rectangle(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color);
+void hagl_draw_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color);
 
 /**
  * Draw a filled rectangle
@@ -210,7 +210,7 @@ void hagl_draw_rectangle(hagl_surface_t const *surface, int16_t x0, int16_t y0, 
  * @param y1
  * @param color
  */
-void hagl_fill_rectangle(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color);
+void hagl_fill_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color);
 
 /**
  * Draw a circle
@@ -222,7 +222,7 @@ void hagl_fill_rectangle(hagl_surface_t const *surface, int16_t x0, int16_t y0, 
  * @param r radius
  * @param color
  */
-void hagl_draw_circle(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t r, color_t color);
+void hagl_draw_circle(void const *surface, int16_t x0, int16_t y0, int16_t r, color_t color);
 
 /**
  * Draw a filled circle
@@ -234,7 +234,7 @@ void hagl_draw_circle(hagl_surface_t const *surface, int16_t x0, int16_t y0, int
  * @param r radius
  * @param color
  */
-void hagl_fill_circle(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t r, color_t color);
+void hagl_fill_circle(void const *surface, int16_t x0, int16_t y0, int16_t r, color_t color);
 
 /**
  * Draw an ellipse
@@ -247,7 +247,7 @@ void hagl_fill_circle(hagl_surface_t const *surface, int16_t x0, int16_t y0, int
  * @param b horizontal radius
  * @param color
  */
-void hagl_draw_ellipse(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color);
+void hagl_draw_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color);
 
 /**
  * Draw a filled ellipse
@@ -260,7 +260,7 @@ void hagl_draw_ellipse(hagl_surface_t const *surface, int16_t x0, int16_t y0, in
  * @param b horizontal radius
  * @param color
  */
-void hagl_fill_ellipse(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color);
+void hagl_fill_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color);
 
 /**
  * Draw a polygon
@@ -276,7 +276,7 @@ void hagl_fill_ellipse(hagl_surface_t const *surface, int16_t x0, int16_t y0, in
  * @param vertices pointer to (an array) of vertices
  * @param color
  */
-void hagl_draw_polygon(hagl_surface_t const *surface, int16_t amount, int16_t *vertices, color_t color);
+void hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, color_t color);
 
 /**
  * Draw a filled polygon
@@ -292,7 +292,7 @@ void hagl_draw_polygon(hagl_surface_t const *surface, int16_t amount, int16_t *v
  * @param vertices pointer to (an array) of vertices
  * @param color
  */
-void hagl_fill_polygon(hagl_surface_t const *surface, int16_t amount, int16_t *vertices, color_t color);
+void hagl_fill_polygon(void const *surface, int16_t amount, int16_t *vertices, color_t color);
 
 /**
  * Draw a triangle
@@ -308,7 +308,7 @@ void hagl_fill_polygon(hagl_surface_t const *surface, int16_t amount, int16_t *v
  * @param y3
  * @param color
  */
-void hagl_draw_triangle(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color);
+void hagl_draw_triangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color);
 
 /**
  * Draw a filled triangle
@@ -324,7 +324,7 @@ void hagl_draw_triangle(hagl_surface_t const *surface, int16_t x0, int16_t y0, i
  * @param y3
  * @param color
  */
-void hagl_fill_triangle(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color);
+void hagl_fill_triangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color);
 
 /**
  * Draw a rounded rectangle
@@ -338,7 +338,7 @@ void hagl_fill_triangle(hagl_surface_t const *surface, int16_t x0, int16_t y0, i
  * @param r corner radius
  * @param color
  */
-void hagl_draw_rounded_rectangle(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color);
+void hagl_draw_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color);
 
 /**
  * Draw a filled rounded rectangle
@@ -352,7 +352,7 @@ void hagl_draw_rounded_rectangle(hagl_surface_t const *surface, int16_t x0, int1
  * @param r corner radius
  * @param color
  */
-void hagl_fill_rounded_rectangle(hagl_surface_t const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color);
+void hagl_fill_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color);
 
 /**
  * Load an image
@@ -367,7 +367,7 @@ void hagl_fill_rounded_rectangle(hagl_surface_t const *surface, int16_t x0, int1
  * @param r corner radius
  * @param color
  */
-uint32_t hagl_load_image(hagl_surface_t const *surface, int16_t x0, int16_t y0, const char *filename);
+uint32_t hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char *filename);
 
 /**
  * Set the clip window
@@ -380,7 +380,7 @@ uint32_t hagl_load_image(hagl_surface_t const *surface, int16_t x0, int16_t y0, 
  * @param x1
  * @param y1
  */
-void hagl_set_clip_window(hagl_surface_t const *surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+void hagl_set_clip_window(void const *surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 
 /**
  * Convert RGB to color
@@ -390,7 +390,7 @@ void hagl_set_clip_window(hagl_surface_t const *surface, uint16_t x0, uint16_t y
  *
  * @return color
  */
-color_t hagl_color(hagl_surface_t const *surface, uint8_t r, uint8_t g, uint8_t b);
+color_t hagl_color(void const *surface, uint8_t r, uint8_t g, uint8_t b);
 
 /**
  * Clear area of the current clip window
@@ -400,8 +400,8 @@ void hagl_clear_clip_window();
 /**
  * Clear the display
  */
-void hagl_clear_screen(hagl_surface_t const *surface);
-hagl_surface_t *hagl_init(hagl_backend_t *backend);
+void hagl_clear_screen(void const *surface);
+hagl_backend_t *hagl_init(void);
 size_t hagl_flush(hagl_backend_t *backend);
 void hagl_close(hagl_backend_t *backend);
 

@@ -41,6 +41,7 @@ SPDX-License-Identifier: MIT
 typedef struct {
     int16_t width;
     int16_t height;
+    uint8_t depth;
     void (*put_pixel)(int16_t x0, int16_t y0, color_t color);
     color_t (*get_pixel)(int16_t x0, int16_t y0);
     color_t (*color)(uint8_t r, uint8_t g, uint8_t b);
@@ -49,10 +50,5 @@ typedef struct {
     void (*hline)(int16_t x0, int16_t y0, uint16_t width, color_t color);
     void (*vline)(int16_t x0, int16_t y0, uint16_t height, color_t color);
 } hagl_surface_t;
-
-// hagl_surface_t *hagl_surface_init(bitmap_t *bitmap);
-
-// hagl_surface_t *hagl_surface_from_bitmap(bitmap_t *bitmap);
-// hagl_surface_t *hagl_surface_from_backend(backend_t *backend);
 
 #endif /* _HAGL_SURFACE_H */
