@@ -84,7 +84,7 @@ void hagl_put_pixel(void const *_surface, int16_t x0, int16_t y0, color_t color)
     }
 
     /* If still in bounds set the pixel. */
-    surface->put_pixel(x0, y0, color);
+    surface->put_pixel(&surface, x0, y0, color);
 }
 
 color_t hagl_get_pixel(void const *_surface, int16_t x0, int16_t y0)
@@ -101,7 +101,7 @@ color_t hagl_get_pixel(void const *_surface, int16_t x0, int16_t y0)
     }
 
     if (surface->get_pixel) {
-        return surface->get_pixel(x0, y0);
+        return surface->get_pixel(&surface, x0, y0);
     }
 
     return hagl_color(surface, 0, 0, 0);
@@ -134,7 +134,7 @@ void hagl_draw_hline(void const *_surface, int16_t x0, int16_t y0, uint16_t w, c
             width = width - (x0 + width - clip_window.x1);
         }
 
-        surface->hline(x0, y0, width, color);
+        surface->hline(&surface, x0, y0, width, color);
     } else {
         hagl_draw_line(surface, x0, y0, x0 + w, y0, color);
     }
@@ -171,7 +171,7 @@ void hagl_draw_vline(void const *_surface, int16_t x0, int16_t y0, uint16_t h, c
             height = height - (y0 + height - clip_window.y1);
         }
 
-        surface->vline(x0, y0, height, color);
+        surface->vline(&surface, x0, y0, height, color);
     } else {
         hagl_draw_line(surface, x0, y0, x0, y0 + h, color);
     }
@@ -301,7 +301,7 @@ void hagl_fill_rectangle(void const *_surface, int16_t x0, int16_t y0, int16_t x
     for (uint16_t i = 0; i < height; i++) {
         if (surface->hline) {
             /* Already clipped so can call HAL directly. */
-            surface->hline(x0, y0 + i, width, color);
+            surface->hline(&surface, x0, y0 + i, width, color);
         } else {
             hagl_draw_hline(surface, x0, y0 + i, width, color);
         }
@@ -442,7 +442,7 @@ void hagl_blit(void const *_surface, int16_t x0, int16_t y0, bitmap_t *source) {
             }
         } else {
             /* Inside of bounds, can use HAL provided blit. */
-            surface->blit(x0, y0, source);
+            surface->blit(&surface, x0, y0, source);
         }
     } else {
         color_t color;
@@ -461,7 +461,7 @@ void hagl_scale_blit(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w,
     const hagl_surface_t *surface = _surface;
 
     if (surface->scale_blit) {
-        surface->scale_blit(x0, y0, w, h, source);
+        surface->scale_blit(&surface, x0, y0, w, h, source);
     } else {
         color_t color;
         color_t *ptr = (color_t *) source->buffer;
@@ -1010,7 +1010,7 @@ color_t hagl_color(void const *_surface, uint8_t r, uint8_t g, uint8_t b)
 {
     const hagl_surface_t *surface = _surface;
     if (surface->color) {
-        return surface->color(r, g, b);
+        return surface->color(&surface, r, g, b);
     }
     return rgb565(r, g, b);
 }
