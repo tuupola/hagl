@@ -42,13 +42,13 @@ typedef struct {
     int16_t width;
     int16_t height;
     uint8_t depth;
-    void (*put_pixel)(int16_t x0, int16_t y0, color_t color);
-    color_t (*get_pixel)(int16_t x0, int16_t y0);
-    color_t (*color)(uint8_t r, uint8_t g, uint8_t b);
-    void (*blit)(uint16_t x0, uint16_t y0, bitmap_t *src);
-    void (*scale_blit)(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *src);
-    void (*hline)(int16_t x0, int16_t y0, uint16_t width, color_t color);
-    void (*vline)(int16_t x0, int16_t y0, uint16_t height, color_t color);
+    void (*put_pixel)(void *self, int16_t x0, int16_t y0, color_t color);
+    color_t (*get_pixel)(void *self, int16_t x0, int16_t y0);
+    color_t (*color)(void *self, uint8_t r, uint8_t g, uint8_t b);
+    void (*blit)(void *self, uint16_t x0, uint16_t y0, bitmap_t *src);
+    void (*scale_blit)(void *self, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *src);
+    void (*hline)(void *self, int16_t x0, int16_t y0, uint16_t width, color_t color);
+    void (*vline)(void *self, int16_t x0, int16_t y0, uint16_t height, color_t color);
 } hagl_surface_t;
 
 #endif /* _HAGL_SURFACE_H */
