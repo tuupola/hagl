@@ -44,10 +44,18 @@ Pitch is bytes per row. Depth is number of bits per pixel. Size is size
 in bytes.
 */
 typedef struct {
-    uint16_t width;
-    uint16_t height;
-    uint16_t pitch;
+    int16_t width;
+    int16_t height;
     uint8_t depth;
+    void (*put_pixel)(int16_t x0, int16_t y0, color_t color);
+    color_t (*get_pixel)(int16_t x0, int16_t y0);
+    color_t (*color)(uint8_t r, uint8_t g, uint8_t b);
+    void (*blit)(uint16_t x0, uint16_t y0, void *src);
+    void (*scale_blit)(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, void *src);
+    void (*hline)(int16_t x0, int16_t y0, uint16_t width, color_t color);
+    void (*vline)(int16_t x0, int16_t y0, uint16_t height, color_t color);
+
+    uint16_t pitch;
     uint32_t size;
     uint8_t *buffer;
 } bitmap_t;

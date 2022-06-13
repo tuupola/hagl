@@ -50,6 +50,10 @@ void bitmap_init(bitmap_t *bitmap, uint8_t *buffer)
     bitmap->pitch = bitmap->width * (bitmap->depth / 8);
     bitmap->size = bitmap->pitch * bitmap->height;
     bitmap->buffer = buffer;
+
+    bitmap->put_pixel = bitmap_put_pixel;
+    // bitmap->hline = hline;
+    // bitmap->vline = vline;
 }
 
 void
