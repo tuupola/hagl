@@ -39,35 +39,35 @@ SPDX-License-Identifier: MIT
 
 #include "bitmap.h"
 
+#include <stdio.h>
+#include "hagl_hal.h"
+
 /* Get bitmap size in bytes. */
 uint32_t bitmap_size(bitmap_t *bitmap) {
     return bitmap->width * (bitmap->depth / 8) * bitmap->height;
 };
 
-/* Initialise bitmap with given buffer. */
-void bitmap_init(bitmap_t *bitmap, uint8_t *buffer)
+static void
+put_pixel(void *_bitmap, int16_t x0, int16_t y0, color_t color)
 {
-    bitmap->pitch = bitmap->width * (bitmap->depth / 8);
-    bitmap->size = bitmap->pitch * bitmap->height;
-    bitmap->buffer = buffer;
-}
+    bitmap_t *bitmap = _bitmap;
 
-void
-bitmap_put_pixel(bitmap_t *bitmap, int16_t x0, int16_t y0, color_t color)
-{
     color_t *ptr = (color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
     *ptr = color;
 }
 
-color_t
-bitmap_get_pixel(bitmap_t const *bitmap, int16_t x0, int16_t y0)
+static color_t
+get_pixel(void *_bitmap, int16_t x0, int16_t y0)
 {
+    bitmap_t *bitmap = _bitmap;
     return *(color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
 }
 
 void
-bitmap_hline(bitmap_t *bitmap, int16_t x0, int16_t y0, uint16_t width, color_t color)
+hline(void *_bitmap, int16_t x0, int16_t y0, uint16_t width, color_t color)
 {
+    bitmap_t *bitmap = _bitmap;
+
     color_t *ptr = (color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
     for (uint16_t x = 0; x < width; x++) {
         *ptr++ = color;
@@ -75,8 +75,10 @@ bitmap_hline(bitmap_t *bitmap, int16_t x0, int16_t y0, uint16_t width, color_t c
 }
 
 void
-bitmap_vline(bitmap_t *bitmap, int16_t x0, int16_t y0, uint16_t height, color_t color)
+vline(void *_bitmap, int16_t x0, int16_t y0, uint16_t height, color_t color)
 {
+    bitmap_t *bitmap = _bitmap;
+
     color_t *ptr = (color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
     for (uint16_t y = 0; y < height; y++) {
         *ptr = color;
@@ -88,8 +90,12 @@ bitmap_vline(bitmap_t *bitmap, int16_t x0, int16_t y0, uint16_t height, color_t 
  * Blit source bitmap to a destination bitmap->
  */
 
-void bitmap_blit(int16_t x0, int16_t y0, bitmap_t *src, bitmap_t *dst)
+static void
+blit(void *_dst, int16_t x0, int16_t y0, void *_src)
 {
+    bitmap_t *dst = _dst;
+    bitmap_t *src = _src;
+
     int16_t srcw = src->width;
     int16_t srch = src->height;
     int16_t x1 = 0;
@@ -152,8 +158,12 @@ void bitmap_blit(int16_t x0, int16_t y0, bitmap_t *src, bitmap_t *dst)
  * http://www.davdata.nl/math/bmresize.html
  */
 
-void bitmap_scale_blit(int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth, bitmap_t *src, bitmap_t *dst)
+static void
+scale_blit(void *_dst, int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth, void *_src)
 {
+    bitmap_t *dst = _dst;
+    bitmap_t *src = _src;
+
     uint16_t px, py;
 
     uint16_t srcw = src->width;
@@ -217,4 +227,19 @@ void bitmap_scale_blit(int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth, bit
             dstptr += dst->pitch / (dst->depth / 8) - dstw;
         }
     }
+}
+
+/* Initialise bitmap with given buffer. */
+void bitmap_init(bitmap_t *bitmap, uint8_t *buffer)
+{
+    bitmap->pitch = bitmap->width * (bitmap->depth / 8);
+    bitmap->size = bitmap->pitch * bitmap->height;
+    bitmap->buffer = buffer;
+
+    bitmap->put_pixel = put_pixel;
+    bitmap->get_pixel = get_pixel;
+    bitmap->hline = hline;
+    bitmap->vline = vline;
+    bitmap->blit = blit;
+    bitmap->scale_blit = scale_blit;
 }
