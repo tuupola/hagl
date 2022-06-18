@@ -93,6 +93,7 @@ static inline void
 fps_reset(fps_instance_t *fps) {
     fps->start = clock() - 1;
     fps->frames = 0;
+    fps->current = 0;
 }
 
 

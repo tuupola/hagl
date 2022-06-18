@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 - The fps counter was refactored ([#69](https://github.com/tuupola/hagl/pull/69)).
-
+- The aps counter was refactored ([#69](https://github.com/tuupola/hagl/pull/70)).
 
 ## 0.5.0 - 2022-05-19
 
