@@ -41,44 +41,60 @@ extern "C" {
 
 #include <time.h>
 #include <stdint.h>
-#include <stdbool.h>
+
+typedef struct {
+    clock_t start;
+    uint32_t frames;
+    float smoothing;
+    float current;
+} fps_instance_t;
 
 /**
- * Frames per second counter
+ * Initialize the given FPS counter instance
+ */
+static inline void
+fps_init(fps_instance_t *fps) {
+    fps->start = clock() - 1;
+    fps->frames = 0;
+    fps->current = 0.0;
+
+    /* Larger value is less smoothing. */
+    if (!fps->smoothing) {
+        fps->smoothing = 0.98;
+    }
+}
+
+/**
+ * Update the given FPS counter instance
  *
- * Use to measure rendering speed. Should be called always after flushing
- * the back buffer.
- *
- * float fps;
- * hagl_flush();
- * fps = fps();
+ * Use to measure the rendering speed. Should be called always
+ * after flushing the back buffer.
  *
  * @return current fps
  */
-static inline float fps()
+static inline float
+fps_update(fps_instance_t *fps)
 {
-    static clock_t start;
-    static uint32_t frames = 1;
-    static float current = 0.0;
-    static bool firstrun = true;
-    clock_t ticks;
-
-    /* Larger value is less smoothing. */
-    float smoothing = 0.98;
     float measured = 0.0;
+    clock_t ticks = clock() - fps->start;;
 
-    if (firstrun) {
-        start = clock() - 1;
-        firstrun = false;
-    }
-    frames++;
+    fps->frames++;
 
-    ticks = clock() - start;
-    measured = frames / (float) ticks * CLOCKS_PER_SEC;
-    current = (measured * smoothing) + (current * (1.0 - smoothing));
+    measured = fps->frames / (float) ticks * CLOCKS_PER_SEC;
+    fps->current = (measured * fps->smoothing) + (fps->current * (1.0 - fps->smoothing));
 
-    return current;
+    return fps->current;
 }
+
+/**
+ * Reset the given FPS counter instance
+ */
+static inline void
+fps_reset(fps_instance_t *fps) {
+    fps->start = clock() - 1;
+    fps->frames = 0;
+}
+
 
 #ifdef __cplusplus
 }
