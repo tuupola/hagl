@@ -41,59 +41,63 @@ extern "C" {
 
 #include <time.h>
 #include <stdint.h>
-#include <stdbool.h>
 
-#define APS_RESET   (UINT32_MAX)
+typedef struct {
+    clock_t start;
+    uint64_t value;
+    float smoothing;
+    float current;
+} aps_instance_t;
 
 /**
- * Anything per second counter
- *
- * Use to measure anything per second. For example always after downloading
- * 1024 bytes you could get downloaded bytes per second with:
- *
- * float bps;
- * bps = aps(1024);
- *
- * You can reset the counter by passing APS_RESET as the argument.
- *
- * bps = aps(APS_RESET);
- *
- * @param add amount to add since the last call
- * @return average per second of given values
+ * Initialize the given anything per second counter instance
  */
-static inline float aps(uint32_t add)
-{
-    static clock_t start;
-    static uint64_t value = 0;
-    static float current = 0.0;
-    static bool firstrun = true;
-    clock_t ticks;
+static inline void
+aps_init(aps_instance_t *aps) {
+    aps->start = clock() - 1;
+    aps->value = 0;
+    aps->current = 0.0;
 
     /* Larger value is less smoothing. */
-    float smoothing = 0.98;
-    float measured = 0.0;
-
-    if (firstrun) {
-        start = clock() - 1;
-        firstrun = false;
+    if (!aps->smoothing) {
+        aps->smoothing = 0.98;
     }
-
-    if (APS_RESET == add) {
-        start = clock() - 1;
-        value = 0;
-        current = 0;
-        firstrun = false;
-        return 0;
-    }
-
-    value += add;
-
-    ticks = clock() - start;
-    measured = value / (float) ticks * CLOCKS_PER_SEC;
-    current = (measured * smoothing) + (current * (1.0 - smoothing));
-
-    return current;
 }
+
+/**
+ * Update the given anything per second counter instance
+ *
+ * Use to measure the rendering speed. Should be called always
+ * after flushing the back buffer.
+ *
+ * @return current aps
+ */
+static inline float
+aps_update(aps_instance_t *aps, uint32_t add)
+{
+
+
+    float measured = 0.0;
+    clock_t ticks = clock() - aps->start;;
+
+    aps->value += add;
+
+    measured = aps->value / (float) ticks * CLOCKS_PER_SEC;
+    aps->current = (measured * aps->smoothing) + (aps->current * (1.0 - aps->smoothing));
+
+    return aps->current;
+}
+
+/**
+ * Reset the given anything per second counter instance
+ */
+static inline void
+aps_reset(aps_instance_t *aps) {
+    aps->start = clock() - 1;
+    aps->value = 0;
+    aps->current = 0;
+}
+
 
 #ifdef __cplusplus
 }
