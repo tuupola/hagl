@@ -92,19 +92,19 @@ color_t hagl_get_pixel(void const *_surface, int16_t x0, int16_t y0)
     const hagl_surface_t *surface = _surface;
     /* x0 or y0 is before the edge, nothing to do. */
     if ((x0 < clip_window.x0) || (y0 < clip_window.y0))  {
-        return hagl_color(surface, 0, 0, 0);
+        return hagl_color(0, 0, 0);
     }
 
     /* x0 or y0 is after the edge, nothing to do. */
     if ((x0 > clip_window.x1) || (y0 > clip_window.y1)) {
-        return hagl_color(surface, 0, 0, 0);
+        return hagl_color(0, 0, 0);
     }
 
     if (surface->get_pixel) {
         return surface->get_pixel(&surface, x0, y0);
     }
 
-    return hagl_color(surface, 0, 0, 0);
+    return hagl_color(0, 0, 0);
 }
 
 void hagl_draw_hline(void const *_surface, int16_t x0, int16_t y0, uint16_t w, color_t color) {
@@ -1006,12 +1006,8 @@ void hagl_fill_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, in
 //     return HAGL_OK;
 // }
 
-color_t hagl_color(void const *_surface, uint8_t r, uint8_t g, uint8_t b)
+color_t hagl_color(uint8_t r, uint8_t g, uint8_t b)
 {
-    const hagl_surface_t *surface = _surface;
-    if (surface->color) {
-        return surface->color(&surface, r, g, b);
-    }
     return rgb565(r, g, b);
 }
 
