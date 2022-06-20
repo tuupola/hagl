@@ -55,7 +55,7 @@ typedef struct {
 
     /* Specific to backend. */
     size_t (*flush)(void *self);
-    void (*close)(void);
+    void (*close)(void *self);
     uint8_t *buffer;
     uint8_t *buffer2;
 } hagl_backend_t;
