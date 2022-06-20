@@ -47,7 +47,6 @@ typedef struct {
     uint8_t depth;
     void (*put_pixel)(void *self, int16_t x0, int16_t y0, color_t color);
     color_t (*get_pixel)(void *self, int16_t x0, int16_t y0);
-    color_t (*color)(void *self, uint8_t r, uint8_t g, uint8_t b);
     void (*blit)(void *self, int16_t x0, int16_t y0, bitmap_t *src);
     void (*scale_blit)(void *self, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *src);
     void (*hline)(void *self, int16_t x0, int16_t y0, uint16_t width, color_t color);
