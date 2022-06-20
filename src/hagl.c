@@ -1032,6 +1032,6 @@ size_t hagl_flush(hagl_backend_t *backend) {
 
 void hagl_close(hagl_backend_t *backend) {
     if (backend->close) {
-        backend->close();
+        backend->close(backend);
     }
 };
