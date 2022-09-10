@@ -390,7 +390,7 @@ void hagl_set_clip_window(void const *surface, uint16_t x0, uint16_t y0, uint16_
  *
  * @return color
  */
-color_t hagl_color(uint8_t r, uint8_t g, uint8_t b);
+color_t hagl_color(void const *surface, uint8_t r, uint8_t g, uint8_t b);
 
 /**
  * Clear area of the current clip window
