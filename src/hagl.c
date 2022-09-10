@@ -412,9 +412,7 @@ uint16_t hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int1
 }
 
 /*
- * Blits a bitmap to a destination hardcoded in the HAL driver. Destination
- * parameter is left out intentionally to keep the API simpler. If you need
- * configurable source and destination see the file blit.c.
+ * Blits a bitmap to a surface. Surface can be a display or another bitmap.
  *
  * TODO: Handle transparency.
  */
