@@ -234,8 +234,6 @@ void bitmap_init(bitmap_t *bitmap, uint8_t *buffer)
 {
     bitmap->pitch = bitmap->width * (bitmap->depth / 8);
     bitmap->size = bitmap->pitch * bitmap->height;
-
-    memset(buffer, 0, bitmap->size);
     bitmap->buffer = buffer;
 
     bitmap->put_pixel = put_pixel;
