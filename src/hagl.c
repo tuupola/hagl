@@ -480,7 +480,7 @@ void hagl_scale_blit(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w,
     }
 };
 
-void hagl_clear_screen(void const *surface) {
+void hagl_clear(void const *surface) {
     uint16_t x0 = clip_window.x0;
     uint16_t y0 = clip_window.y0;
     uint16_t x1 = clip_window.x1;
