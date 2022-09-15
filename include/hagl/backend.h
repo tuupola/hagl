@@ -32,23 +32,31 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_SURFACE_H
-#define _HAGL_SURFACE_H
+#ifndef _HAGL_BACKEND_H
+#define _HAGL_BACKEND_H
 
-#include <bitmap.h>
+#include <stddef.h>
+#include <hagl/bitmap.h>
 #include "hagl_hal_color.h"
 
 typedef struct {
+    /* Common to all surfaces. */
     int16_t width;
     int16_t height;
     uint8_t depth;
     void (*put_pixel)(void *self, int16_t x0, int16_t y0, color_t color);
     color_t (*get_pixel)(void *self, int16_t x0, int16_t y0);
     color_t (*color)(void *self, uint8_t r, uint8_t g, uint8_t b);
-    void (*blit)(void *self, uint16_t x0, uint16_t y0, bitmap_t *src);
+    void (*blit)(void *self, int16_t x0, int16_t y0, bitmap_t *src);
     void (*scale_blit)(void *self, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *src);
     void (*hline)(void *self, int16_t x0, int16_t y0, uint16_t width, color_t color);
     void (*vline)(void *self, int16_t x0, int16_t y0, uint16_t height, color_t color);
-} hagl_surface_t;
 
-#endif /* _HAGL_SURFACE_H */
+    /* Specific to backend. */
+    size_t (*flush)(void *self);
+    void (*close)(void *self);
+    uint8_t *buffer;
+    uint8_t *buffer2;
+} hagl_backend_t;
+
+#endif /* _HAGL_BACKEND_H */

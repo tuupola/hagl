@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2022 Mika Tuupola
+Copyright (c) 2018-2022 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,37 +27,40 @@ SOFTWARE.
 This file is part of the HAGL graphics library:
 https://github.com/tuupola/hagl
 
-
 SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_BACKEND_H
-#define _HAGL_BACKEND_H
+#include <stdint.h>
+#include <hagl_hal_color.h>
 
-#include <stddef.h>
-#include <bitmap.h>
-#include <backend.h>
-#include "hagl_hal_color.h"
+#ifndef _BITMAP_H
+#define _BITMAP_H
 
+#define BITMAP_SIZE(width, height, depth) (width * (depth / 8) * height)
+
+/*
+Pitch is bytes per row. Depth is number of bits per pixel. Size is size
+in bytes.
+*/
 typedef struct {
-    /* Common to all surfaces. */
     int16_t width;
     int16_t height;
     uint8_t depth;
     void (*put_pixel)(void *self, int16_t x0, int16_t y0, color_t color);
     color_t (*get_pixel)(void *self, int16_t x0, int16_t y0);
     color_t (*color)(void *self, uint8_t r, uint8_t g, uint8_t b);
-    void (*blit)(void *self, int16_t x0, int16_t y0, bitmap_t *src);
-    void (*scale_blit)(void *self, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *src);
+    void (*blit)(void *self, int16_t x0, int16_t y0, void *src);
+    void (*scale_blit)(void *self, int16_t x0, int16_t y0, uint16_t w, uint16_t h, void *src);
     void (*hline)(void *self, int16_t x0, int16_t y0, uint16_t width, color_t color);
     void (*vline)(void *self, int16_t x0, int16_t y0, uint16_t height, color_t color);
 
-    /* Specific to backend. */
-    size_t (*flush)(void *self);
-    void (*close)(void *self);
+    uint16_t pitch;
+    uint32_t size;
     uint8_t *buffer;
-    uint8_t *buffer2;
-} hagl_backend_t;
+} hagl_bitmap_t;
 
-#endif /* _HAGL_BACKEND_H */
+uint32_t bitmap_size(bitmap_t *bitmap);
+void bitmap_init(bitmap_t *bitmap, uint8_t *buffer);
+
+#endif /* _BITMAP_H */

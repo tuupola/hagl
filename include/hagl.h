@@ -42,10 +42,10 @@ extern "C" {
 #include <stdint.h>
 #include <stddef.h>
 
-#include "surface.h"
-#include "backend.h"
+#include "hagl/surface.h"
+#include "hagl/backend.h"
 #include "hagl_hal.h"
-#include "bitmap.h"
+#include "hagl/bitmap.h"
 
 #define ABS(x)  ((x) > 0 ? (x) : -(x))
 
