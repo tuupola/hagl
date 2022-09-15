@@ -60,7 +60,7 @@ typedef struct {
     uint8_t *buffer;
 } hagl_bitmap_t;
 
-uint32_t bitmap_size(bitmap_t *bitmap);
-void bitmap_init(bitmap_t *bitmap, uint8_t *buffer);
+uint32_t bitmap_size(hagl_bitmap_t *bitmap);
+void bitmap_init(hagl_bitmap_t *bitmap, uint8_t *buffer);
 
 #endif /* _BITMAP_H */
