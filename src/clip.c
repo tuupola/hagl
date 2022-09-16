@@ -37,7 +37,7 @@ https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "window.h"
+#include "hagl/window.h"
 
 static const uint8_t INSIDE = 0b0000;
 static const uint8_t LEFT = 0b0001;
@@ -45,7 +45,7 @@ static const uint8_t RIGHT = 0b0010;
 static const uint8_t BOTTOM = 0b0100;
 static const uint8_t TOP = 0b1000;
 
-static uint8_t code(int16_t x0, int16_t y0, window_t window)
+static uint8_t code(int16_t x0, int16_t y0, hagl_window_t window)
 {
     uint8_t code = INSIDE;
 
@@ -62,7 +62,7 @@ static uint8_t code(int16_t x0, int16_t y0, window_t window)
     return code;
 }
 
-bool clip_line(int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, window_t window)
+bool hagl_clip_line(int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, hagl_window_t window)
 {
     uint8_t code0 = code(*x0, *y0, window);
     uint8_t code1 = code(*x1, *y1, window);

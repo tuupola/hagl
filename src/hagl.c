@@ -39,13 +39,13 @@ SPDX-License-Identifier: MIT
 #include <stdio.h>
 #include <stddef.h>
 
-#include "bitmap.h"
 #include "rgb332.h"
 #include "rgb565.h"
 #include "fontx.h"
-#include "clip.h"
 #include "tjpgd.h"
-#include "window.h"
+#include "hagl/bitmap.h"
+#include "hagl/clip.h"
+#include "hagl/window.h"
 #include "hagl.h"
 #include "hagl_hal.h"
 
@@ -56,7 +56,7 @@ typedef struct {
     const hagl_surface_t *surface;
 } tjpgd_iodev_t;
 
-static window_t clip_window = {
+static hagl_window_t clip_window = {
     .x0 = 0,
     .y0 = 0,
     .x1 = DISPLAY_WIDTH - 1,
@@ -184,7 +184,7 @@ void hagl_draw_vline(void const *_surface, int16_t x0, int16_t y0, uint16_t h, c
 void hagl_draw_line(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
 {
     /* Clip coordinates to fit clip window. */
-    if (false == clip_line(&x0, &y0, &x1, &y1, clip_window)) {
+    if (false == hagl_clip_line(&x0, &y0, &x1, &y1, clip_window)) {
         return;
     }
 
@@ -309,7 +309,7 @@ void hagl_fill_rectangle(void const *_surface, int16_t x0, int16_t y0, int16_t x
     }
 }
 
-uint8_t hagl_get_glyph(void const *surface, wchar_t code, color_t color, bitmap_t *bitmap, const uint8_t *font)
+uint8_t hagl_get_glyph(void const *surface, wchar_t code, color_t color, hagl_bitmap_t *bitmap, const uint8_t *font)
 {
     uint8_t status, set;
     fontx_glyph_t glyph;
@@ -348,7 +348,7 @@ uint8_t hagl_put_char(void const *surface, wchar_t code, int16_t x0, int16_t y0,
 {
     uint8_t set, status;
     color_t buffer[HAGL_CHAR_BUFFER_SIZE];
-    bitmap_t bitmap;
+    hagl_bitmap_t bitmap;
     fontx_glyph_t glyph;
 
     status = fontx_glyph(&glyph, code, font);
@@ -420,7 +420,7 @@ uint16_t hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int1
  * TODO: Handle transparency.
  */
 
-void hagl_blit(void const *_surface, int16_t x0, int16_t y0, bitmap_t *source) {
+void hagl_blit(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source) {
     const hagl_surface_t *surface = _surface;
 
     if (surface->blit) {
@@ -458,7 +458,7 @@ void hagl_blit(void const *_surface, int16_t x0, int16_t y0, bitmap_t *source) {
     }
 };
 
-void hagl_scale_blit(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source) {
+void hagl_scale_blit(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source) {
     const hagl_surface_t *surface = _surface;
 
     if (surface->scale_blit) {
@@ -962,7 +962,7 @@ static uint16_t tjpgd_data_writer(JDEC* decoder, void* bitmap, JRECT* rectangle)
     uint8_t width = (rectangle->right - rectangle->left) + 1;
     uint8_t height = (rectangle->bottom - rectangle->top) + 1;
 
-    bitmap_t block = {
+    hagl_bitmap_t block = {
         .width = width,
         .height = height,
         .depth = DISPLAY_DEPTH,

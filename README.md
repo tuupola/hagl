@@ -29,7 +29,7 @@ hagl_backend_t *display = hagl_init();
 
 /* Main loop. */
 while (1) {
-    hagl_clear_screen(display);
+    hagl_clear(display);
     hagl_load_image(display, 0, 0, "/sdcard/hello.jpg");
     hagl_flush(display);
 };
@@ -93,7 +93,7 @@ for (uint16_t i = 1; i < 1000; i++) {
 }
 ```
 
-![Random lines](https://appelsiini.net/img/2020/pod-draw-line.png)
+![Random lines](https://www.appelsiini.net/img/2020/pod-draw-line.png)
 
 ### Draw a line
 
@@ -109,7 +109,7 @@ for (uint16_t i = 1; i < 1000; i++) {
 }
 ```
 
-![Random lines](https://appelsiini.net/img/2020/pod-draw-line.png)
+![Random lines](https://www.appelsiini.net/img/2020/pod-draw-line.png)
 
 ### Draw a horizontal line
 
@@ -387,7 +387,7 @@ for (uint16_t i = 1; i < 10000; i++) {
 Blit copies a [bitmap](https://github.com/tuupola/hagl/blob/master/bitmap.c) to the screen. This example uses a glyph bitmap which is extracted from a font.
 
 ```c
-bitmap_t bitmap;
+hagl_bitmap_t bitmap;
 bitmap.buffer = (uint8_t *) malloc(6 * 9 * sizeof(color_t));
 
 for (uint16_t i = 1; i < 20000; i++) {
@@ -408,7 +408,7 @@ for (uint16_t i = 1; i < 20000; i++) {
 Scale blit copies and scales a [bitmap](https://github.com/tuupola/hagl/blob/master/bitmap.c) to the screen. This example uses a glyph bitmap which is extracted from a font.
 
 ```c
-bitmap_t bitmap;
+hagl_bitmap_t bitmap;
 bitmap.buffer = (uint8_t *) malloc(6 * 9 * sizeof(color_t));
 
 for (uint16_t i = 1; i < 20000; i++) {
@@ -428,7 +428,7 @@ for (uint16_t i = 1; i < 20000; i++) {
 You can restrict the area of drawing by setting a clip window.
 
 ```c
-hagl_set_clip_window(0, 40, DISPLAY_WIDTH, DISPLAY_HEIGHT - 40);
+hagl_set_clip_window(display, 0, 40, DISPLAY_WIDTH, DISPLAY_HEIGHT - 40);
 
 for (uint16_t i = 1; i < 500; i++) {
     int16_t x0 = rand() % DISPLAY_WIDTH;
@@ -445,55 +445,8 @@ for (uint16_t i = 1; i < 500; i++) {
 If you want to cleant the contents of the clip window instead of clearing the whole screen call:
 
 ```c
-hagl_clear_clip_window()
+hagl_clear_clip_window(display)
 ```
-
-## Speed
-
- First table numbers are operations per second with double buffering enabled. Bigger number is better. T-Display and M5StickC have higher numbers because they have smaller resolution. Smaller resolution means less bytes to push to the display.
-
-|                               | T4     | T-Display | M5Stack | M5StickC |
-|-------------------------------|--------|-----------|---------|----------|
-| hagl_put_pixel()              | 304400 |    304585 |  340850 |   317094 |
-| hagl_draw_line()              |  10485 |     14942 |   12145 |    31293 |
-| hagl_draw_circle()            |  15784 |     16430 |   17730 |    18928 |
-| hagl_fill_circle()            |   8712 |      9344 |    9982 |    13910 |
-| hagl_draw_ellipse()           |   8187 |      8642 |    9168 |    10019 |
-| hagl_fill_ellipse()           |   3132 |      3457 |    3605 |     5590 |
-| hagl_draw_triangle()          |   3581 |      5137 |    4160 |    11186 |
-| hagl_fill_triangle()          |   1246 |      1993 |    1654 |     6119 |
-| hagl_draw_rectangle()         |  22759 |     30174 |   26910 |    64259 |
-| hagl_fill_rectangle()         |   2191 |      4849 |    2487 |    16146 |
-| hagl_draw_rounded_rectangle() |  17660 |     21993 |   20736 |    39102 |
-| hagl_fill_rounded_rectangle() |   2059 |      4446 |    2313 |    13270 |
-| hagl_draw_polygon()           |   2155 |      3096 |    2494 |     6763 |
-| hagl_fill_polygon()           |    692 |      1081 |     938 |     3295 |
-| hagl_put_char()               |  29457 |     29131 |   32429 |    27569 |
-| hagl_flush()                  |     32 |        76 |      32 |       96 |
-
-Second table numbers are operations per second with double buffering disabled.
-
-|                               | T4    | T-Display | M5Stack | M5StickC |
-|-------------------------------|-------|-----------|---------|----------|
-| hagl_put_pixel()              | 16041 |     15252 |   16044 |    24067 |
-| hagl_draw_line()              |   113 |       172 |     112 |      289 |
-| hagl_draw_circle()            |   148 |       173 |     145 |      230 |
-| hagl_fill_circle()            |   264 |       278 |     261 |      341 |
-| hagl_draw_ellipse()           |    84 |       103 |      85 |      179 |
-| hagl_fill_ellipse()           |   114 |       128 |     116 |      191 |
-| hagl_draw_triangle()          |    37 |        54 |      37 |      114 |
-| hagl_fill_triangle()          |    72 |       111 |      72 |      371 |
-| hagl_draw_rectangle()         |  2378 |      2481 |    2374 |     3482 |
-| hagl_fill_rectangle()         |    91 |       146 |      91 |      454 |
-| hagl_draw_rounded_rectangle() |   458 |       535 |     459 |      808 |
-| hagl_fill_rounded_rectangle() |    87 |       139 |      79 |      400 |
-| hagl_draw_polygon()           |    21 |        33 |      19 |       71 |
-| hagl_fill_polygon()           |    43 |        66 |      49 |      228 |
-| hagl_put_char)                |  4957 |      4264 |    4440 |     2474 |
-| hagl_flush()                  |     x |         x |       x |        x |
-
-You can run the speed tests yourself by checking out the [speedtest repository](https://github.com/tuupola/esp_gfx).
-
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.

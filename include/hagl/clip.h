@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2022 Mika Tuupola
+Copyright (c) 2018-2022 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,23 +32,14 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_SURFACE_H
-#define _HAGL_SURFACE_H
+#ifndef _HAGL_CLIP_H
+#define _HAGL_CLIP_H
 
-#include <bitmap.h>
-#include "hagl_hal_color.h"
+#include <stdint.h>
+#include <stdbool.h>
 
-typedef struct {
-    int16_t width;
-    int16_t height;
-    uint8_t depth;
-    void (*put_pixel)(void *self, int16_t x0, int16_t y0, color_t color);
-    color_t (*get_pixel)(void *self, int16_t x0, int16_t y0);
-    color_t (*color)(void *self, uint8_t r, uint8_t g, uint8_t b);
-    void (*blit)(void *self, uint16_t x0, uint16_t y0, bitmap_t *src);
-    void (*scale_blit)(void *self, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *src);
-    void (*hline)(void *self, int16_t x0, int16_t y0, uint16_t width, color_t color);
-    void (*vline)(void *self, int16_t x0, int16_t y0, uint16_t height, color_t color);
-} hagl_surface_t;
+#include "hagl/window.h"
 
-#endif /* _HAGL_SURFACE_H */
+bool hagl_clip_line(int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, hagl_window_t window);
+
+#endif /* _HAGL_CLIP_H */
