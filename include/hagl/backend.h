@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2018-2022 Mika Tuupola
+Copyright (c) 2022 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,14 +32,31 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_WINDOW_H
-#define _HAGL_WINDOW_H
+#ifndef _HAGL_BACKEND_H
+#define _HAGL_BACKEND_H
+
+#include <stddef.h>
+#include <hagl/bitmap.h>
+#include "hagl_hal_color.h"
 
 typedef struct {
-    uint16_t x0;
-    uint16_t y0;
-    uint16_t x1;
-    uint16_t y1;
-} window_t;
+    /* Common to all surfaces. */
+    int16_t width;
+    int16_t height;
+    uint8_t depth;
+    void (*put_pixel)(void *self, int16_t x0, int16_t y0, color_t color);
+    color_t (*get_pixel)(void *self, int16_t x0, int16_t y0);
+    color_t (*color)(void *self, uint8_t r, uint8_t g, uint8_t b);
+    void (*blit)(void *self, int16_t x0, int16_t y0, hagl_bitmap_t *src);
+    void (*scale_blit)(void *self, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *src);
+    void (*hline)(void *self, int16_t x0, int16_t y0, uint16_t width, color_t color);
+    void (*vline)(void *self, int16_t x0, int16_t y0, uint16_t height, color_t color);
 
-#endif /* _HAGL_WINDOW_H */
+    /* Specific to backend. */
+    size_t (*flush)(void *self);
+    void (*close)(void *self);
+    uint8_t *buffer;
+    uint8_t *buffer2;
+} hagl_backend_t;
+
+#endif /* _HAGL_BACKEND_H */

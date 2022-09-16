@@ -42,10 +42,10 @@ extern "C" {
 #include <stdint.h>
 #include <stddef.h>
 
-#include "surface.h"
-#include "backend.h"
+#include "hagl/surface.h"
+#include "hagl/backend.h"
 #include "hagl_hal.h"
-#include "bitmap.h"
+#include "hagl/bitmap.h"
 
 #define ABS(x)  ((x) > 0 ? (x) : -(x))
 
@@ -123,7 +123,7 @@ uint16_t hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int1
  * @param font Pointer to a FONTX font
  * @return Width of the drawn string
  */
-uint8_t hagl_get_glyph(void const *surface, wchar_t code, color_t color, bitmap_t *bitmap, const uint8_t *font);
+uint8_t hagl_get_glyph(void const *surface, wchar_t code, color_t color, hagl_bitmap_t *bitmap, const uint8_t *font);
 
 /**
  * Blit a bitmap to the display
@@ -134,7 +134,7 @@ uint8_t hagl_get_glyph(void const *surface, wchar_t code, color_t color, bitmap_
  * @param y0
  * @param source pointer to a bitmap
  */
-void hagl_blit(void const *surface, int16_t x0, int16_t y0, bitmap_t *source);
+void hagl_blit(void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *source);
 
 /**
  * Blit and scale a bitmap to the display
@@ -147,7 +147,7 @@ void hagl_blit(void const *surface, int16_t x0, int16_t y0, bitmap_t *source);
  * @param h target height
  * @param source pointer to a bitmap
  */
-void hagl_scale_blit(void const *surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, bitmap_t *source);
+void hagl_scale_blit(void const *surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source);
 
 /**
  * Draw a line

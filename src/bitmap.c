@@ -37,20 +37,20 @@ SPDX-License-Identifier: MIT
 #include <string.h>
 #include <math.h>
 
-#include "bitmap.h"
+#include "hagl/bitmap.h"
 
 #include <stdio.h>
 #include "hagl_hal.h"
 
 /* Get bitmap size in bytes. */
-uint32_t bitmap_size(bitmap_t *bitmap) {
+uint32_t bitmap_size(hagl_bitmap_t *bitmap) {
     return bitmap->width * (bitmap->depth / 8) * bitmap->height;
 };
 
 static void
 put_pixel(void *_bitmap, int16_t x0, int16_t y0, color_t color)
 {
-    bitmap_t *bitmap = _bitmap;
+    hagl_bitmap_t *bitmap = _bitmap;
 
     color_t *ptr = (color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
     *ptr = color;
@@ -59,14 +59,14 @@ put_pixel(void *_bitmap, int16_t x0, int16_t y0, color_t color)
 static color_t
 get_pixel(void *_bitmap, int16_t x0, int16_t y0)
 {
-    bitmap_t *bitmap = _bitmap;
+    hagl_bitmap_t *bitmap = _bitmap;
     return *(color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
 }
 
 void
 hline(void *_bitmap, int16_t x0, int16_t y0, uint16_t width, color_t color)
 {
-    bitmap_t *bitmap = _bitmap;
+    hagl_bitmap_t *bitmap = _bitmap;
 
     color_t *ptr = (color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
     for (uint16_t x = 0; x < width; x++) {
@@ -77,7 +77,7 @@ hline(void *_bitmap, int16_t x0, int16_t y0, uint16_t width, color_t color)
 void
 vline(void *_bitmap, int16_t x0, int16_t y0, uint16_t height, color_t color)
 {
-    bitmap_t *bitmap = _bitmap;
+    hagl_bitmap_t *bitmap = _bitmap;
 
     color_t *ptr = (color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
     for (uint16_t y = 0; y < height; y++) {
@@ -93,8 +93,8 @@ vline(void *_bitmap, int16_t x0, int16_t y0, uint16_t height, color_t color)
 static void
 blit(void *_dst, int16_t x0, int16_t y0, void *_src)
 {
-    bitmap_t *dst = _dst;
-    bitmap_t *src = _src;
+    hagl_bitmap_t *dst = _dst;
+    hagl_bitmap_t *src = _src;
 
     int16_t srcw = src->width;
     int16_t srch = src->height;
@@ -161,8 +161,8 @@ blit(void *_dst, int16_t x0, int16_t y0, void *_src)
 static void
 scale_blit(void *_dst, int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth, void *_src)
 {
-    bitmap_t *dst = _dst;
-    bitmap_t *src = _src;
+    hagl_bitmap_t *dst = _dst;
+    hagl_bitmap_t *src = _src;
 
     uint16_t px, py;
 
@@ -230,7 +230,7 @@ scale_blit(void *_dst, int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth, voi
 }
 
 /* Initialise bitmap with given buffer. */
-void bitmap_init(bitmap_t *bitmap, uint8_t *buffer)
+void bitmap_init(hagl_bitmap_t *bitmap, uint8_t *buffer)
 {
     bitmap->pitch = bitmap->width * (bitmap->depth / 8);
     bitmap->size = bitmap->pitch * bitmap->height;

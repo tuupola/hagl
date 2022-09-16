@@ -27,19 +27,40 @@ SOFTWARE.
 This file is part of the HAGL graphics library:
 https://github.com/tuupola/hagl
 
-
 SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_CLIP_H
-#define _HAGL_CLIP_H
-
 #include <stdint.h>
-#include <stdbool.h>
+#include <hagl_hal_color.h>
 
-#include "window.h"
+#ifndef _BITMAP_H
+#define _BITMAP_H
 
-bool clip_line(int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, window_t window);
+#define BITMAP_SIZE(width, height, depth) (width * (depth / 8) * height)
 
-#endif /* _HAGL_CLIP_H */
+/*
+Pitch is bytes per row. Depth is number of bits per pixel. Size is size
+in bytes.
+*/
+typedef struct {
+    int16_t width;
+    int16_t height;
+    uint8_t depth;
+    void (*put_pixel)(void *self, int16_t x0, int16_t y0, color_t color);
+    color_t (*get_pixel)(void *self, int16_t x0, int16_t y0);
+    color_t (*color)(void *self, uint8_t r, uint8_t g, uint8_t b);
+    void (*blit)(void *self, int16_t x0, int16_t y0, void *src);
+    void (*scale_blit)(void *self, int16_t x0, int16_t y0, uint16_t w, uint16_t h, void *src);
+    void (*hline)(void *self, int16_t x0, int16_t y0, uint16_t width, color_t color);
+    void (*vline)(void *self, int16_t x0, int16_t y0, uint16_t height, color_t color);
+
+    uint16_t pitch;
+    uint32_t size;
+    uint8_t *buffer;
+} hagl_bitmap_t;
+
+uint32_t bitmap_size(hagl_bitmap_t *bitmap);
+void bitmap_init(hagl_bitmap_t *bitmap, uint8_t *buffer);
+
+#endif /* _BITMAP_H */
