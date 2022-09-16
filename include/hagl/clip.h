@@ -40,6 +40,6 @@ SPDX-License-Identifier: MIT
 
 #include "window.h"
 
-bool clip_line(int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, window_t window);
+bool hagl_clip_line(int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, window_t window);
 
 #endif /* _HAGL_CLIP_H */
