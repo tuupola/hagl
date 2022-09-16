@@ -29,7 +29,7 @@ hagl_backend_t *display = hagl_init();
 
 /* Main loop. */
 while (1) {
-    hagl_clear_screen(display);
+    hagl_clear(display);
     hagl_load_image(display, 0, 0, "/sdcard/hello.jpg");
     hagl_flush(display);
 };
@@ -93,7 +93,7 @@ for (uint16_t i = 1; i < 1000; i++) {
 }
 ```
 
-![Random lines](https://appelsiini.net/img/2020/pod-draw-line.png)
+![Random lines](https://www.appelsiini.net/img/2020/pod-draw-line.png)
 
 ### Draw a line
 
@@ -109,7 +109,7 @@ for (uint16_t i = 1; i < 1000; i++) {
 }
 ```
 
-![Random lines](https://appelsiini.net/img/2020/pod-draw-line.png)
+![Random lines](https://www.appelsiini.net/img/2020/pod-draw-line.png)
 
 ### Draw a horizontal line
 
@@ -428,7 +428,7 @@ for (uint16_t i = 1; i < 20000; i++) {
 You can restrict the area of drawing by setting a clip window.
 
 ```c
-hagl_set_clip_window(0, 40, DISPLAY_WIDTH, DISPLAY_HEIGHT - 40);
+hagl_set_clip_window(display, 0, 40, DISPLAY_WIDTH, DISPLAY_HEIGHT - 40);
 
 for (uint16_t i = 1; i < 500; i++) {
     int16_t x0 = rand() % DISPLAY_WIDTH;
@@ -445,7 +445,7 @@ for (uint16_t i = 1; i < 500; i++) {
 If you want to cleant the contents of the clip window instead of clearing the whole screen call:
 
 ```c
-hagl_clear_clip_window()
+hagl_clear_clip_window(display)
 ```
 
 ## Speed
