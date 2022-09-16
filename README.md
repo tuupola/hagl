@@ -387,7 +387,7 @@ for (uint16_t i = 1; i < 10000; i++) {
 Blit copies a [bitmap](https://github.com/tuupola/hagl/blob/master/bitmap.c) to the screen. This example uses a glyph bitmap which is extracted from a font.
 
 ```c
-bitmap_t bitmap;
+hagl_bitmap_t bitmap;
 bitmap.buffer = (uint8_t *) malloc(6 * 9 * sizeof(color_t));
 
 for (uint16_t i = 1; i < 20000; i++) {
@@ -408,7 +408,7 @@ for (uint16_t i = 1; i < 20000; i++) {
 Scale blit copies and scales a [bitmap](https://github.com/tuupola/hagl/blob/master/bitmap.c) to the screen. This example uses a glyph bitmap which is extracted from a font.
 
 ```c
-bitmap_t bitmap;
+hagl_bitmap_t bitmap;
 bitmap.buffer = (uint8_t *) malloc(6 * 9 * sizeof(color_t));
 
 for (uint16_t i = 1; i < 20000; i++) {

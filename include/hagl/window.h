@@ -40,6 +40,6 @@ typedef struct {
     uint16_t y0;
     uint16_t x1;
     uint16_t y1;
-} window_t;
+} hagl_window_t;
 
 #endif /* _HAGL_WINDOW_H */

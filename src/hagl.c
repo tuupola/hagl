@@ -39,13 +39,13 @@ SPDX-License-Identifier: MIT
 #include <stdio.h>
 #include <stddef.h>
 
-#include "hagl/bitmap.h"
-#include "hagl/clip.h"
 #include "rgb332.h"
 #include "rgb565.h"
 #include "fontx.h"
 #include "tjpgd.h"
-#include "window.h"
+#include "hagl/bitmap.h"
+#include "hagl/clip.h"
+#include "hagl/window.h"
 #include "hagl.h"
 #include "hagl_hal.h"
 
@@ -56,7 +56,7 @@ typedef struct {
     const hagl_surface_t *surface;
 } tjpgd_iodev_t;
 
-static window_t clip_window = {
+static hagl_window_t clip_window = {
     .x0 = 0,
     .y0 = 0,
     .x1 = DISPLAY_WIDTH - 1,
