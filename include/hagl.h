@@ -226,34 +226,6 @@ void hagl_draw_triangle(void const *surface, int16_t x0, int16_t y0, int16_t x1,
 void hagl_fill_triangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color);
 
 /**
- * Draw a rounded rectangle
- *
- * Output will be clipped to the current clip window.
- *
- * @param x0
- * @param y0
- * @param x0
- * @param y0
- * @param r corner radius
- * @param color
- */
-void hagl_draw_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color);
-
-/**
- * Draw a filled rounded rectangle
- *
- * Output will be clipped to the current clip window.
- *
- * @param x0
- * @param y0
- * @param x1
- * @param y1
- * @param r corner radius
- * @param color
- */
-void hagl_fill_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color);
-
-/**
  * Load an image
  *
  * Output will be clipped to the current clip window. Does not do

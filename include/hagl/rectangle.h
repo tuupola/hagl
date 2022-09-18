@@ -41,10 +41,8 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <hagl_hal_color.h>
 
-#define MIN(a,b) (((a)<(b))?(a):(b))
-#define MAX(a,b) (((a)>(b))?(a):(b))
+#include "hagl/color.h"
 
 /**
  * Draw a rectangle
@@ -75,6 +73,39 @@ hagl_draw_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int
  */
 void
 hagl_fill_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color);
+
+/**
+ * Draw a rounded rectangle
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param x0
+ * @param y0
+ * @param r corner radius
+ * @param color
+ */
+void
+hagl_draw_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color);
+
+/**
+ * Draw a filled rounded rectangle
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param x1
+ * @param y1
+ * @param r corner radius
+ * @param color
+ */
+void
+hagl_fill_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color);
+
 
 #ifdef __cplusplus
 }
