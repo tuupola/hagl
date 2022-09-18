@@ -35,7 +35,8 @@ SPDX-License-Identifier: MIT
 #include <stdint.h>
 
 #include "hagl/color.h"
-#include "hagl.h"
+#include "hagl/pixel.h"
+#include "hagl/hline.h"
 
 void hagl_draw_circle(void const *surface, int16_t xc, int16_t yc, int16_t r, color_t color) {
     int16_t x = 0;

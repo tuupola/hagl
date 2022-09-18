@@ -41,7 +41,8 @@ SPDX-License-Identifier: MIT
 #include "hagl/color.h"
 
 
-void hagl_draw_rectangle(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
+void
+hagl_draw_rectangle(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
 {
     const hagl_surface_t *surface = _surface;
 
@@ -78,7 +79,8 @@ void hagl_draw_rectangle(void const *_surface, int16_t x0, int16_t y0, int16_t x
     hagl_draw_vline(surface, x1, y0, height, color);
 }
 
-void hagl_fill_rectangle(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
+void
+hagl_fill_rectangle(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
 {
     const hagl_surface_t *surface = _surface;
 

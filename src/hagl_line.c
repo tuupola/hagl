@@ -40,10 +40,8 @@ SPDX-License-Identifier: MIT
 #include "hagl/clip.h"
 #include "hagl.h"
 
-/*
- * Draw a line using Bresenham's algorithm with given color.
- */
-void hagl_draw_line(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
+void
+hagl_draw_line(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
 {
     const hagl_surface_t *surface = _surface;
 
