@@ -1026,6 +1026,7 @@ hagl_backend_t *hagl_init(void) {
     memset(&backend, 0, sizeof(hagl_backend_t));
 
     hagl_hal_init(&backend);
+    hagl_set_clip_window(&backend, 0, 0,  DISPLAY_WIDTH - 1,  DISPLAY_HEIGHT - 1);
     return &backend;
 };
 
