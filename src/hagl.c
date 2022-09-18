@@ -142,51 +142,6 @@ void hagl_draw_vline(void const *_surface, int16_t x0, int16_t y0, uint16_t h, c
     }
 }
 
-/*
- * Draw a line using Bresenham's algorithm with given color.
- */
-void hagl_draw_line(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
-{
-    const hagl_surface_t *surface = _surface;
-
-    /* Clip coordinates to fit clip window. */
-    if (false == hagl_clip_line(&x0, &y0, &x1, &y1, surface->clip)) {
-        return;
-    }
-
-    int16_t dx;
-    int16_t sx;
-    int16_t dy;
-    int16_t sy;
-    int16_t err;
-    int16_t e2;
-
-    dx = ABS(x1 - x0);
-    sx = x0 < x1 ? 1 : -1;
-    dy = ABS(y1 - y0);
-    sy = y0 < y1 ? 1 : -1;
-    err = (dx > dy ? dx : -dy) / 2;
-
-    while (1) {
-        hagl_put_pixel(surface, x0, y0, color);
-
-        if (x0 == x1 && y0 == y1) {
-            break;
-        };
-
-        e2 = err + err;
-
-        if (e2 > -dx) {
-            err -= dy;
-            x0 += sx;
-        }
-
-        if (e2 < dy) {
-            err += dx;
-            y0 += sy;
-        }
-    }
-}
 
 /*
  * Draw a rectangle with given color.

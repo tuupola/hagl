@@ -46,6 +46,8 @@ extern "C" {
 #include "hagl/backend.h"
 #include "hagl_hal.h"
 #include "hagl/bitmap.h"
+#include "hagl/clip.h"
+#include "hagl/line.h"
 #include "hagl/hline.h"
 
 #define ABS(x)  ((x) > 0 ? (x) : -(x))
@@ -150,18 +152,6 @@ void hagl_blit(void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *sourc
  */
 void hagl_scale_blit(void const *surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source);
 
-/**
- * Draw a line
- *
- * Output will be clipped to the current clip window.
- *
- * @param x0
- * @param y0
- * @param x1
- * @param y1
- * @param color
- */
-void hagl_draw_line(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color);
 
 /**
  * Draw a horizontal line

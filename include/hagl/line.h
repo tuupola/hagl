@@ -1,3 +1,4 @@
+
 /*
 
 MIT License
@@ -32,39 +33,34 @@ SPDX-License-Identifier: MIT
 
 */
 
-#include "hagl/hline.h"
-#include "hagl/line.h"
-#include "hagl/surface.h"
+#ifndef _HAGL_LINE_H
+#define _HAGL_LINE_H
 
-void hagl_draw_hline(void const *_surface, int16_t x0, int16_t y0, uint16_t w, color_t color) {
-    const hagl_surface_t *surface = _surface;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-    if (surface->hline) {
-        int16_t width = w;
+#include <stdint.h>
+#include <hagl_hal_color.h>
 
-        /* x0 or y0 is over the edge, nothing to do. */
-        if ((x0 > surface->clip.x1) || (y0 > surface->clip.y1) || (y0 < surface->clip.y0))  {
-            return;
-        }
+/**
+ * Draw a line
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param x1
+ * @param y1
+ * @param color
+ */
+void
+hagl_draw_line(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color);
 
-        /* x0 is left of clip window, ignore start part. */
-        if (x0 < surface->clip.x0) {
-            width = width + x0;
-            x0 = surface->clip.x0;
-        }
 
-        /* Everything outside clip window, nothing to do. */
-        if (width < 0)  {
-            return;
-        }
-
-        /* Cut anything going over right edge of clip window. */
-        if (((x0 + width) > surface->clip.x1)) {
-            width = width - (x0 + width - surface->clip.x1);
-        }
-
-        surface->hline(&surface, x0, y0, width, color);
-    } else {
-        hagl_draw_line(surface, x0, y0, x0 + w, y0, color);
-    }
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* _HAGL_LINE_H */

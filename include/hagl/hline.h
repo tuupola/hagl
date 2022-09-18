@@ -44,10 +44,11 @@ extern "C" {
 #include <hagl_hal_color.h>
 
 /**
- * Draw a vertical line
+ * Draw a horizontal line
  *
  * Output will be clipped to the current clip window.
  *
+ * @param surface
  * @param x0
  * @param y0
  * @param width
