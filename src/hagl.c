@@ -298,62 +298,6 @@ void hagl_clear_clip_window(hagl_surface_t *surface) {
     );
 }
 
-void hagl_draw_circle(void const *surface, int16_t xc, int16_t yc, int16_t r, color_t color) {
-    int16_t x = 0;
-    int16_t y = r;
-    int16_t d = 3 - 2 * r;
-
-    hagl_put_pixel(surface, xc + x, yc + y, color);
-    hagl_put_pixel(surface, xc - x, yc + y, color);
-    hagl_put_pixel(surface, xc + x, yc - y, color);
-    hagl_put_pixel(surface, xc - x, yc - y, color);
-    hagl_put_pixel(surface, xc + y, yc + x, color);
-    hagl_put_pixel(surface, xc - y, yc + x, color);
-    hagl_put_pixel(surface, xc + y, yc - x, color);
-    hagl_put_pixel(surface, xc - y, yc - x, color);
-
-    while (y >= x) {
-        x++;
-
-        if (d > 0) {
-            y--;
-            d = d + 4 * (x - y) + 10;
-        } else {
-            d = d + 4 * x + 6;
-        }
-
-        hagl_put_pixel(surface, xc + x, yc + y, color);
-        hagl_put_pixel(surface, xc - x, yc + y, color);
-        hagl_put_pixel(surface, xc + x, yc - y, color);
-        hagl_put_pixel(surface, xc - x, yc - y, color);
-        hagl_put_pixel(surface, xc + y, yc + x, color);
-        hagl_put_pixel(surface, xc - y, yc + x, color);
-        hagl_put_pixel(surface, xc + y, yc - x, color);
-        hagl_put_pixel(surface, xc - y, yc - x, color);
-    }
-}
-
-void hagl_fill_circle(void const *surface, int16_t x0, int16_t y0, int16_t r, color_t color) {
-    int16_t x = 0;
-    int16_t y = r;
-    int16_t d = 3 - 2 * r;
-
-    while (y >= x) {
-        hagl_draw_hline(surface, x0 - x, y0 + y, x * 2, color);
-        hagl_draw_hline(surface, x0 - x, y0 - y, x * 2, color);
-        hagl_draw_hline(surface, x0 - y, y0 + x, y * 2, color);
-        hagl_draw_hline(surface, x0 - y, y0 - x, y * 2, color);
-        x++;
-
-        if (d > 0) {
-            y--;
-            d = d + 4 * (x - y) + 10;
-        } else {
-            d = d + 4 * x + 6;
-        }
-    }
-}
-
 void hagl_draw_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color) {
     int16_t wx, wy;
     int32_t xa, ya;
