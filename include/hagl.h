@@ -54,6 +54,7 @@ extern "C" {
 #include "hagl/rectangle.h"
 #include "hagl/circle.h"
 #include "hagl/ellipse.h"
+#include "hagl/polygon.h"
 
 #define ABS(x)  ((x) > 0 ? (x) : -(x))
 
@@ -135,38 +136,6 @@ void hagl_blit(void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *sourc
  * @param source pointer to a bitmap
  */
 void hagl_scale_blit(void const *surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source);
-
-/**
- * Draw a polygon
- *
- * Output will be clipped to the current clip window. Polygon does
- * not need to be convex. They can also be concave or complex.
- *
- * color_t color = hagl_color(0, 255, 0);
- * int16_t vertices[10] = {x0, y0, x1, y1, x2, y2, x3, y3, x4, y4};
- * hagl_draw_polygon(5, vertices, color);
- *
- * @param amount number of vertices
- * @param vertices pointer to (an array) of vertices
- * @param color
- */
-void hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, color_t color);
-
-/**
- * Draw a filled polygon
- *
- * Output will be clipped to the current clip window. Polygon does
- * not need to be convex. They can also be concave or complex.
- *
- * color_t color = hagl_color(0, 255, 0);
- * int16_t vertices[10] = {x0, y0, x1, y1, x2, y2, x3, y3, x4, y4};
- * hagl_draw_polygon(5, vertices, color);
- *
- * @param amount number of vertices
- * @param vertices pointer to (an array) of vertices
- * @param color
- */
-void hagl_fill_polygon(void const *surface, int16_t amount, int16_t *vertices, color_t color);
 
 /**
  * Draw a triangle
