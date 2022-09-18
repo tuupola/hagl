@@ -56,18 +56,15 @@ typedef struct {
     const hagl_surface_t *surface;
 } tjpgd_iodev_t;
 
-static hagl_window_t clip_window = {
-    .x0 = 0,
-    .y0 = 0,
-    .x1 = DISPLAY_WIDTH - 1,
-    .y1 = DISPLAY_HEIGHT - 1,
-};
+void
+hagl_set_clip_window(void *_surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
+{
+    hagl_surface_t *surface = _surface;
 
-void hagl_set_clip_window(void const *surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
-    clip_window.x0 = x0;
-    clip_window.y0 = y0;
-    clip_window.x1 = x1;
-    clip_window.y1 = y1;
+    surface->clip.x0 = x0;
+    surface->clip.y0 = y0;
+    surface->clip.x1 = x1;
+    surface->clip.y1 = y1;
 }
 
 void hagl_put_pixel(void const *_surface, int16_t x0, int16_t y0, color_t color)
@@ -75,12 +72,12 @@ void hagl_put_pixel(void const *_surface, int16_t x0, int16_t y0, color_t color)
     const hagl_surface_t *surface = _surface;
 
     /* x0 or y0 is before the edge, nothing to do. */
-    if ((x0 < clip_window.x0) || (y0 < clip_window.y0))  {
+    if ((x0 < surface->clip.x0) || (y0 < surface->clip.y0))  {
         return;
     }
 
     /* x0 or y0 is after the edge, nothing to do. */
-    if ((x0 > clip_window.x1) || (y0 > clip_window.y1)) {
+    if ((x0 > surface->clip.x1) || (y0 > surface->clip.y1)) {
         return;
     }
 
@@ -92,12 +89,12 @@ color_t hagl_get_pixel(void const *_surface, int16_t x0, int16_t y0)
 {
     const hagl_surface_t *surface = _surface;
     /* x0 or y0 is before the edge, nothing to do. */
-    if ((x0 < clip_window.x0) || (y0 < clip_window.y0))  {
+    if ((x0 < surface->clip.x0) || (y0 < surface->clip.y0))  {
         return hagl_color(surface, 0, 0, 0);
     }
 
     /* x0 or y0 is after the edge, nothing to do. */
-    if ((x0 > clip_window.x1) || (y0 > clip_window.y1)) {
+    if ((x0 > surface->clip.x1) || (y0 > surface->clip.y1)) {
         return hagl_color(surface, 0, 0, 0);
     }
 
@@ -115,14 +112,14 @@ void hagl_draw_hline(void const *_surface, int16_t x0, int16_t y0, uint16_t w, c
         int16_t width = w;
 
         /* x0 or y0 is over the edge, nothing to do. */
-        if ((x0 > clip_window.x1) || (y0 > clip_window.y1) || (y0 < clip_window.y0))  {
+        if ((x0 > surface->clip.x1) || (y0 > surface->clip.y1) || (y0 < surface->clip.y0))  {
             return;
         }
 
         /* x0 is left of clip window, ignore start part. */
-        if (x0 < clip_window.x0) {
+        if (x0 < surface->clip.x0) {
             width = width + x0;
-            x0 = clip_window.x0;
+            x0 = surface->clip.x0;
         }
 
         /* Everything outside clip window, nothing to do. */
@@ -131,8 +128,8 @@ void hagl_draw_hline(void const *_surface, int16_t x0, int16_t y0, uint16_t w, c
         }
 
         /* Cut anything going over right edge of clip window. */
-        if (((x0 + width) > clip_window.x1)) {
-            width = width - (x0 + width - clip_window.x1);
+        if (((x0 + width) > surface->clip.x1)) {
+            width = width - (x0 + width - surface->clip.x1);
         }
 
         surface->hline(&surface, x0, y0, width, color);
@@ -152,14 +149,14 @@ void hagl_draw_vline(void const *_surface, int16_t x0, int16_t y0, uint16_t h, c
         int16_t height = h;
 
         /* x0 or y0 is over the edge, nothing to do. */
-        if ((x0 > clip_window.x1) || (x0 < clip_window.x0) || (y0 > clip_window.y1))  {
+        if ((x0 > surface->clip.x1) || (x0 < surface->clip.x0) || (y0 > surface->clip.y1))  {
             return;
         }
 
         /* y0 is top of clip window, ignore start part. */
-        if (y0 < clip_window.y0) {
+        if (y0 < surface->clip.y0) {
             height = height + y0;
-            y0 = clip_window.y0;
+            y0 = surface->clip.y0;
         }
 
         /* Everything outside clip window, nothing to do. */
@@ -168,8 +165,8 @@ void hagl_draw_vline(void const *_surface, int16_t x0, int16_t y0, uint16_t h, c
         }
 
         /* Cut anything going over right edge. */
-        if (((y0 + height) > clip_window.y1))  {
-            height = height - (y0 + height - clip_window.y1);
+        if (((y0 + height) > surface->clip.y1))  {
+            height = height - (y0 + height - surface->clip.y1);
         }
 
         surface->vline(&surface, x0, y0, height, color);
@@ -181,10 +178,12 @@ void hagl_draw_vline(void const *_surface, int16_t x0, int16_t y0, uint16_t h, c
 /*
  * Draw a line using Bresenham's algorithm with given color.
  */
-void hagl_draw_line(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
+void hagl_draw_line(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
 {
+    const hagl_surface_t *surface = _surface;
+
     /* Clip coordinates to fit clip window. */
-    if (false == hagl_clip_line(&x0, &y0, &x1, &y1, clip_window)) {
+    if (false == hagl_clip_line(&x0, &y0, &x1, &y1, surface->clip)) {
         return;
     }
 
@@ -225,8 +224,10 @@ void hagl_draw_line(void const *surface, int16_t x0, int16_t y0, int16_t x1, int
 /*
  * Draw a rectangle with given color.
  */
-void hagl_draw_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
+void hagl_draw_rectangle(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
 {
+    const hagl_surface_t *surface = _surface;
+
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
         x0 = x0 + x1;
@@ -242,12 +243,12 @@ void hagl_draw_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1
     }
 
     /* x1 or y1 is before the edge, nothing to do. */
-    if ((x1 < clip_window.x0) || (y1 < clip_window.y0))  {
+    if ((x1 < surface->clip.x0) || (y1 < surface->clip.y0))  {
         return;
     }
 
     /* x0 or y0 is after the edge, nothing to do. */
-    if ((x0 > clip_window.x1) || (y0 > clip_window.y1)) {
+    if ((x0 > surface->clip.x1) || (y0 > surface->clip.y1)) {
         return;
     }
 
@@ -282,19 +283,19 @@ void hagl_fill_rectangle(void const *_surface, int16_t x0, int16_t y0, int16_t x
     }
 
     /* x1 or y1 is before the edge, nothing to do. */
-    if ((x1 < clip_window.x0) || (y1 < clip_window.y0))  {
+    if ((x1 < surface->clip.x0) || (y1 < surface->clip.y0))  {
         return;
     }
 
     /* x0 or y0 is after the edge, nothing to do. */
-    if ((x0 > clip_window.x1) || (y0 > clip_window.y1)) {
+    if ((x0 > surface->clip.x1) || (y0 > surface->clip.y1)) {
         return;
     }
 
-    x0 = max(x0, clip_window.x0);
-    y0 = max(y0, clip_window.y0);
-    x1 = min(x1, clip_window.x1);
-    y1 = min(y1, clip_window.y1);
+    x0 = max(x0, surface->clip.x0);
+    y0 = max(y0, surface->clip.y0);
+    x1 = min(x1, surface->clip.x1);
+    y1 = min(y1, surface->clip.y1);
 
     uint16_t width = x1 - x0 + 1;
     uint16_t height = y1 - y0 + 1;
@@ -426,10 +427,10 @@ void hagl_blit(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *sour
     if (surface->blit) {
         /* Check if bitmap is inside clip windows bounds */
         if (
-            (x0 < clip_window.x0) ||
-            (y0 < clip_window.y0) ||
-            (x0 + source->width > clip_window.x1) ||
-            (y0 + source->height > clip_window.y1)
+            (x0 < surface->clip.x0) ||
+            (y0 < surface->clip.y0) ||
+            (x0 + source->width > surface->clip.x1) ||
+            (y0 + source->height > surface->clip.y1)
         ) {
             /* Out of bounds, use local putpixel fallback. */
             color_t color;
@@ -480,11 +481,13 @@ void hagl_scale_blit(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w,
     }
 };
 
-void hagl_clear(void const *surface) {
-    uint16_t x0 = clip_window.x0;
-    uint16_t y0 = clip_window.y0;
-    uint16_t x1 = clip_window.x1;
-    uint16_t y1 = clip_window.y1;
+void hagl_clear(void *_surface) {
+    hagl_surface_t *surface = _surface;
+
+    uint16_t x0 = surface->clip.x0;
+    uint16_t y0 = surface->clip.y0;
+    uint16_t x1 = surface->clip.x1;
+    uint16_t y1 = surface->clip.y1;
 
     hagl_set_clip_window(surface, 0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1);
     hagl_fill_rectangle(surface, 0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1, 0x00);
@@ -494,7 +497,7 @@ void hagl_clear(void const *surface) {
 void hagl_clear_clip_window(hagl_surface_t *surface) {
     hagl_fill_rectangle(
         surface,
-        clip_window.x0, clip_window.y0, clip_window.x1, clip_window.y1,
+        surface->clip.x0, surface->clip.y0, surface->clip.x1, surface->clip.y1,
         0x00
     );
 }
@@ -793,7 +796,8 @@ void hagl_fill_triangle(void const *surface, int16_t x0, int16_t y0, int16_t x1,
     hagl_fill_polygon(surface, 3, vertices, color);
 }
 
-void hagl_draw_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color) {
+void hagl_draw_rounded_rectangle(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color) {
+    const hagl_surface_t *surface = _surface;
 
     uint16_t width, height;
     int16_t x, y, d;
@@ -813,12 +817,12 @@ void hagl_draw_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, in
     }
 
     /* x1 or y1 is before the edge, nothing to do. */
-    if ((x1 < clip_window.x0) || (y1 < clip_window.y0))  {
+    if ((x1 < surface->clip.x0) || (y1 < surface->clip.y0))  {
         return;
     }
 
     /* x0 or y0 is after the edge, nothing to do. */
-    if ((x0 > clip_window.x1) || (y0 > clip_window.y1)) {
+    if ((x0 > surface->clip.x1) || (y0 > surface->clip.y1)) {
         return;
     }
 
@@ -864,7 +868,8 @@ void hagl_draw_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, in
     }
 };
 
-void hagl_fill_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color) {
+void hagl_fill_rounded_rectangle(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color) {
+    const hagl_surface_t *surface = _surface;
 
     uint16_t width, height;
     int16_t rx0, ry0, rx1, x, y, d;
@@ -884,12 +889,12 @@ void hagl_fill_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, in
     }
 
     /* x1 or y1 is before the edge, nothing to do. */
-    if ((x1 < clip_window.x0) || (y1 < clip_window.y0))  {
+    if ((x1 < surface->clip.x0) || (y1 < surface->clip.y0))  {
         return;
     }
 
     /* x0 or y0 is after the edge, nothing to do. */
-    if ((x0 > clip_window.x1) || (y0 > clip_window.y1)) {
+    if ((x0 > surface->clip.x1) || (y0 > surface->clip.y1)) {
         return;
     }
 
