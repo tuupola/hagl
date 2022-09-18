@@ -105,39 +105,6 @@ color_t hagl_get_pixel(void const *_surface, int16_t x0, int16_t y0)
     return hagl_color(surface, 0, 0, 0);
 }
 
-void hagl_draw_hline(void const *_surface, int16_t x0, int16_t y0, uint16_t w, color_t color) {
-    const hagl_surface_t *surface = _surface;
-
-    if (surface->hline) {
-        int16_t width = w;
-
-        /* x0 or y0 is over the edge, nothing to do. */
-        if ((x0 > surface->clip.x1) || (y0 > surface->clip.y1) || (y0 < surface->clip.y0))  {
-            return;
-        }
-
-        /* x0 is left of clip window, ignore start part. */
-        if (x0 < surface->clip.x0) {
-            width = width + x0;
-            x0 = surface->clip.x0;
-        }
-
-        /* Everything outside clip window, nothing to do. */
-        if (width < 0)  {
-            return;
-        }
-
-        /* Cut anything going over right edge of clip window. */
-        if (((x0 + width) > surface->clip.x1)) {
-            width = width - (x0 + width - surface->clip.x1);
-        }
-
-        surface->hline(&surface, x0, y0, width, color);
-    } else {
-        hagl_draw_line(surface, x0, y0, x0 + w, y0, color);
-    }
-}
-
 /*
  * Draw a vertical line with given color. If HAL supports it uses
  * hardware vline drawing. If not falls back to vanilla line drawing.
