@@ -45,6 +45,7 @@ extern "C" {
 #include "hagl/surface.h"
 #include "hagl/backend.h"
 #include "hagl_hal.h"
+#include "hagl/pixel.h"
 #include "hagl/bitmap.h"
 #include "hagl/clip.h"
 #include "hagl/line.h"
@@ -61,27 +62,6 @@ extern "C" {
 #define HAGL_ERR_GENERAL         (1)
 #define HAGL_ERR_FILE_IO         (2)
 #define HAGL_ERR_TJPGD           (100)
-
-/**
- * Put a single pixel
- *
- * Output will be clipped to the current clip window.
- * @param x0
- * @param y0
- * @param color
- */
-void hagl_put_pixel(void const *surface, int16_t x0, int16_t y0, color_t color);
-
-/**
- * Get a single pixel
- *
- * Input will be clipped to the current clip window. In case of
- * error or if HAL does not support this feature returns black.
- * @param x0
- * @param y0
- * @return color at the given location
- */
-color_t hagl_get_pixel(void const *surface, int16_t x0, int16_t y0);
 
 /**
  * Draw a single character

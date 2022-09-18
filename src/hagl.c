@@ -68,44 +68,6 @@ hagl_set_clip_window(void *_surface, uint16_t x0, uint16_t y0, uint16_t x1, uint
     surface->clip.y1 = y1;
 }
 
-void hagl_put_pixel(void const *_surface, int16_t x0, int16_t y0, color_t color)
-{
-    const hagl_surface_t *surface = _surface;
-
-    /* x0 or y0 is before the edge, nothing to do. */
-    if ((x0 < surface->clip.x0) || (y0 < surface->clip.y0))  {
-        return;
-    }
-
-    /* x0 or y0 is after the edge, nothing to do. */
-    if ((x0 > surface->clip.x1) || (y0 > surface->clip.y1)) {
-        return;
-    }
-
-    /* If still in bounds set the pixel. */
-    surface->put_pixel(&surface, x0, y0, color);
-}
-
-color_t hagl_get_pixel(void const *_surface, int16_t x0, int16_t y0)
-{
-    const hagl_surface_t *surface = _surface;
-    /* x0 or y0 is before the edge, nothing to do. */
-    if ((x0 < surface->clip.x0) || (y0 < surface->clip.y0))  {
-        return hagl_color(surface, 0, 0, 0);
-    }
-
-    /* x0 or y0 is after the edge, nothing to do. */
-    if ((x0 > surface->clip.x1) || (y0 > surface->clip.y1)) {
-        return hagl_color(surface, 0, 0, 0);
-    }
-
-    if (surface->get_pixel) {
-        return surface->get_pixel(&surface, x0, y0);
-    }
-
-    return hagl_color(surface, 0, 0, 0);
-}
-
 uint8_t hagl_get_glyph(void const *surface, wchar_t code, color_t color, hagl_bitmap_t *bitmap, const uint8_t *font)
 {
     uint8_t status, set;
