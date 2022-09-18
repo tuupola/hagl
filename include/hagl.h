@@ -53,6 +53,7 @@ extern "C" {
 #include "hagl/vline.h"
 #include "hagl/rectangle.h"
 #include "hagl/circle.h"
+#include "hagl/ellipse.h"
 
 #define ABS(x)  ((x) > 0 ? (x) : -(x))
 
@@ -134,32 +135,6 @@ void hagl_blit(void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *sourc
  * @param source pointer to a bitmap
  */
 void hagl_scale_blit(void const *surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source);
-
-/**
- * Draw an ellipse
- *
- * Output will be clipped to the current clip window.
- *
- * @param x0 center X
- * @param y0 center Y
- * @param a vertical radius
- * @param b horizontal radius
- * @param color
- */
-void hagl_draw_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color);
-
-/**
- * Draw a filled ellipse
- *
- * Output will be clipped to the current clip window.
- *
- * @param x0 center X
- * @param y0 center Y
- * @param a vertical radius
- * @param b horizontal radius
- * @param color
- */
-void hagl_fill_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color);
 
 /**
  * Draw a polygon
