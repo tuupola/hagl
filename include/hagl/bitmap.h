@@ -32,6 +32,7 @@ SPDX-License-Identifier: MIT
 */
 
 #include <stdint.h>
+#include <hagl/window.h>
 #include <hagl_hal_color.h>
 
 #ifndef _BITMAP_H
@@ -47,6 +48,7 @@ typedef struct {
     int16_t width;
     int16_t height;
     uint8_t depth;
+    hagl_window_t clip;
     void (*put_pixel)(void *self, int16_t x0, int16_t y0, color_t color);
     color_t (*get_pixel)(void *self, int16_t x0, int16_t y0);
     color_t (*color)(void *self, uint8_t r, uint8_t g, uint8_t b);

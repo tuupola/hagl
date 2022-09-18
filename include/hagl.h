@@ -380,7 +380,7 @@ uint32_t hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char
  * @param x1
  * @param y1
  */
-void hagl_set_clip_window(void const *surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+void hagl_set_clip_window(void *surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 
 /**
  * Convert RGB to color
@@ -400,7 +400,7 @@ void hagl_clear_clip_window();
 /**
  * Clear the display
  */
-void hagl_clear(void const *surface);
+void hagl_clear(void *surface);
 hagl_backend_t *hagl_init(void);
 size_t hagl_flush(hagl_backend_t *backend);
 void hagl_close(hagl_backend_t *backend);

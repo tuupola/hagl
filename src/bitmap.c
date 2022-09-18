@@ -236,6 +236,11 @@ void bitmap_init(hagl_bitmap_t *bitmap, uint8_t *buffer)
     bitmap->size = bitmap->pitch * bitmap->height;
     bitmap->buffer = buffer;
 
+    bitmap->clip.x0 = 0;
+    bitmap->clip.y0 = 0;
+    bitmap->clip.x1 = bitmap->width - 1;
+    bitmap->clip.y1 = bitmap->height - 1;
+
     bitmap->put_pixel = put_pixel;
     bitmap->get_pixel = get_pixel;
     bitmap->hline = hline;
