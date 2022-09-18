@@ -30,8 +30,6 @@ https://github.com/tuupola/hagl
 
 SPDX-License-Identifier: MIT
 
-https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm
-
 */
 
 #include <stdint.h>

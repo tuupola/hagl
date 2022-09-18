@@ -38,6 +38,8 @@ SPDX-License-Identifier: MIT
 #include "hagl/hline.h"
 #include "hagl/vline.h"
 #include "hagl/rectangle.h"
+#include "hagl/color.h"
+
 
 void hagl_draw_rectangle(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
 {

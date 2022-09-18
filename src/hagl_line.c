@@ -34,6 +34,7 @@ SPDX-License-Identifier: MIT
 
 #include <stdbool.h>
 
+#include "hagl/color.h"
 #include "hagl/surface.h"
 #include "hagl/line.h"
 #include "hagl/clip.h"

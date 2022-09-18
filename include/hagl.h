@@ -42,10 +42,10 @@ extern "C" {
 #include <stdint.h>
 #include <stddef.h>
 
+#include "hagl/pixel.h"
 #include "hagl/surface.h"
 #include "hagl/backend.h"
 #include "hagl_hal.h"
-#include "hagl/pixel.h"
 #include "hagl/bitmap.h"
 #include "hagl/clip.h"
 #include "hagl/line.h"
@@ -280,16 +280,6 @@ uint32_t hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char
  * @param y1
  */
 void hagl_set_clip_window(void *surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
-
-/**
- * Convert RGB to color
- *
- * Returns color type  defined by the HAL. Most often it is an
- * uint16_t RGB565 color.
- *
- * @return color
- */
-color_t hagl_color(void const *surface, uint8_t r, uint8_t g, uint8_t b);
 
 /**
  * Clear area of the current clip window

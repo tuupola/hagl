@@ -35,6 +35,7 @@ SPDX-License-Identifier: MIT
 #include "hagl/vline.h"
 #include "hagl/line.h"
 #include "hagl/surface.h"
+#include "hagl/color.h"
 
 void
 hagl_draw_vline(void const *_surface, int16_t x0, int16_t y0, uint16_t h, color_t color) {

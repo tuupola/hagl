@@ -714,15 +714,6 @@ uint32_t hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char
     return HAGL_OK;
 }
 
-color_t hagl_color(void const *_surface, uint8_t r, uint8_t g, uint8_t b)
-{
-    const hagl_surface_t *surface = _surface;
-    if (surface->color) {
-        return surface->color(&surface, r, g, b);
-    }
-    return rgb565(r, g, b);
-}
-
 hagl_backend_t *hagl_init(void) {
     static hagl_backend_t backend;
     memset(&backend, 0, sizeof(hagl_backend_t));

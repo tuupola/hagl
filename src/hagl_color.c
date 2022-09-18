@@ -29,50 +29,20 @@ https://github.com/tuupola/hagl
 
 
 SPDX-License-Identifier: MIT
-
 */
 
 #include <stdint.h>
 
-#include "hagl/color.h"
 #include "hagl/surface.h"
-
-void
-hagl_put_pixel(void const *_surface, int16_t x0, int16_t y0, color_t color)
-{
-    const hagl_surface_t *surface = _surface;
-
-    /* x0 or y0 is before the edge, nothing to do. */
-    if ((x0 < surface->clip.x0) || (y0 < surface->clip.y0))  {
-        return;
-    }
-
-    /* x0 or y0 is after the edge, nothing to do. */
-    if ((x0 > surface->clip.x1) || (y0 > surface->clip.y1)) {
-        return;
-    }
-
-    /* If still in bounds set the pixel. */
-    surface->put_pixel(&surface, x0, y0, color);
-}
+#include "rgb565.h"
 
 color_t
-hagl_get_pixel(void const *_surface, int16_t x0, int16_t y0)
+hagl_color(void const *_surface, uint8_t r, uint8_t g, uint8_t b)
 {
     const hagl_surface_t *surface = _surface;
-    /* x0 or y0 is before the edge, nothing to do. */
-    if ((x0 < surface->clip.x0) || (y0 < surface->clip.y0))  {
-        return hagl_color(surface, 0, 0, 0);
-    }
 
-    /* x0 or y0 is after the edge, nothing to do. */
-    if ((x0 > surface->clip.x1) || (y0 > surface->clip.y1)) {
-        return hagl_color(surface, 0, 0, 0);
+    if (surface->color) {
+        return surface->color(&surface, r, g, b);
     }
-
-    if (surface->get_pixel) {
-        return surface->get_pixel(&surface, x0, y0);
-    }
-
-    return hagl_color(surface, 0, 0, 0);
+    return rgb565(r, g, b);
 }
