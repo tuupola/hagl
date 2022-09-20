@@ -49,17 +49,6 @@ SPDX-License-Identifier: MIT
 #include "hagl.h"
 #include "hagl_hal.h"
 
-void
-hagl_set_clip_window(void *_surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
-{
-    hagl_surface_t *surface = _surface;
-
-    surface->clip.x0 = x0;
-    surface->clip.y0 = y0;
-    surface->clip.x1 = x1;
-    surface->clip.y1 = y1;
-}
-
 uint8_t hagl_get_glyph(void const *surface, wchar_t code, color_t color, hagl_bitmap_t *bitmap, const uint8_t *font)
 {
     uint8_t status, set;

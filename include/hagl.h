@@ -116,19 +116,6 @@ uint16_t hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int1
 uint8_t hagl_get_glyph(void const *surface, wchar_t code, color_t color, hagl_bitmap_t *bitmap, const uint8_t *font);
 
 /**
- * Set the clip window
- *
- * Clip windows restricts the drawable area. It does not affect
- * the coordinates.
- *
- * @param x0
- * @param y0
- * @param x1
- * @param y1
- */
-void hagl_set_clip_window(void *surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
-
-/**
  * Clear area of the current clip window
  */
 void hagl_clear_clip_window();
