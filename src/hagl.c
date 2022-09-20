@@ -260,16 +260,6 @@ void hagl_clear_clip_window(hagl_surface_t *surface) {
     );
 }
 
-void hagl_draw_triangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color) {
-    int16_t vertices[6] = {x0, y0, x1, y1, x2, y2};
-    hagl_draw_polygon(surface, 3, vertices, color);
-};
-
-void hagl_fill_triangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color) {
-    int16_t vertices[6] = {x0, y0, x1, y1, x2, y2};
-    hagl_fill_polygon(surface, 3, vertices, color);
-}
-
 
 static uint16_t tjpgd_data_reader(JDEC *decoder, uint8_t *buffer, uint16_t size)
 {

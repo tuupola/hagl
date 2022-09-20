@@ -55,6 +55,7 @@ extern "C" {
 #include "hagl/circle.h"
 #include "hagl/ellipse.h"
 #include "hagl/polygon.h"
+#include "hagl/triangle.h"
 
 #define ABS(x)  ((x) > 0 ? (x) : -(x))
 
@@ -136,38 +137,6 @@ void hagl_blit(void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *sourc
  * @param source pointer to a bitmap
  */
 void hagl_scale_blit(void const *surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source);
-
-/**
- * Draw a triangle
- *
- * Output will be clipped to the current clip window. Internally
- * uses hagl_draw_polygon() to draw the triangle.
- *
- * @param x0
- * @param y0
- * @param x1
- * @param y1
- * @param x2
- * @param y3
- * @param color
- */
-void hagl_draw_triangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color);
-
-/**
- * Draw a filled triangle
- *
- * Output will be clipped to the current clip window. Internally
- * uses hagl_fill_polygon() to draw the triangle.
- *
- * @param x0
- * @param y0
- * @param x1
- * @param y1
- * @param x2
- * @param y3
- * @param color
- */
-void hagl_fill_triangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color);
 
 /**
  * Load an image
