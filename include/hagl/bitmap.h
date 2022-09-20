@@ -31,12 +31,17 @@ SPDX-License-Identifier: MIT
 
 */
 
-#include <stdint.h>
-#include <hagl/window.h>
-#include <hagl_hal_color.h>
-
 #ifndef _BITMAP_H
 #define _BITMAP_H
+
+#include <stdint.h>
+
+#include "hagl/window.h"
+#include "hagl/color.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 #define BITMAP_SIZE(width, height, depth) (width * (depth / 8) * height)
 
@@ -64,5 +69,9 @@ typedef struct {
 
 uint32_t bitmap_size(hagl_bitmap_t *bitmap);
 void bitmap_init(hagl_bitmap_t *bitmap, uint8_t *buffer);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* _BITMAP_H */

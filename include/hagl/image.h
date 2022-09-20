@@ -36,11 +36,11 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_PIXEL_H
 #define _HAGL_PIXEL_H
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
-#endif
-
-#include <stdint.h>
+#endif /* __cplusplus */
 
 #define HAGL_ERR_TJPGD           (100)
 
@@ -62,6 +62,6 @@ hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char *filenam
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
 #endif /* _HAGL_PIXEL_H */

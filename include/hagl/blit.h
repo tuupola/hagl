@@ -36,13 +36,13 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_BLIT_H
 #define _HAGL_BLIT_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdint.h>
 
 #include "hagl/bitmap.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 /**
  * Blit a bitmap to the display
@@ -74,6 +74,6 @@ hagl_scale_blit(void const *surface, uint16_t x0, uint16_t y0, uint16_t w, uint1
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
 #endif /* _HAGL_BLIT_H */

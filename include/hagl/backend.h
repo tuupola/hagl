@@ -36,9 +36,14 @@ SPDX-License-Identifier: MIT
 #define _HAGL_BACKEND_H
 
 #include <stddef.h>
-#include <hagl/bitmap.h>
-#include <hagl/window.h>
-#include "hagl_hal_color.h"
+
+#include "hagl/bitmap.h"
+#include "hagl/window.h"
+#include "hagl/color.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef struct {
     /* Common to all surfaces. */
@@ -60,5 +65,9 @@ typedef struct {
     uint8_t *buffer;
     uint8_t *buffer2;
 } hagl_backend_t;
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* _HAGL_BACKEND_H */

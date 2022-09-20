@@ -36,14 +36,13 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_CHAR_H
 #define _HAGL_CHAR_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdint.h>
 
 #include "hagl/color.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 /**
  * Draw a single character
@@ -102,6 +101,6 @@ hagl_get_glyph(void const *surface, wchar_t code, color_t color, hagl_bitmap_t *
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
 #endif /* _HAGL_CHAR_H */

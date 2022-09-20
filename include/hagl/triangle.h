@@ -35,13 +35,13 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_TRIANGLE_H
 #define _HAGL_TRIANGLE_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdint.h>
 
 #include "hagl/color.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 /**
  * Draw a triangle
@@ -79,9 +79,8 @@ hagl_draw_triangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int1
 void
 hagl_fill_triangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color);
 
-
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
 #endif /* _HAGL_TRIANGLE_H */

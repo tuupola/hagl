@@ -36,13 +36,13 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_RECTANGLE_H
 #define _HAGL_RECTANGLE_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdint.h>
 
 #include "hagl/color.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 /**
  * Draw a rectangle
@@ -106,9 +106,8 @@ hagl_draw_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t
 void
 hagl_fill_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color);
 
-
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
 #endif /* _HAGL_RECTANGLE_H */

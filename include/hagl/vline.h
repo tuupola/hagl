@@ -35,12 +35,13 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_VLINE_H
 #define _HAGL_VLINE_H
 
+#include <stdint.h>
+
+#include "hagl/color.h"
+
 #ifdef __cplusplus
 extern "C" {
-#endif
-
-#include <stdint.h>
-#include <hagl_hal_color.h>
+#endif /* __cplusplus */
 
 /**
  * Draw a vertical line
@@ -57,6 +58,6 @@ hagl_draw_vline(void const *surface, int16_t x0, int16_t y0, uint16_t height, co
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
 #endif /* _HAGL_VLINE_H */

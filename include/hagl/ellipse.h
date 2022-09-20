@@ -36,13 +36,13 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_ELLIPSE_H
 #define _HAGL_ELLIPSE_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdint.h>
 
 #include "hagl/color.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 /**
  * Draw an ellipse
@@ -74,9 +74,8 @@ hagl_draw_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_
 void
 hagl_fill_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color);
 
-
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
 #endif /* _HAGL_ELLIPSE_H */

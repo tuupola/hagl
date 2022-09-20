@@ -35,10 +35,6 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_H
 #define _HAGL_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdint.h>
 #include <stddef.h>
 
@@ -60,6 +56,10 @@ extern "C" {
 #include "hagl/blit.h"
 #include "hagl/char.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 #define ABS(x)  ((x) > 0 ? (x) : -(x))
 
 #define HAGL_CHAR_BUFFER_SIZE    (16 * 16 * DISPLAY_DEPTH / 2)
@@ -73,16 +73,14 @@ extern "C" {
  */
 void hagl_clear_clip_window();
 
-/**
- * Clear the display
- */
-void hagl_clear(void *surface);
 hagl_backend_t *hagl_init(void);
 size_t hagl_flush(hagl_backend_t *backend);
 void hagl_close(hagl_backend_t *backend);
 
+void hagl_clear(void *surface);
+
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
 #endif /* _HAGL_H */

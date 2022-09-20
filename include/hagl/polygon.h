@@ -36,13 +36,13 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_POLYGON_H
 #define _HAGL_POLYGON_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdint.h>
 
 #include "hagl/color.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 /**
  * Draw a polygon
@@ -80,9 +80,8 @@ hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, color_
 void
 hagl_fill_polygon(void const *surface, int16_t amount, int16_t *vertices, color_t color);
 
-
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
 #endif /* _HAGL_POLYGON_H */

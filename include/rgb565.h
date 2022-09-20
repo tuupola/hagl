@@ -38,7 +38,15 @@ SPDX-License-Identifier: MIT
 
 #include "rgb888.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 uint16_t rgb565(uint8_t r, uint8_t g, uint8_t b);
 rgb_t rgb565_to_rgb888(uint16_t *input);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* _RGB565_H */

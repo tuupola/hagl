@@ -35,12 +35,12 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_FPS_H
 #define _HAGL_FPS_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <time.h>
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef struct {
     clock_t start;
@@ -96,8 +96,8 @@ fps_reset(fps_instance_t *fps) {
     fps->current = 0;
 }
 
-
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
+
 #endif /* HAGL_FPS_H */

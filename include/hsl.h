@@ -35,6 +35,10 @@ SPDX-License-Identifier: MIT
 #ifndef _HSL_H
 #define _HSL_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 typedef struct {
     double h;
     double s;
@@ -44,5 +48,9 @@ typedef struct {
 #include "rgb888.h"
 
 rgb_t hsl_to_rgb888(hsl_t *hsl);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* _HSL_H */

@@ -36,13 +36,13 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_PIXEL_H
 #define _HAGL_PIXEL_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdint.h>
 
 #include "hagl/color.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 /**
  * Put a single pixel
@@ -73,6 +73,6 @@ hagl_get_pixel(void const *surface, int16_t x0, int16_t y0);
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
 #endif /* _HAGL_PIXEL_H */
