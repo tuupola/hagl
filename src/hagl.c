@@ -42,20 +42,12 @@ SPDX-License-Identifier: MIT
 #include "rgb332.h"
 #include "rgb565.h"
 #include "fontx.h"
-#include "tjpgd.h"
 #include "hagl/bitmap.h"
 #include "hagl/clip.h"
 #include "hagl/window.h"
 
 #include "hagl.h"
 #include "hagl_hal.h"
-
-typedef struct {
-    FILE *fp;
-    int16_t x0;
-    int16_t y0;
-    const hagl_surface_t *surface;
-} tjpgd_iodev_t;
 
 void
 hagl_set_clip_window(void *_surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
@@ -258,71 +250,6 @@ void hagl_clear_clip_window(hagl_surface_t *surface) {
         surface->clip.x0, surface->clip.y0, surface->clip.x1, surface->clip.y1,
         0x00
     );
-}
-
-
-static uint16_t tjpgd_data_reader(JDEC *decoder, uint8_t *buffer, uint16_t size)
-{
-    tjpgd_iodev_t *device = (tjpgd_iodev_t *)decoder->device;
-
-    if (buffer) {
-        /* Read bytes from input stream. */
-        return (uint16_t)fread(buffer, 1, size, device->fp);
-    } else {
-        /* Skip bytes from input stream. */
-        return fseek(device->fp, size, SEEK_CUR) ? 0 : size;
-    }
-}
-
-static uint16_t tjpgd_data_writer(JDEC* decoder, void* bitmap, JRECT* rectangle)
-{
-    tjpgd_iodev_t *device = (tjpgd_iodev_t *)decoder->device;
-    uint8_t width = (rectangle->right - rectangle->left) + 1;
-    uint8_t height = (rectangle->bottom - rectangle->top) + 1;
-
-    hagl_bitmap_t block = {
-        .width = width,
-        .height = height,
-        .depth = DISPLAY_DEPTH,
-        .pitch = width * (DISPLAY_DEPTH / 8),
-        .size =  width * (DISPLAY_DEPTH / 8) * height,
-        .buffer = (uint8_t *)bitmap
-    };
-
-    hagl_blit(device->surface, rectangle->left + device->x0, rectangle->top + device->y0, &block);
-
-    return 1;
-}
-
-uint32_t hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char *filename)
-{
-    uint8_t work[3100];
-    JDEC decoder;
-    JRESULT result;
-    tjpgd_iodev_t device;
-
-    device.x0 = x0;
-    device.y0 = y0;
-    device.fp = fopen(filename, "rb");
-    device.surface = surface;
-
-    if (!device.fp) {
-        return HAGL_ERR_FILE_IO;
-    }
-    result = jd_prepare(&decoder, tjpgd_data_reader, work, 3100, (void *)&device);
-    if (result == JDR_OK) {
-        result = jd_decomp(&decoder, tjpgd_data_writer, 0);
-        if (JDR_OK != result) {
-            fclose(device.fp);
-            return HAGL_ERR_TJPGD + result;
-        }
-    } else {
-        fclose(device.fp);
-        return HAGL_ERR_TJPGD + result;
-    }
-
-    fclose(device.fp);
-    return HAGL_OK;
 }
 
 hagl_backend_t *hagl_init(void) {

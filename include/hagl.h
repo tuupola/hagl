@@ -56,6 +56,7 @@ extern "C" {
 #include "hagl/ellipse.h"
 #include "hagl/polygon.h"
 #include "hagl/triangle.h"
+#include "hagl/image.h"
 
 #define ABS(x)  ((x) > 0 ? (x) : -(x))
 
@@ -64,7 +65,6 @@ extern "C" {
 #define HAGL_OK                  (0)
 #define HAGL_ERR_GENERAL         (1)
 #define HAGL_ERR_FILE_IO         (2)
-#define HAGL_ERR_TJPGD           (100)
 
 /**
  * Draw a single character
@@ -137,21 +137,6 @@ void hagl_blit(void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *sourc
  * @param source pointer to a bitmap
  */
 void hagl_scale_blit(void const *surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source);
-
-/**
- * Load an image
- *
- * Output will be clipped to the current clip window. Does not do
- * any scaling. Currently supports only baseline jpg images.
- *
- * @param x0
- * @param y0
- * @param x1
- * @param y1
- * @param r corner radius
- * @param color
- */
-uint32_t hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char *filename);
 
 /**
  * Set the clip window
