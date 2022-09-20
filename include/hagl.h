@@ -57,6 +57,7 @@ extern "C" {
 #include "hagl/polygon.h"
 #include "hagl/triangle.h"
 #include "hagl/image.h"
+#include "hagl/blit.h"
 
 #define ABS(x)  ((x) > 0 ? (x) : -(x))
 
@@ -113,30 +114,6 @@ uint16_t hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int1
  * @return Width of the drawn string
  */
 uint8_t hagl_get_glyph(void const *surface, wchar_t code, color_t color, hagl_bitmap_t *bitmap, const uint8_t *font);
-
-/**
- * Blit a bitmap to the display
- *
- * Output will be clipped to the current clip window.
- *
- * @param x0
- * @param y0
- * @param source pointer to a bitmap
- */
-void hagl_blit(void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *source);
-
-/**
- * Blit and scale a bitmap to the display
- *
- * Output will be clipped to the current clip window.
- *
- * @param x0
- * @param y0
- * @param w target width
- * @param h target height
- * @param source pointer to a bitmap
- */
-void hagl_scale_blit(void const *surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source);
 
 /**
  * Set the clip window
