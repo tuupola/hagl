@@ -1,3 +1,4 @@
+
 /*
 
 MIT License
@@ -31,22 +32,47 @@ https://github.com/tuupola/hagl
 SPDX-License-Identifier: MIT
 
 */
-#ifndef _RGB565_H
-#define _RGB565_H
+
+#ifndef _HAGL_PIXEL_H
+#define _HAGL_PIXEL_H
 
 #include <stdint.h>
 
-#include "rgb888.h"
+#include "hagl/color.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-uint16_t rgb565(uint8_t r, uint8_t g, uint8_t b);
-rgb_t rgb565_to_rgb888(uint16_t *input);
+/**
+ * Put a single pixel
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param color
+ */
+void
+hagl_put_pixel(void const *surface, int16_t x0, int16_t y0, color_t color);
+
+/**
+ * Get a single pixel
+ *
+ * Input will be clipped to the current clip window. In case of
+ * error or if HAL does not support this feature returns black.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @return color at the given location
+ */
+color_t
+hagl_get_pixel(void const *surface, int16_t x0, int16_t y0);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* _RGB565_H */
+#endif /* _HAGL_PIXEL_H */

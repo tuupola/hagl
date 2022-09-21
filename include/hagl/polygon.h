@@ -1,3 +1,4 @@
+
 /*
 
 MIT License
@@ -31,22 +32,56 @@ https://github.com/tuupola/hagl
 SPDX-License-Identifier: MIT
 
 */
-#ifndef _RGB565_H
-#define _RGB565_H
+
+#ifndef _HAGL_POLYGON_H
+#define _HAGL_POLYGON_H
 
 #include <stdint.h>
 
-#include "rgb888.h"
+#include "hagl/color.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-uint16_t rgb565(uint8_t r, uint8_t g, uint8_t b);
-rgb_t rgb565_to_rgb888(uint16_t *input);
+/**
+ * Draw a polygon
+ *
+ * Output will be clipped to the current clip window. Polygon does
+ * not need to be convex. They can also be concave or complex.
+ *
+ * color_t color = hagl_color(0, 255, 0);
+ * int16_t vertices[10] = {x0, y0, x1, y1, x2, y2, x3, y3, x4, y4};
+ * hagl_draw_polygon(5, vertices, color);
+ *
+ * @param surface
+ * @param amount number of vertices
+ * @param vertices pointer to (an array) of vertices
+ * @param color
+ */
+void
+hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, color_t color);
+
+/**
+ * Draw a filled polygon
+ *
+ * Output will be clipped to the current clip window. Polygon does
+ * not need to be convex. They can also be concave or complex.
+ *
+ * color_t color = hagl_color(0, 255, 0);
+ * int16_t vertices[10] = {x0, y0, x1, y1, x2, y2, x3, y3, x4, y4};
+ * hagl_draw_polygon(5, vertices, color);
+ *
+ * @param surface
+ * @param amount number of vertices
+ * @param vertices pointer to (an array) of vertices
+ * @param color
+ */
+void
+hagl_fill_polygon(void const *surface, int16_t amount, int16_t *vertices, color_t color);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* _RGB565_H */
+#endif /* _HAGL_POLYGON_H */

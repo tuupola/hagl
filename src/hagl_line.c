@@ -31,22 +31,55 @@ https://github.com/tuupola/hagl
 SPDX-License-Identifier: MIT
 
 */
-#ifndef _RGB565_H
-#define _RGB565_H
 
-#include <stdint.h>
+#include <stdbool.h>
 
-#include "rgb888.h"
+#include "hagl/color.h"
+#include "hagl/surface.h"
+#include "hagl/line.h"
+#include "hagl/clip.h"
+#include "hagl.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+void
+hagl_draw_line(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
+{
+    const hagl_surface_t *surface = _surface;
 
-uint16_t rgb565(uint8_t r, uint8_t g, uint8_t b);
-rgb_t rgb565_to_rgb888(uint16_t *input);
+    /* Clip coordinates to fit clip window. */
+    if (false == hagl_clip_line(&x0, &y0, &x1, &y1, surface->clip)) {
+        return;
+    }
 
-#ifdef __cplusplus
+    int16_t dx;
+    int16_t sx;
+    int16_t dy;
+    int16_t sy;
+    int16_t err;
+    int16_t e2;
+
+    dx = ABS(x1 - x0);
+    sx = x0 < x1 ? 1 : -1;
+    dy = ABS(y1 - y0);
+    sy = y0 < y1 ? 1 : -1;
+    err = (dx > dy ? dx : -dy) / 2;
+
+    while (1) {
+        hagl_put_pixel(surface, x0, y0, color);
+
+        if (x0 == x1 && y0 == y1) {
+            break;
+        };
+
+        e2 = err + err;
+
+        if (e2 > -dx) {
+            err -= dy;
+            x0 += sx;
+        }
+
+        if (e2 < dy) {
+            err += dx;
+            y0 += sy;
+        }
+    }
 }
-#endif /* __cplusplus */
-
-#endif /* _RGB565_H */

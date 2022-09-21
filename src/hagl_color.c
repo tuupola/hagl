@@ -29,24 +29,20 @@ https://github.com/tuupola/hagl
 
 
 SPDX-License-Identifier: MIT
-
 */
-#ifndef _RGB565_H
-#define _RGB565_H
 
 #include <stdint.h>
 
-#include "rgb888.h"
+#include "hagl/surface.h"
+#include "rgb565.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+color_t
+hagl_color(void const *_surface, uint8_t r, uint8_t g, uint8_t b)
+{
+    const hagl_surface_t *surface = _surface;
 
-uint16_t rgb565(uint8_t r, uint8_t g, uint8_t b);
-rgb_t rgb565_to_rgb888(uint16_t *input);
-
-#ifdef __cplusplus
+    if (surface->color) {
+        return surface->color(&surface, r, g, b);
+    }
+    return rgb565(r, g, b);
 }
-#endif /* __cplusplus */
-
-#endif /* _RGB565_H */

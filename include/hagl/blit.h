@@ -1,3 +1,4 @@
+
 /*
 
 MIT License
@@ -31,22 +32,48 @@ https://github.com/tuupola/hagl
 SPDX-License-Identifier: MIT
 
 */
-#ifndef _RGB565_H
-#define _RGB565_H
+
+#ifndef _HAGL_BLIT_H
+#define _HAGL_BLIT_H
 
 #include <stdint.h>
 
-#include "rgb888.h"
+#include "hagl/bitmap.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-uint16_t rgb565(uint8_t r, uint8_t g, uint8_t b);
-rgb_t rgb565_to_rgb888(uint16_t *input);
+/**
+ * Blit a bitmap to the display
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param source pointer to a bitmap
+ */
+void
+hagl_blit(void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *source);
+
+/**
+ * Blit and scale a bitmap to the display
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param w target width
+ * @param h target height
+ * @param source pointer to a bitmap
+ */
+void
+hagl_scale_blit(void const *surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* _RGB565_H */
+#endif /* _HAGL_BLIT_H */

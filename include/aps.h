@@ -35,12 +35,12 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_APS_H
 #define _HAGL_APS_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <time.h>
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef struct {
     clock_t start;
@@ -101,5 +101,6 @@ aps_reset(aps_instance_t *aps) {
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
+
 #endif /* _HAGL_APS_H */

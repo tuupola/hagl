@@ -31,22 +31,18 @@ https://github.com/tuupola/hagl
 SPDX-License-Identifier: MIT
 
 */
-#ifndef _RGB565_H
-#define _RGB565_H
 
 #include <stdint.h>
 
-#include "rgb888.h"
+#include "hagl/color.h"
+#include "hagl/polygon.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+void hagl_draw_triangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color) {
+    int16_t vertices[6] = {x0, y0, x1, y1, x2, y2};
+    hagl_draw_polygon(surface, 3, vertices, color);
+};
 
-uint16_t rgb565(uint8_t r, uint8_t g, uint8_t b);
-rgb_t rgb565_to_rgb888(uint16_t *input);
-
-#ifdef __cplusplus
+void hagl_fill_triangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, color_t color) {
+    int16_t vertices[6] = {x0, y0, x1, y1, x2, y2};
+    hagl_fill_polygon(surface, 3, vertices, color);
 }
-#endif /* __cplusplus */
-
-#endif /* _RGB565_H */

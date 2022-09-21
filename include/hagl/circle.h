@@ -1,3 +1,4 @@
+
 /*
 
 MIT License
@@ -31,22 +32,46 @@ https://github.com/tuupola/hagl
 SPDX-License-Identifier: MIT
 
 */
-#ifndef _RGB565_H
-#define _RGB565_H
+
+#ifndef _HAGL_CIRCLE_H
+#define _HAGL_CIRCLE_H
 
 #include <stdint.h>
 
-#include "rgb888.h"
+#include "hagl/color.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-uint16_t rgb565(uint8_t r, uint8_t g, uint8_t b);
-rgb_t rgb565_to_rgb888(uint16_t *input);
+/**
+ * Draw a circle
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param x0 center X
+ * @param y0 center Y
+ * @param r radius
+ * @param color
+ */
+void
+hagl_draw_circle(void const *surface, int16_t x0, int16_t y0, int16_t r, color_t color);
+
+/**
+ * Draw a filled circle
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param x0 center X
+ * @param y0 center Y
+ * @param r radius
+ * @param color
+ */
+void
+hagl_fill_circle(void const *surface, int16_t x0, int16_t y0, int16_t r, color_t color);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* _RGB565_H */
+#endif /* _HAGL_CIRCLE_H */

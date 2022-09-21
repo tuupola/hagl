@@ -1,3 +1,4 @@
+
 /*
 
 MIT License
@@ -31,22 +32,30 @@ https://github.com/tuupola/hagl
 SPDX-License-Identifier: MIT
 
 */
-#ifndef _RGB565_H
-#define _RGB565_H
 
-#include <stdint.h>
+#ifndef _HAGL_COLOR_H
+#define _HAGL_COLOR_H
 
-#include "rgb888.h"
+#include <hagl_hal_color.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-uint16_t rgb565(uint8_t r, uint8_t g, uint8_t b);
-rgb_t rgb565_to_rgb888(uint16_t *input);
+/**
+ * Convert RGB to color
+ *
+ * Returns color type  defined by the HAL. Most often it is an
+ * uint16_t RGB565 color.
+ *
+ * @param surface
+ * @return color
+ */
+color_t
+hagl_color(void const *surface, uint8_t r, uint8_t g, uint8_t b);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* _RGB565_H */
+#endif /* _HAGL_COLOR_H */

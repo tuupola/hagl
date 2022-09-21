@@ -31,22 +31,42 @@ https://github.com/tuupola/hagl
 SPDX-License-Identifier: MIT
 
 */
-#ifndef _RGB565_H
-#define _RGB565_H
 
-#include <stdint.h>
+#include "hagl/vline.h"
+#include "hagl/line.h"
+#include "hagl/surface.h"
+#include "hagl/color.h"
 
-#include "rgb888.h"
+void
+hagl_draw_vline(void const *_surface, int16_t x0, int16_t y0, uint16_t h, color_t color) {
+    const hagl_surface_t *surface = _surface;
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+    if (surface->vline) {
+        int16_t height = h;
 
-uint16_t rgb565(uint8_t r, uint8_t g, uint8_t b);
-rgb_t rgb565_to_rgb888(uint16_t *input);
+        /* x0 or y0 is over the edge, nothing to do. */
+        if ((x0 > surface->clip.x1) || (x0 < surface->clip.x0) || (y0 > surface->clip.y1))  {
+            return;
+        }
 
-#ifdef __cplusplus
+        /* y0 is top of clip window, ignore start part. */
+        if (y0 < surface->clip.y0) {
+            height = height + y0;
+            y0 = surface->clip.y0;
+        }
+
+        /* Everything outside clip window, nothing to do. */
+        if (height < 0)  {
+            return;
+        }
+
+        /* Cut anything going over right edge. */
+        if (((y0 + height) > surface->clip.y1))  {
+            height = height - (y0 + height - surface->clip.y1);
+        }
+
+        surface->vline(&surface, x0, y0, height, color);
+    } else {
+        hagl_draw_line(surface, x0, y0, x0, y0 + h, color);
+    }
 }
-#endif /* __cplusplus */
-
-#endif /* _RGB565_H */

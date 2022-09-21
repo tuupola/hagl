@@ -1,3 +1,4 @@
+
 /*
 
 MIT License
@@ -27,51 +28,86 @@ SOFTWARE.
 This file is part of the HAGL graphics library:
 https://github.com/tuupola/hagl
 
+
 SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _BITMAP_H
-#define _BITMAP_H
+#ifndef _HAGL_RECTANGLE_H
+#define _HAGL_RECTANGLE_H
 
 #include <stdint.h>
 
-#include "hagl/window.h"
 #include "hagl/color.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-#define BITMAP_SIZE(width, height, depth) (width * (depth / 8) * height)
+/**
+ * Draw a rectangle
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param x1
+ * @param y1
+ * @param color
+ */
+void
+hagl_draw_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color);
 
-/*
-Pitch is bytes per row. Depth is number of bits per pixel. Size is size
-in bytes.
-*/
-typedef struct {
-    int16_t width;
-    int16_t height;
-    uint8_t depth;
-    hagl_window_t clip;
-    void (*put_pixel)(void *self, int16_t x0, int16_t y0, color_t color);
-    color_t (*get_pixel)(void *self, int16_t x0, int16_t y0);
-    color_t (*color)(void *self, uint8_t r, uint8_t g, uint8_t b);
-    void (*blit)(void *self, int16_t x0, int16_t y0, void *src);
-    void (*scale_blit)(void *self, int16_t x0, int16_t y0, uint16_t w, uint16_t h, void *src);
-    void (*hline)(void *self, int16_t x0, int16_t y0, uint16_t width, color_t color);
-    void (*vline)(void *self, int16_t x0, int16_t y0, uint16_t height, color_t color);
+/**
+ * Draw a filled rectangle
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param x1
+ * @param y1
+ * @param color
+ */
+void
+hagl_fill_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color);
 
-    uint16_t pitch;
-    uint32_t size;
-    uint8_t *buffer;
-} hagl_bitmap_t;
+/**
+ * Draw a rounded rectangle
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param x0
+ * @param y0
+ * @param r corner radius
+ * @param color
+ */
+void
+hagl_draw_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color);
 
-uint32_t bitmap_size(hagl_bitmap_t *bitmap);
-void bitmap_init(hagl_bitmap_t *bitmap, uint8_t *buffer);
+/**
+ * Draw a filled rounded rectangle
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param x1
+ * @param y1
+ * @param r corner radius
+ * @param color
+ */
+void
+hagl_fill_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* _BITMAP_H */
+#endif /* _HAGL_RECTANGLE_H */
