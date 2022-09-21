@@ -1,7 +1,28 @@
 if (ESP_PLATFORM)
 
     idf_component_register(
-        SRCS "src/bitmap.c" "src/clip.c" "src/fontx.c" "src/hagl.c"  "src/hsl.c"  "src/rgb565.c"  "src/rgb888.c"  "src/tjpgd.c"
+        SRCS
+            "src/hagl.c"
+            "src/hagl_blit.c"
+            "src/hagl_char.c"
+            "src/hagl_circle.c"
+            "src/hagl_clip.c"
+            "src/hagl_color.c"
+            "src/hagl_ellipse.c"
+            "src/hagl_hline.c"
+            "src/hagl_image.c"
+            "src/hagl_line.c"
+            "src/hagl_pixel.c"
+            "src/hagl_polygon.c"
+            "src/hagl_rectangle.c"
+            "src/hagl_triangle.c"
+            "src/hagl_vline.c"
+            "src/bitmap.c"
+            "src/fontx.c"
+            "src/hsl.c"
+            "src/rgb565.c"
+            "src/rgb888.c"
+            "src/tjpgd.c"
         INCLUDE_DIRS "./include"
         REQUIRES hagl_hal
     )
