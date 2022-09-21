@@ -12,10 +12,23 @@ else()
     add_library(hagl INTERFACE)
 
     target_sources(hagl INTERFACE
-        ${CMAKE_CURRENT_LIST_DIR}/src/bitmap.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/clip.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/fontx.c
         ${CMAKE_CURRENT_LIST_DIR}/src/hagl.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/hagl_blit.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/hagl_char.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/hagl_circle.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/hagl_clip.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/hagl_color.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/hagl_ellipse.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/hagl_hline.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/hagl_image.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/hagl_line.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/hagl_pixel.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/hagl_polygon.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/hagl_rectangle.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/hagl_triangle.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/hagl_vline.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/bitmap.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/fontx.c
         ${CMAKE_CURRENT_LIST_DIR}/src/hsl.c
         ${CMAKE_CURRENT_LIST_DIR}/src/rgb565.c
         ${CMAKE_CURRENT_LIST_DIR}/src/rgb888.c
