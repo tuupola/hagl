@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file, in reverse 
     hagl_backend_t display = hagl_init();
     hagl_put_pixel(display, x, y, color);
     ```
+- Function `hagl_clear_screen()` was renamed to `hagl_clear()` ([#76](https://github.com/tuupola/hagl/pull/76)).
 
 ## 0.5.0 - 2022-05-19
 
