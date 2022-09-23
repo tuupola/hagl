@@ -51,9 +51,9 @@ hagl_get_glyph(void const *surface, wchar_t code, color_t color, hagl_bitmap_t *
     }
 
     /* Initialise bitmap dimensions. */
-    bitmap->depth = DISPLAY_DEPTH,
-    bitmap->width = glyph.width,
-    bitmap->height = glyph.height,
+    bitmap->depth = DISPLAY_DEPTH;
+    bitmap->width = glyph.width;
+    bitmap->height = glyph.height;
     bitmap->pitch = bitmap->width * (bitmap->depth / 8);
     bitmap->size = bitmap->pitch * bitmap->height;
 
