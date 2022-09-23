@@ -117,10 +117,15 @@ for (uint16_t i = 1; i < 1000; i++) {
 for (uint16_t i = 1; i < 1000; i++) {
     int16_t x0 = rand() % (DISPLAY_WIDTH / 2);
     int16_t y0 = rand() % DISPLAY_HEIGHT;
+    int16_t x1 = rand() % (DISPLAY_WIDTH / 2);
     int16_t width = rand() % (DISPLAY_WIDTH - x0);
     color_t color = rand() % 0xffff;
 
+    /* First two are aliases. */
     hagl_draw_hline(display, x0, y0, width, color);
+    hagl_draw_hline_xyw(display, x0, y0, width, color);
+
+    hagl_draw_hline_xyx(display, x0, y0, x1, color);
 }
 ```
 
