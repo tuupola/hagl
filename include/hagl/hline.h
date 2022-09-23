@@ -37,6 +37,7 @@ SPDX-License-Identifier: MIT
 #define _HAGL_HLINE_H
 
 #include <stdint.h>
+#include <stdlib.h>
 
 #include "hagl/color.h"
 
@@ -57,7 +58,43 @@ extern "C" {
  */
 
 void
-hagl_draw_hline(void const *surface, int16_t x0, int16_t y0, uint16_t width, color_t color);
+hagl_draw_hline_xyw(void const *surface, int16_t x0, int16_t y0, uint16_t width, color_t color);
+
+/**
+ * Draw a horizontal line
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param x1
+ * @param color
+ */
+
+static inline void
+hagl_draw_hline_xyx(void const *surface, int16_t x0, int16_t y0, int16_t x1, color_t color)
+{
+    hagl_draw_hline_xyw(surface, x0, y0, abs(x1 - x0) + 1, color);
+}
+
+/**
+ * Draw a horizontal line
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param width
+ * @param color
+ */
+
+static inline void
+hagl_draw_hline(void const *surface, int16_t x0, int16_t y0, uint16_t width, color_t color)
+{
+    hagl_draw_hline_xyw(surface, x0, y0, width, color);
+}
 
 #ifdef __cplusplus
 }

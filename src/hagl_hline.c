@@ -33,12 +33,11 @@ SPDX-License-Identifier: MIT
 */
 
 #include "hagl/color.h"
-#include "hagl/hline.h"
 #include "hagl/line.h"
 #include "hagl/surface.h"
 
 void
-hagl_draw_hline(void const *_surface, int16_t x0, int16_t y0, uint16_t w, color_t color)
+hagl_draw_hline_xyw(void const *_surface, int16_t x0, int16_t y0, uint16_t w, color_t color)
 {
     const hagl_surface_t *surface = _surface;
 
