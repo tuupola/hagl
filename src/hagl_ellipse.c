@@ -37,7 +37,8 @@ SPDX-License-Identifier: MIT
 #include "hagl/hline.h"
 
 void
-hagl_draw_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color) {
+hagl_draw_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color)
+{
     int16_t wx, wy;
     int32_t xa, ya;
     int32_t t;
@@ -109,7 +110,8 @@ hagl_draw_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_
 }
 
 void
-hagl_fill_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color) {
+hagl_fill_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color)
+{
     int16_t wx, wy;
     int32_t xa, ya;
     int32_t t;

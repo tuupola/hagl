@@ -58,7 +58,7 @@ extern "C" {
 #define FONTX_BLOCK_TABLE_START   (18)
 
 /* Pitch is bytes per row. Size is size in bytes. */
-typedef struct{
+typedef struct {
     uint8_t width;
     uint8_t height;
     uint8_t size;
@@ -66,7 +66,7 @@ typedef struct{
     const uint8_t *buffer;
 } fontx_glyph_t;
 
-typedef struct{
+typedef struct {
     char name[9];
     uint8_t width;
     uint8_t height;

@@ -50,14 +50,16 @@ typedef struct {
 hsl_t rgb888_to_hsl(rgb_t *rgb);
 uint16_t rgb888_to_rgb565(rgb_t *input);
 
-static inline int min(int a, int b) {
+static inline int min(int a, int b)
+{
     if (a > b) {
         return b;
     };
     return a;
 }
 
-static inline int max(int a, int b) {
+static inline int max(int a, int b)
+{
     if (a > b) {
         return a;
     }

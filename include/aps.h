@@ -53,7 +53,8 @@ typedef struct {
  * Initialize the given anything per second counter instance
  */
 static inline void
-aps_init(aps_instance_t *aps) {
+aps_init(aps_instance_t *aps)
+{
     aps->start = clock() - 1;
     aps->value = 0;
     aps->current = 0.0;
@@ -92,7 +93,8 @@ aps_update(aps_instance_t *aps, uint32_t add)
  * Reset the given anything per second counter instance
  */
 static inline void
-aps_reset(aps_instance_t *aps) {
+aps_reset(aps_instance_t *aps)
+{
     aps->start = clock() - 1;
     aps->value = 0;
     aps->current = 0;

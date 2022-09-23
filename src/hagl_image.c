@@ -47,7 +47,8 @@ typedef struct {
     const hagl_surface_t *surface;
 } tjpgd_iodev_t;
 
-static uint16_t tjpgd_data_reader(JDEC *decoder, uint8_t *buffer, uint16_t size)
+static uint16_t
+tjpgd_data_reader(JDEC *decoder, uint8_t *buffer, uint16_t size)
 {
     tjpgd_iodev_t *device = (tjpgd_iodev_t *)decoder->device;
 
@@ -60,7 +61,8 @@ static uint16_t tjpgd_data_reader(JDEC *decoder, uint8_t *buffer, uint16_t size)
     }
 }
 
-static uint16_t tjpgd_data_writer(JDEC* decoder, void* bitmap, JRECT* rectangle)
+static uint16_t
+tjpgd_data_writer(JDEC *decoder, void *bitmap, JRECT *rectangle)
 {
     tjpgd_iodev_t *device = (tjpgd_iodev_t *)decoder->device;
     uint8_t width = (rectangle->right - rectangle->left) + 1;
@@ -80,7 +82,8 @@ static uint16_t tjpgd_data_writer(JDEC* decoder, void* bitmap, JRECT* rectangle)
     return 1;
 }
 
-uint32_t hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char *filename)
+uint32_t
+hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char *filename)
 {
     uint8_t work[3100];
     JDEC decoder;
