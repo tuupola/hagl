@@ -49,7 +49,9 @@ SPDX-License-Identifier: MIT
 #include "hagl.h"
 #include "hagl_hal.h"
 
-void hagl_clear(void *_surface) {
+void
+hagl_clear(void *_surface)
+{
     hagl_surface_t *surface = _surface;
 
     uint16_t x0 = surface->clip.x0;
@@ -57,12 +59,14 @@ void hagl_clear(void *_surface) {
     uint16_t x1 = surface->clip.x1;
     uint16_t y1 = surface->clip.y1;
 
-    hagl_set_clip_window(surface, 0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1);
-    hagl_fill_rectangle(surface, 0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT -1, 0x00);
+    hagl_set_clip_window(surface, 0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1);
+    hagl_fill_rectangle(surface, 0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1, 0x00);
     hagl_set_clip_window(surface, x0, y0, x1, y1);
 }
 
-void hagl_clear_clip_window(hagl_surface_t *surface) {
+void
+hagl_clear_clip_window(hagl_surface_t *surface)
+{
     hagl_fill_rectangle(
         surface,
         surface->clip.x0, surface->clip.y0, surface->clip.x1, surface->clip.y1,
@@ -70,7 +74,9 @@ void hagl_clear_clip_window(hagl_surface_t *surface) {
     );
 }
 
-hagl_backend_t *hagl_init(void) {
+hagl_backend_t *
+hagl_init(void)
+{
     static hagl_backend_t backend;
     memset(&backend, 0, sizeof(hagl_backend_t));
 
@@ -79,14 +85,18 @@ hagl_backend_t *hagl_init(void) {
     return &backend;
 };
 
-size_t hagl_flush(hagl_backend_t *backend) {
+size_t
+hagl_flush(hagl_backend_t *backend)
+{
     if (backend->flush) {
         return backend->flush(backend);
     }
     return 0;
 };
 
-void hagl_close(hagl_backend_t *backend) {
+void
+hagl_close(hagl_backend_t *backend)
+{
     if (backend->close) {
         backend->close(backend);
     }

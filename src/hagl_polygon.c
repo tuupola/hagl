@@ -40,7 +40,8 @@ SPDX-License-Identifier: MIT
 #include "hagl.h"
 
 void
-hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, color_t color) {
+hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, color_t color)
+{
 
     for(int16_t i = 0; i < amount - 1; i++) {
         hagl_draw_line(
@@ -56,15 +57,16 @@ hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, color_
         surface,
         vertices[0],
         vertices[1],
-        vertices[(amount <<1 ) - 2],
-        vertices[(amount <<1 ) - 1],
+        vertices[(amount << 1 ) - 2],
+        vertices[(amount << 1 ) - 1],
         color
     );
 }
 
 /* Adapted from  http://alienryderflex.com/polygon_fill/ */
 void
-hagl_fill_polygon(void const *surface, int16_t amount, int16_t *vertices, color_t color) {
+hagl_fill_polygon(void const *surface, int16_t amount, int16_t *vertices, color_t color)
+{
     uint16_t nodes[64];
     int16_t y;
 

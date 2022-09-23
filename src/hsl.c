@@ -40,7 +40,8 @@ SPDX-License-Identifier: BSD-2-Clause
 
 #include "hsl.h"
 
-rgb_t hsl_to_rgb888(hsl_t *hsl)
+rgb_t
+hsl_to_rgb888(hsl_t *hsl)
 {
     rgb_t rgb;
     float r, g, b, h, s, l;
@@ -77,11 +78,13 @@ rgb_t hsl_to_rgb888(hsl_t *hsl)
             r = temp2;
         } else if (tempr < 2.0 / 3.0) {
             r = temp1 + (temp2 - temp1) * ((2.0 / 3.0) - tempr) * 6.0;
-        } else { r = temp1; }
+        } else {
+            r = temp1;
+        }
 
         /* Green */
         if (tempg < 1.0 / 6.0) {
-             g = temp1 + (temp2 - temp1) * 6.0 * tempg;
+            g = temp1 + (temp2 - temp1) * 6.0 * tempg;
         } else if (tempg < 0.5) {
             g = temp2;
         } else if (tempg < 2.0 / 3.0) {

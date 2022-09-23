@@ -40,7 +40,8 @@ SPDX-License-Identifier: MIT
 #include "hagl/surface.h"
 
 void
-hagl_blit(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source) {
+hagl_blit(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source)
+{
     const hagl_surface_t *surface = _surface;
 
     if (surface->blit) {
@@ -79,7 +80,8 @@ hagl_blit(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source) {
 };
 
 void
-hagl_scale_blit(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source) {
+hagl_scale_blit(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source)
+{
     const hagl_surface_t *surface = _surface;
 
     if (surface->scale_blit) {

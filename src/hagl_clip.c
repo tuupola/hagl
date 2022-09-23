@@ -47,7 +47,8 @@ static const uint8_t BOTTOM = 0b0100;
 static const uint8_t TOP = 0b1000;
 
 static
-uint8_t code(int16_t x0, int16_t y0, hagl_window_t window)
+uint8_t
+code(int16_t x0, int16_t y0, hagl_window_t window)
 {
     uint8_t code = INSIDE;
 
@@ -55,7 +56,8 @@ uint8_t code(int16_t x0, int16_t y0, hagl_window_t window)
         code |= LEFT;
     } else if (x0 > window.x1) {
         code |= RIGHT;
-    } if (y0 < window.y0) {
+    }
+    if (y0 < window.y0) {
         code |= BOTTOM;
     } else if (y0 > window.y1) {
         code |= TOP;

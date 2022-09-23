@@ -40,7 +40,8 @@ SPDX-License-Identifier: BSD-2-Clause
 
 #include "rgb888.h"
 
-hsl_t rgb888_to_hsl(rgb_t *rgb)
+hsl_t
+rgb888_to_hsl(rgb_t *rgb)
 {
     hsl_t hsl;
     float r, g, b, h, s, l;
@@ -87,7 +88,9 @@ hsl_t rgb888_to_hsl(rgb_t *rgb)
     return hsl;
 }
 
-uint16_t rgb888_to_rgb565(rgb_t *input) {
+uint16_t
+rgb888_to_rgb565(rgb_t *input)
+{
     uint16_t r5 = (input->r * 249 + 1014 ) >> 11;
     uint16_t g6 = (input->g * 253 +  505) >> 10;
     uint16_t b5 = (input->b * 249 + 1014) >> 11;

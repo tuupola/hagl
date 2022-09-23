@@ -43,7 +43,9 @@ SPDX-License-Identifier: MIT
 #include "hagl_hal.h"
 
 /* Get bitmap size in bytes. */
-uint32_t bitmap_size(hagl_bitmap_t *bitmap) {
+uint32_t
+bitmap_size(hagl_bitmap_t *bitmap)
+{
     return bitmap->width * (bitmap->depth / 8) * bitmap->height;
 };
 
@@ -130,7 +132,7 @@ blit(void *_dst, int16_t x0, int16_t y0, void *_src)
         srch = dst->height - y0;
     }
 
-   /* Everthing outside viewport, nothing to do. */
+    /* Everthing outside viewport, nothing to do. */
     if ((srcw < 0 ) || (srch < 0))  {
         return;
     }
@@ -214,8 +216,8 @@ scale_blit(void *_dst, int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth, voi
             }
             dstptr += dst->pitch / (dst->depth / 8) - dstw;
         }
-    /* Assume 1 byte per pixel. */
     } else {
+        /* Assume 1 byte per pixel. */
         uint8_t *dstptr = (uint8_t *) (dst->buffer + dst->pitch * y0 + (dst->depth / 8) * x0);
         uint8_t *srcptr = (uint8_t *) src->buffer;
         for (uint16_t y = 0; y < dsth; y++) {
@@ -230,7 +232,8 @@ scale_blit(void *_dst, int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth, voi
 }
 
 /* Initialise bitmap with given buffer. */
-void bitmap_init(hagl_bitmap_t *bitmap, uint8_t *buffer)
+void
+bitmap_init(hagl_bitmap_t *bitmap, uint8_t *buffer)
 {
     bitmap->pitch = bitmap->width * (bitmap->depth / 8);
     bitmap->size = bitmap->pitch * bitmap->height;
