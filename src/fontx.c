@@ -87,11 +87,13 @@ uint8_t fontx_glyph(fontx_glyph_t *glyph, wchar_t code, const uint8_t* font) {
             if (code >= sb && code <= eb) {
                 /* Number of codes from top of the block_table. */
                 nc += code - sb;
+                // *INDENT-OFF*
                 glyph->buffer = &font[
                     FONTX_BLOCK_TABLE_START +
                     4 * font[FONTX_BLOCK_TABLE_SIZE] +
                     nc * glyph->size
                 ];
+                // *INDENT-ON*
                 return FONTX_OK;
             }
             /* Number of codes in the previous block_tables. */
