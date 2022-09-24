@@ -46,7 +46,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 /**
- * Blit a bitmap to the display
+ * Blit a bitmap to a surface
  *
  * Output will be clipped to the current clip window.
  *
@@ -56,10 +56,27 @@ extern "C" {
  * @param source pointer to a bitmap
  */
 void
-hagl_blit(void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *source);
+hagl_blit_xy(void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *source);
+
 
 /**
- * Blit and scale a bitmap to the display
+ * Blit a bitmap to a surface
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param source pointer to a bitmap
+ */
+static void inline
+hagl_blit(void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *source)
+{
+    hagl_blit_xy(surface, x0, y0, source);
+};
+
+/**
+ * Blit and scale a bitmap to a surface
  *
  * Output will be clipped to the current clip window.
  *
@@ -74,7 +91,7 @@ void
 hagl_blit_xywh(void const *surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source);
 
 /**
- * Blit and scale a bitmap to the display
+ * Blit and scale a bitmap to a surface
  *
  * Output will be clipped to the current clip window.
  *
