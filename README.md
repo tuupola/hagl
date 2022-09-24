@@ -137,10 +137,15 @@ for (uint16_t i = 1; i < 1000; i++) {
 for (uint16_t i = 1; i < 1000; i++) {
     int16_t x0 = rand() % DISPLAY_WIDTH;
     int16_t y0 = rand() % (DISPLAY_HEIGHT / 2);
+    int16_t y1 = rand() % (DISPLAY_HEIGHT / 2);
     int16_t height = rand() % (DISPLAY_HEIGHT - y0);
     color_t color = rand() % 0xffff;
 
+    /* First two are aliases. */
     hagl_draw_vline(display, x0, y0, height, color);
+    hagl_draw_vline_xyh(display, x0, y0, height, color);
+
+    hagl_draw_vline_xyy(display, x0, y0, y1, color);
 }
 ```
 
