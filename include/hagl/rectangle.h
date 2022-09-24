@@ -57,7 +57,44 @@ extern "C" {
  * @param color
  */
 void
-hagl_draw_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color);
+hagl_draw_rectangle_xyxy(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color);
+
+/**
+ * Draw a rectangle
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param x1
+ * @param y1
+ * @param color
+ */
+static void inline
+hagl_draw_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
+{
+    hagl_draw_rectangle_xyxy(surface, x0, y0, x1, y1, color);
+}
+
+/**
+ * Draw a rectangle
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param width
+ * @param height
+ * @param color
+ */
+static void inline
+hagl_draw_rectangle_xywh(void const *surface, int16_t x0, int16_t y0, uint16_t width, uint16_t height, color_t color)
+{
+    hagl_draw_rectangle_xyxy(surface, x0, y0, x0 + width - 1, y0 + height - 1, color);
+};
+
 
 /**
  * Draw a filled rectangle
