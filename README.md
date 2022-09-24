@@ -430,7 +430,10 @@ for (uint16_t i = 1; i < 20000; i++) {
     color_t color = rand() % 0xffff;
     uint16_t code = rand() % 0xffff;
     hagl_get_glyph(display, code, color, &bitmap, font6x9);
+
+    /* These two are aliases. */
     hagl_blit(display, x0, y0, &bitmap);
+    hagl_blit_xy(display, x0, y0, &bitmap);
 }
 ```
 
@@ -439,7 +442,7 @@ for (uint16_t i = 1; i < 20000; i++) {
 
 ### Blit a bitmap scaled up or down
 
-Scale blit copies and scales a [bitmap](https://github.com/tuupola/hagl/blob/master/bitmap.c) to the screen. This example uses a glyph bitmap which is extracted from a font.
+Scale blit copies and scales a [bitmap](https://github.com/tuupola/hagl/blob/master/bitmap.c) to the surface. This example uses a glyph bitmap which is extracted from a font.
 
 ```c
 hagl_bitmap_t bitmap;
@@ -451,7 +454,10 @@ for (uint16_t i = 1; i < 20000; i++) {
     color_t color = rand() % 0xffff;
     uint16_t code = rand() % 0xffff;
     hagl_get_glyph(display, code, color, &bitmap, font6x9);
-    hagl_scale_blit(display, x0, y0, 24, 36, &bitmap);
+
+    /* These two examples do the same thing. */
+    hagl_blit_xywh(display, x0, y0, 24, 36, &bitmap);
+    hagl_blit_xyxy(display, x0, y0, x0 + 23, y0 + 35, &bitmap);
 }
 ```
 
