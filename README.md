@@ -253,9 +253,15 @@ for (uint16_t i = 1; i < 50; i++) {
     int16_t y0 = rand() % DISPLAY_HEIGHT;
     int16_t x1 = rand() % DISPLAY_WIDTH;
     int16_t y1 = rand() % DISPLAY_HEIGHT;
+    int16_t w = rand() % DISPLAY_WIDTH / 2;
+    int16_t h = rand() % DISPLAY_HEIGHT / 2;
     color_t color = rand() % 0xffff;
 
+    /* First two are aliases. */
     hagl_draw_rectangle(display, x0, y0, x1, y1, color);
+    hagl_draw_rectangle_xyxy(display, x0, y0, x1, y1, color);
+
+    hagl_draw_rectangle_xywh(display, x0, y0, w, h, color);
 }
 ```
 
@@ -269,9 +275,15 @@ for (uint16_t i = 1; i < 10; i++) {
     int16_t y0 = rand() % DISPLAY_HEIGHT;
     int16_t x1 = rand() % DISPLAY_WIDTH;
     int16_t y1 = rand() % DISPLAY_HEIGHT;
+    int16_t w = rand() % DISPLAY_WIDTH / 2;
+    int16_t h = rand() % DISPLAY_HEIGHT / 2;
     color_t color = rand() % 0xffff;
 
+    /* First two are aliases. */
     hagl_fill_rectangle(display, x0, y0, x1, y1, color);
+    hagl_fill_rectangle_xyxy(display, x0, y0, x1, y1, color);
+
+    hagl_fill_rectangle_xywh(display, x0, y0, w, h, color);
 }
 ```
 
