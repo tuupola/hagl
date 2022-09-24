@@ -129,7 +129,7 @@ hagl_fill_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, int16_t x
 }
 
 void
-hagl_draw_rounded_rectangle(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color)
+hagl_draw_rounded_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color)
 {
     const hagl_surface_t *surface = _surface;
 
@@ -203,7 +203,7 @@ hagl_draw_rounded_rectangle(void const *_surface, int16_t x0, int16_t y0, int16_
 };
 
 void
-hagl_fill_rounded_rectangle(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color)
+hagl_fill_rounded_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color)
 {
     const hagl_surface_t *surface = _surface;
 

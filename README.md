@@ -298,10 +298,16 @@ for (uint16_t i = 1; i < 30; i++) {
     int16_t y0 = rand() % DISPLAY_HEIGHT;
     int16_t x1 = rand() % DISPLAY_WIDTH;
     int16_t y1 = rand() % DISPLAY_HEIGHT;
+    int16_t w = rand() % DISPLAY_WIDTH / 2;
+    int16_t h = rand() % DISPLAY_HEIGHT / 2;
     int16_t r = 10
     color_t color = rand() % 0xffff;
 
+    /* First two are aliases. */
     hagl_draw_rounded_rectangle(display, x0, y0, x1, y1, r, color);
+    hagl_draw_rounded_rectangle_xyxy(display, x0, y0, x1, y1, r, color);
+
+    hagl_draw_rounded_rectangle_xyxy(display, x0, y0, w, h, r, color);
 }
 ```
 
@@ -315,10 +321,16 @@ for (uint16_t i = 1; i < 30; i++) {
     int16_t y0 = rand() % DISPLAY_HEIGHT;
     int16_t x1 = rand() % DISPLAY_WIDTH;
     int16_t y1 = rand() % DISPLAY_HEIGHT;
+    int16_t w = rand() % DISPLAY_WIDTH / 2;
+    int16_t h = rand() % DISPLAY_HEIGHT / 2;
     int16_t r = 10
     color_t color = rand() % 0xffff;
 
+    /* First two are aliases. */
     hagl_fill_rounded_rectangle(display, x0, y0, x1, y1, r, color);
+    hagl_fill_rounded_rectangle_xyxy(display, x0, y0, x1, y1, r, color);
+
+    hagl_fill_rounded_rectangle_xyxy(display, x0, y0, w, h, r, color);
 }
 ```
 

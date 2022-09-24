@@ -29,6 +29,7 @@ All notable changes to this project will be documented in this file, in reverse 
 - XYX and XYW variants for hline ([#82](https://github.com/tuupola/hagl/pull/82)).
 - XYY and XYH variants for vline ([#83](https://github.com/tuupola/hagl/pull/83)).
 - XYY and XYH variants for rectangle ([#84](https://github.com/tuupola/hagl/pull/84)).
+- XYY and XYH variants for rounded rectangle ([#85](https://github.com/tuupola/hagl/pull/85)).
 
 ## 0.5.0 - 2022-05-19
 

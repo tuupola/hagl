@@ -160,7 +160,45 @@ hagl_fill_rectangle_xywh(void const *surface, int16_t x0, int16_t y0, uint16_t w
  * @param color
  */
 void
-hagl_draw_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color);
+hagl_draw_rounded_rectangle_xyxy(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color);
+
+/**
+ * Draw a rounded rectangle
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param x0
+ * @param y0
+ * @param r corner radius
+ * @param color
+ */
+static void inline
+hagl_draw_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color)
+{
+    hagl_draw_rounded_rectangle_xyxy(surface, x0, y0, x1, y1, r, color);
+}
+
+/**
+ * Draw a rounded rectangle
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param width
+ * @param height
+ * @param r corner radius
+ * @param color
+ */
+static void inline
+hagl_draw_rounded_rectangle_xywh(void const *surface, int16_t x0, int16_t y0, uint16_t width, uint16_t height, int16_t r, color_t color)
+{
+    hagl_draw_rounded_rectangle_xyxy(surface, x0, y0, x0 + width - 1, y0 + height - 1, r, color);
+}
 
 /**
  * Draw a filled rounded rectangle
@@ -176,7 +214,46 @@ hagl_draw_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t
  * @param color
  */
 void
-hagl_fill_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color);
+hagl_fill_rounded_rectangle_xyxy(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color);
+
+/**
+ * Draw a filled rounded rectangle
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param x0
+ * @param y0
+ * @param r corner radius
+ * @param color
+ */
+static void inline
+hagl_fill_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, color_t color)
+{
+    hagl_fill_rounded_rectangle_xyxy(surface, x0, y0, x1, y1, r, color);
+}
+
+/**
+ * Draw a filled rounded rectangle
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param width
+ * @param height
+ * @param r corner radius
+ * @param color
+ */
+static void inline
+hagl_fill_rounded_rectangle_xywh(void const *surface, int16_t x0, int16_t y0, uint16_t width, uint16_t height, int16_t r, color_t color)
+{
+    hagl_fill_rounded_rectangle_xyxy(surface, x0, y0, x0 + width - 1, y0 + height - 1, r, color);
+}
+
 
 #ifdef __cplusplus
 }
