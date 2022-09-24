@@ -48,13 +48,49 @@ extern "C" {
  *
  * Output will be clipped to the current clip window.
  *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param y1
+ * @param color
+ */
+void
+hagl_draw_vline_xyy(void const *surface, int16_t x0, int16_t y0, int16_t y1, color_t color)
+{
+    hagl_draw_vline_xyh(surface, x0, y0, abs(y1 - y0) + 1, color);
+}
+
+/**
+ * Draw a vertical line
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
  * @param x0
  * @param y0
  * @param height
  * @param color
  */
 void
-hagl_draw_vline(void const *surface, int16_t x0, int16_t y0, uint16_t height, color_t color);
+hagl_draw_vline_xyh(void const *surface, int16_t x0, int16_t y0, uint16_t height, color_t color);
+
+/**
+ * Draw a vertical line
+ *
+ * Output will be clipped to the current clip window.
+ *
+ * @param surface
+ * @param x0
+ * @param y0
+ * @param height
+ * @param color
+ */
+static inline void
+hagl_draw_vline(void const *surface, int16_t x0, int16_t y0, uint16_t height, color_t color)
+{
+    hagl_draw_vline_xyh(surface, x0, y0, height, color);
+}
+
 
 #ifdef __cplusplus
 }
