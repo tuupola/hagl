@@ -124,7 +124,7 @@ hagl_clip_line(int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, hagl_window_t
 }
 
 void
-hagl_set_clip_window(void *_surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
+hagl_set_clip(void *_surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
 {
     hagl_surface_t *surface = _surface;
 

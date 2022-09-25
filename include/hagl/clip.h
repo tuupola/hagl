@@ -59,7 +59,7 @@ bool hagl_clip_line(int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, hagl_win
  * @param y1
  */
 void
-hagl_set_clip_window(void *surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+hagl_set_clip(void *surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 
 #ifdef __cplusplus
 }

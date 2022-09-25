@@ -468,7 +468,7 @@ for (uint16_t i = 1; i < 20000; i++) {
 You can restrict the area of drawing by setting a clip window.
 
 ```c
-hagl_set_clip_window(display, 0, 40, DISPLAY_WIDTH, DISPLAY_HEIGHT - 40);
+hagl_set_clip(display, 0, 40, DISPLAY_WIDTH, DISPLAY_HEIGHT - 40);
 
 for (uint16_t i = 1; i < 500; i++) {
     int16_t x0 = rand() % DISPLAY_WIDTH;
