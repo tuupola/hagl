@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file, in reverse 
 - Primitive drawing code was splitted to separate files ([#79](https://github.com/tuupola/hagl/pull/79)).
 - Rename `hagl_clear_screen()` to `hagl_clear()` ([#76](https://github.com/tuupola/hagl/pull/76)).
 - Rename `hagl_scale_blit()` to `hagl_blit_xywh()` ([#86](https://github.com/tuupola/hagl/pull/86)).
+- Rename `hagl_set_clip_window()` to `hagl_set_clip()` ([#87](https://github.com/tuupola/hagl/pull/87)).
 
 ### Added
 - Possibility to use multiple fps counters ([#69](https://github.com/tuupola/hagl/pull/69)).
