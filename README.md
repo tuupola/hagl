@@ -482,11 +482,6 @@ for (uint16_t i = 1; i < 500; i++) {
 
 ![Clipped windows](https://appelsiini.net/img/2020/hagl-set-clip-window.png)
 
-If you want to cleant the contents of the clip window instead of clearing the whole screen call:
-
-```c
-hagl_clear_clip_window(display)
-```
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.

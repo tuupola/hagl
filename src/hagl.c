@@ -64,16 +64,6 @@ hagl_clear(void *_surface)
     hagl_set_clip(surface, x0, y0, x1, y1);
 }
 
-void
-hagl_clear_clip_window(hagl_surface_t *surface)
-{
-    hagl_fill_rectangle(
-        surface,
-        surface->clip.x0, surface->clip.y0, surface->clip.x1, surface->clip.y1,
-        0x00
-    );
-}
-
 hagl_backend_t *
 hagl_init(void)
 {
