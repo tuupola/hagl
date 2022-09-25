@@ -11,6 +11,8 @@ All notable changes to this project will be documented in this file, in reverse 
     hagl_put_pixel(display, x, y, color);
 - Primitive drawing code was splitted to separate files ([#79](https://github.com/tuupola/hagl/pull/79)).
 - Rename `hagl_clear_screen()` to `hagl_clear()` ([#76](https://github.com/tuupola/hagl/pull/76)).
+- Rename `hagl_scale_blit()` to `hagl_blit_xywh()` ([#86](https://github.com/tuupola/hagl/pull/86)).
+
 ### Added
 - Possibility to use multiple fps counters ([#69](https://github.com/tuupola/hagl/pull/69)).
     ```c
@@ -30,6 +32,8 @@ All notable changes to this project will be documented in this file, in reverse 
 - XYY and XYH variants for vline ([#83](https://github.com/tuupola/hagl/pull/83)).
 - XYY and XYH variants for rectangle ([#84](https://github.com/tuupola/hagl/pull/84)).
 - XYY and XYH variants for rounded rectangle ([#85](https://github.com/tuupola/hagl/pull/85)).
+- XY, XYXY and XYWH variants for blit ([#86](https://github.com/tuupola/hagl/pull/86)).
+
 
 ## 0.5.0 - 2022-05-19
 
