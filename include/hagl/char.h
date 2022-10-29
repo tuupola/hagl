@@ -37,6 +37,8 @@ SPDX-License-Identifier: MIT
 #define _HAGL_CHAR_H
 
 #include <stdint.h>
+#include <string.h>
+#include "window.h"
 
 #include "hagl/color.h"
 
@@ -81,6 +83,21 @@ hagl_put_char(void const *surface, wchar_t code, int16_t x0, int16_t y0, color_t
  */
 uint16_t
 hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
+
+/**
+ * Write a string of text that automatically continues to the next line based on the defined window
+ * 
+ * @param surface 
+ * @param text 
+ * @param x0 
+ * @param y0 
+ * @param padding_left 
+ * @param padding_right 
+ * @param color 
+ * @param font 
+ */
+uint8_t
+hagl_put_wrap_text(void const *surface, char text[], hagl_window_t window, color_t color, const unsigned char *font);
 
 /**
  * Extract a glyph into a bitmap

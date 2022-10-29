@@ -143,3 +143,48 @@ hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int16_t y0, c
 
     return x0 - original;
 }
+
+uint8_t
+hagl_put_wrap_text(void const *surface, char text[], hagl_window_t window, color_t color, const unsigned char *font)
+{
+    uint8_t status;
+    fontx_meta_t meta;
+
+    status = fontx_meta(&meta, font);
+    if (0 != status) {
+        return 0;
+    }
+    
+    uint8_t x0 = window.x0;
+    uint8_t y0 = window.y0;
+    uint8_t current_index = 0;
+    uint8_t length = strlen(text);
+    uint8_t padding_left = window.x0;
+    uint8_t padding_right = DISPLAY_WIDTH - window.x1;
+    uint8_t location = padding_left + padding_right;
+    
+    for (int target_index = 0; target_index < length + 1; target_index++) {
+        location += meta.width;
+        if ((location >= DISPLAY_WIDTH && target_index != 0) || target_index == length) {
+            if (target_index != length && (text[target_index] != 32 || text[target_index + 1] != 32 || text[target_index] != 92 ||  text[target_index + 1] != 92)) {
+                while (text[target_index] != 32) {
+                    target_index--;
+                }
+            }
+
+            if (text[current_index] == 32 && y0 % meta.height == 0) {
+                current_index++;
+            }
+
+            for (/* Not needed */; current_index < target_index; current_index++) {
+                x0 += hagl_put_char(surface, text[current_index], x0, y0, color, font);
+            }
+
+            x0 = window.x0;
+            y0 += meta.height;
+            location = padding_left + padding_right;
+        }
+    }
+    
+    return 1;
+}
