@@ -147,6 +147,10 @@ hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int16_t y0, c
 uint8_t
 hagl_put_wrap_text(void const *surface, char text[], hagl_window_t window, color_t color, const unsigned char *font)
 {
+    if (window.x0 > window.x1 || window.y0 > window.y1) {
+        return 0;
+    }
+
     uint8_t status;
     fontx_meta_t meta;
 
@@ -154,25 +158,39 @@ hagl_put_wrap_text(void const *surface, char text[], hagl_window_t window, color
     if (0 != status) {
         return 0;
     }
-    
+
     uint8_t x0 = window.x0;
     uint8_t y0 = window.y0;
     uint8_t current_index = 0;
     uint8_t length = strlen(text);
     uint8_t padding_left = window.x0;
     uint8_t padding_right = DISPLAY_WIDTH - window.x1;
-    uint8_t location = padding_left + padding_right;
+    uint8_t used_pixels = padding_left + padding_right;
+    uint8_t temp_index = 0;
     
     for (int target_index = 0; target_index < length + 1; target_index++) {
-        location += meta.width;
-        if ((location >= DISPLAY_WIDTH && target_index != 0) || target_index == length) {
-            if (target_index != length && (text[target_index] != 32 || text[target_index + 1] != 32 || text[target_index] != 92 ||  text[target_index + 1] != 92)) {
+        used_pixels += meta.width;
+
+        if ((used_pixels >= DISPLAY_WIDTH && target_index != 0) || target_index == length) {
+            if (target_index != length && (text[target_index] != 32 || text[target_index + 1] != 32)) {
+                temp_index = target_index;
                 while (text[target_index] != 32) {
+                    /**
+                     * Reverse the index until we're not in the middle
+                     * of a word (i.e. a space), unless it exceeds the
+                     * window bounds. In this case, we'll have to wrap
+                     * the word around.
+                     */
                     target_index--;
+                    if (target_index == current_index) {
+                        target_index = temp_index;
+                        break;
+                    }
                 }
             }
 
             if (text[current_index] == 32 && y0 % meta.height == 0) {
+                // Skip spaces if it's a new line
                 current_index++;
             }
 
@@ -182,7 +200,7 @@ hagl_put_wrap_text(void const *surface, char text[], hagl_window_t window, color
 
             x0 = window.x0;
             y0 += meta.height;
-            location = padding_left + padding_right;
+            used_pixels = padding_left + padding_right;
         }
     }
     
