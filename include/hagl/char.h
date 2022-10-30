@@ -89,12 +89,10 @@ hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int16_t y0, c
  * 
  * @param surface 
  * @param text 
- * @param x0 
- * @param y0 
- * @param padding_left 
- * @param padding_right 
+ * @param window 
  * @param color 
  * @param font 
+ * @return uint8_t 
  */
 uint8_t
 hagl_put_wrap_text(void const *surface, char text[], hagl_window_t window, color_t color, const unsigned char *font);
