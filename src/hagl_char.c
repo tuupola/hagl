@@ -145,9 +145,11 @@ hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int16_t y0, c
 }
 
 uint8_t
-hagl_put_wrap_text(void const *surface, char text[], hagl_window_t window, color_t color, const unsigned char *font)
+hagl_put_wrap_text(void *_surface, char text[], color_t color, const unsigned char *font)
 {
-    if (window.x0 > window.x1 || window.y0 > window.y1) {
+    hagl_surface_t *surface = _surface;
+
+    if (surface->clip.x0 > surface->clip.x1 || surface->clip.y0 > surface->clip.y1) {
         return 0;
     }
 
@@ -159,13 +161,13 @@ hagl_put_wrap_text(void const *surface, char text[], hagl_window_t window, color
         return 0;
     }
 
-    uint8_t x0 = window.x0;
-    uint8_t y0 = window.y0;
-    uint8_t current_index = 0;
     uint8_t length = strlen(text);
-    uint8_t padding_left = window.x0;
-    uint8_t padding_right = DISPLAY_WIDTH - window.x1;
+    uint8_t x0 = surface->clip.x0;
+    uint8_t y0 = surface->clip.y0;
+    uint8_t padding_left = surface->clip.x0;
+    uint8_t padding_right = DISPLAY_WIDTH - surface->clip.x1;
     uint8_t used_pixels = padding_left + padding_right;
+    uint8_t current_index = 0;
     uint8_t temp_index = 0;
     
     for (int target_index = 0; target_index < length + 1; target_index++) {
@@ -198,7 +200,7 @@ hagl_put_wrap_text(void const *surface, char text[], hagl_window_t window, color
                 x0 += hagl_put_char(surface, text[current_index], x0, y0, color, font);
             }
 
-            x0 = window.x0;
+            x0 = surface->clip.x0;
             y0 += meta.height;
             used_pixels = padding_left + padding_right;
         }

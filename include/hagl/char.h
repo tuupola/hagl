@@ -38,7 +38,6 @@ SPDX-License-Identifier: MIT
 
 #include <stdint.h>
 #include <string.h>
-#include "window.h"
 
 #include "hagl/color.h"
 
@@ -89,13 +88,12 @@ hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int16_t y0, c
  * 
  * @param surface 
  * @param text 
- * @param window 
  * @param color 
  * @param font 
  * @return uint8_t 
  */
 uint8_t
-hagl_put_wrap_text(void const *surface, char text[], hagl_window_t window, color_t color, const unsigned char *font);
+hagl_put_wrap_text(void *surface, char text[], color_t color, const unsigned char *font);
 
 /**
  * Extract a glyph into a bitmap
