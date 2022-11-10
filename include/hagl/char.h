@@ -86,14 +86,14 @@ hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int16_t y0, c
 /**
  * Write a string of text that automatically continues to the next line based on the defined window
  * 
- * @param surface 
- * @param text 
- * @param color 
- * @param font 
- * @return uint8_t 
+ * @param _surface
+ * @param text
+ * @param color
+ * @param font
+ * @return uint8_t
  */
 uint8_t
-hagl_put_wrap_text(void *surface, char text[], color_t color, const unsigned char *font);
+hagl_put_wrap_text(void *_surface, char text[], color_t color, const unsigned char *font);
 
 /**
  * Extract a glyph into a bitmap
