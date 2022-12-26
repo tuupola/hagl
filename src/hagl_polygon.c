@@ -40,12 +40,12 @@ SPDX-License-Identifier: MIT
 #include "hagl/hline.h"
 
 void
-hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, color_t color)
+hagl_draw_polygon(void const *_surface, int16_t amount, int16_t *vertices, color_t color)
 {
 
     for(int16_t i = 0; i < amount - 1; i++) {
         hagl_draw_line(
-            surface,
+            _surface,
             vertices[(i << 1 ) + 0],
             vertices[(i << 1 ) + 1],
             vertices[(i << 1 ) + 2],
@@ -54,7 +54,7 @@ hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, color_
         );
     }
     hagl_draw_line(
-        surface,
+        _surface,
         vertices[0],
         vertices[1],
         vertices[(amount << 1 ) - 2],
@@ -65,8 +65,9 @@ hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, color_
 
 /* Adapted from  http://alienryderflex.com/polygon_fill/ */
 void
-hagl_fill_polygon(void const *surface, int16_t amount, int16_t *vertices, color_t color)
+hagl_fill_polygon(void const *_surface, int16_t amount, int16_t *vertices, color_t color)
 {
+    const hagl_surface_t *surface = _surface;
     uint16_t nodes[64];
     int16_t y;
 
@@ -75,7 +76,7 @@ hagl_fill_polygon(void const *surface, int16_t amount, int16_t *vertices, color_
     float x1;
     float y1;
 
-    int16_t miny = ((hagl_surface_t *)surface)->height;
+    int16_t miny = surface->height;
     int16_t maxy = 0;
 
     for (uint8_t i = 0; i < amount; i++) {
@@ -128,7 +129,7 @@ hagl_fill_polygon(void const *surface, int16_t amount, int16_t *vertices, color_
         /* Draw lines between nodes. */
         for (int16_t i = 0; i < count; i += 2) {
             int16_t width = nodes[i + 1] - nodes[i];
-            hagl_draw_hline(surface, nodes[i], y, width, color);
+            hagl_draw_hline(_surface, nodes[i], y, width, color);
         }
     }
 }

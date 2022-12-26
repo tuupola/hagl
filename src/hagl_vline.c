@@ -67,6 +67,6 @@ hagl_draw_vline_xyh(void const *_surface, int16_t x0, int16_t y0, uint16_t h, co
 
         surface->vline(&surface, x0, y0, height, color);
     } else {
-        hagl_draw_line(surface, x0, y0, x0, y0 + h, color);
+        hagl_draw_line(_surface, x0, y0, x0, y0 + h, color);
     }
 }

@@ -67,6 +67,6 @@ hagl_draw_hline_xyw(void const *_surface, int16_t x0, int16_t y0, uint16_t w, co
 
         surface->hline(&surface, x0, y0, width, color);
     } else {
-        hagl_draw_line(surface, x0, y0, x0 + w, y0, color);
+        hagl_draw_line(_surface, x0, y0, x0 + w, y0, color);
     }
 }

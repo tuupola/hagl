@@ -64,7 +64,7 @@ hagl_draw_line(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t
     err = (dx > dy ? dx : -dy) / 2;
 
     while (1) {
-        hagl_put_pixel(surface, x0, y0, color);
+        hagl_put_pixel(_surface, x0, y0, color);
 
         if (x0 == x1 && y0 == y1) {
             break;

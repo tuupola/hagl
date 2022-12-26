@@ -37,7 +37,7 @@ SPDX-License-Identifier: MIT
 #include "hagl/hline.h"
 
 void
-hagl_draw_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color)
+hagl_draw_ellipse(void const *_surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color)
 {
     int16_t wx, wy;
     int32_t xa, ya;
@@ -45,8 +45,8 @@ hagl_draw_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_
     int32_t asq = a * a;
     int32_t bsq = b * b;
 
-    hagl_put_pixel(surface, x0, y0 + b, color);
-    hagl_put_pixel(surface, x0, y0 - b, color);
+    hagl_put_pixel(_surface, x0, y0 + b, color);
+    hagl_put_pixel(_surface, x0, y0 - b, color);
 
     wx = 0;
     wy = b;
@@ -70,14 +70,14 @@ hagl_draw_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_
             break;
         }
 
-        hagl_put_pixel(surface, x0 + wx, y0 - wy, color);
-        hagl_put_pixel(surface, x0 - wx, y0 - wy, color);
-        hagl_put_pixel(surface, x0 + wx, y0 + wy, color);
-        hagl_put_pixel(surface, x0 - wx, y0 + wy, color);
+        hagl_put_pixel(_surface, x0 + wx, y0 - wy, color);
+        hagl_put_pixel(_surface, x0 - wx, y0 - wy, color);
+        hagl_put_pixel(_surface, x0 + wx, y0 + wy, color);
+        hagl_put_pixel(_surface, x0 - wx, y0 + wy, color);
     }
 
-    hagl_put_pixel(surface, x0 + a, y0, color);
-    hagl_put_pixel(surface, x0 - a, y0, color);
+    hagl_put_pixel(_surface, x0 + a, y0, color);
+    hagl_put_pixel(_surface, x0 - a, y0, color);
 
     wx = a;
     wy = 0;
@@ -102,15 +102,15 @@ hagl_draw_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_
             break;
         }
 
-        hagl_put_pixel(surface, x0 + wx, y0 - wy, color);
-        hagl_put_pixel(surface, x0 - wx, y0 - wy, color);
-        hagl_put_pixel(surface, x0 + wx, y0 + wy, color);
-        hagl_put_pixel(surface, x0 - wx, y0 + wy, color);
+        hagl_put_pixel(_surface, x0 + wx, y0 - wy, color);
+        hagl_put_pixel(_surface, x0 - wx, y0 - wy, color);
+        hagl_put_pixel(_surface, x0 + wx, y0 + wy, color);
+        hagl_put_pixel(_surface, x0 - wx, y0 + wy, color);
     }
 }
 
 void
-hagl_fill_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color)
+hagl_fill_ellipse(void const *_surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color)
 {
     int16_t wx, wy;
     int32_t xa, ya;
@@ -118,8 +118,8 @@ hagl_fill_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_
     int32_t asq = a * a;
     int32_t bsq = b * b;
 
-    hagl_put_pixel(surface, x0, y0 + b, color);
-    hagl_put_pixel(surface, x0, y0 - b, color);
+    hagl_put_pixel(_surface, x0, y0 + b, color);
+    hagl_put_pixel(_surface, x0, y0 - b, color);
 
     wx = 0;
     wy = b;
@@ -143,11 +143,11 @@ hagl_fill_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_
             break;
         }
 
-        hagl_draw_hline(surface, x0 - wx, y0 - wy, wx * 2, color);
-        hagl_draw_hline(surface, x0 - wx, y0 + wy, wx * 2, color);
+        hagl_draw_hline(_surface, x0 - wx, y0 - wy, wx * 2, color);
+        hagl_draw_hline(_surface, x0 - wx, y0 + wy, wx * 2, color);
     }
 
-    hagl_draw_hline(surface, x0 - a, y0, a * 2, color);
+    hagl_draw_hline(_surface, x0 - a, y0, a * 2, color);
 
     wx = a;
     wy = 0;
@@ -172,7 +172,7 @@ hagl_fill_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_
             break;
         }
 
-        hagl_draw_hline(surface, x0 - wx, y0 - wy, wx * 2, color);
-        hagl_draw_hline(surface, x0 - wx, y0 + wy, wx * 2, color);
+        hagl_draw_hline(_surface, x0 - wx, y0 - wy, wx * 2, color);
+        hagl_draw_hline(_surface, x0 - wx, y0 + wy, wx * 2, color);
     }
 }

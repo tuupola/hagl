@@ -55,7 +55,7 @@ extern "C" {
  * @param color
  */
 void
-hagl_put_pixel(void const *surface, int16_t x0, int16_t y0, color_t color);
+hagl_put_pixel(void const *_surface, int16_t x0, int16_t y0, color_t color);
 
 /**
  * Get a single pixel
@@ -69,7 +69,7 @@ hagl_put_pixel(void const *surface, int16_t x0, int16_t y0, color_t color);
  * @return color at the given location
  */
 color_t
-hagl_get_pixel(void const *surface, int16_t x0, int16_t y0);
+hagl_get_pixel(void const *_surface, int16_t x0, int16_t y0);
 
 #ifdef __cplusplus
 }

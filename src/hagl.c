@@ -59,9 +59,9 @@ hagl_clear(void *_surface)
     uint16_t x1 = surface->clip.x1;
     uint16_t y1 = surface->clip.y1;
 
-    hagl_set_clip(surface, 0, 0, surface->width - 1, surface->height - 1);
-    hagl_fill_rectangle(surface, 0, 0, surface->width - 1, surface->height - 1, 0x00);
-    hagl_set_clip(surface, x0, y0, x1, y1);
+    hagl_set_clip(_surface, 0, 0, surface->width - 1, surface->height - 1);
+    hagl_fill_rectangle(_surface, 0, 0, surface->width - 1, surface->height - 1, 0x00);
+    hagl_set_clip(_surface, x0, y0, x1, y1);
 }
 
 hagl_backend_t *

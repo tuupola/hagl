@@ -56,7 +56,7 @@ extern "C" {
  * @param color
  */
 void
-hagl_draw_vline_xyh(void const *surface, int16_t x0, int16_t y0, uint16_t height, color_t color);
+hagl_draw_vline_xyh(void const *_surface, int16_t x0, int16_t y0, uint16_t height, color_t color);
 
 /**
  * Draw a vertical line
@@ -70,9 +70,9 @@ hagl_draw_vline_xyh(void const *surface, int16_t x0, int16_t y0, uint16_t height
  * @param color
  */
 static inline void
-hagl_draw_vline_xyy(void const *surface, int16_t x0, int16_t y0, int16_t y1, color_t color)
+hagl_draw_vline_xyy(void const *_surface, int16_t x0, int16_t y0, int16_t y1, color_t color)
 {
-    hagl_draw_vline_xyh(surface, x0, y0, abs(y1 - y0) + 1, color);
+    hagl_draw_vline_xyh(_surface, x0, y0, abs(y1 - y0) + 1, color);
 }
 
 /**
@@ -87,9 +87,9 @@ hagl_draw_vline_xyy(void const *surface, int16_t x0, int16_t y0, int16_t y1, col
  * @param color
  */
 static inline void
-hagl_draw_vline(void const *surface, int16_t x0, int16_t y0, uint16_t height, color_t color)
+hagl_draw_vline(void const *_surface, int16_t x0, int16_t y0, uint16_t height, color_t color)
 {
-    hagl_draw_vline_xyh(surface, x0, y0, height, color);
+    hagl_draw_vline_xyh(_surface, x0, y0, height, color);
 }
 
 

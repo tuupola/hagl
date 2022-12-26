@@ -75,10 +75,10 @@ hagl_draw_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, int16_t x
     uint16_t width = x1 - x0 + 1;
     uint16_t height = y1 - y0 + 1;
 
-    hagl_draw_hline(surface, x0, y0, width, color);
-    hagl_draw_hline(surface, x0, y1, width, color);
-    hagl_draw_vline(surface, x0, y0, height, color);
-    hagl_draw_vline(surface, x1, y0, height, color);
+    hagl_draw_hline(_surface, x0, y0, width, color);
+    hagl_draw_hline(_surface, x0, y1, width, color);
+    hagl_draw_vline(_surface, x0, y0, height, color);
+    hagl_draw_vline(_surface, x1, y0, height, color);
 }
 
 void

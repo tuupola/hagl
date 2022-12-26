@@ -62,17 +62,17 @@ hagl_get_pixel(void const *_surface, int16_t x0, int16_t y0)
     const hagl_surface_t *surface = _surface;
     /* x0 or y0 is before the edge, nothing to do. */
     if ((x0 < surface->clip.x0) || (y0 < surface->clip.y0))  {
-        return hagl_color(surface, 0, 0, 0);
+        return hagl_color(_surface, 0, 0, 0);
     }
 
     /* x0 or y0 is after the edge, nothing to do. */
     if ((x0 > surface->clip.x1) || (y0 > surface->clip.y1)) {
-        return hagl_color(surface, 0, 0, 0);
+        return hagl_color(_surface, 0, 0, 0);
     }
 
     if (surface->get_pixel) {
         return surface->get_pixel(&surface, x0, y0);
     }
 
-    return hagl_color(surface, 0, 0, 0);
+    return hagl_color(_surface, 0, 0, 0);
 }

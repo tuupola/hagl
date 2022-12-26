@@ -59,7 +59,7 @@ hagl_blit_xy(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source
             for (uint16_t y = 0; y < source->height; y++) {
                 for (uint16_t x = 0; x < source->width; x++) {
                     color = *(ptr++);
-                    hagl_put_pixel(surface, x0 + x, y0 + y, color);
+                    hagl_put_pixel(_surface, x0 + x, y0 + y, color);
                 }
             }
         } else {
@@ -73,7 +73,7 @@ hagl_blit_xy(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source
         for (uint16_t y = 0; y < source->height; y++) {
             for (uint16_t x = 0; x < source->width; x++) {
                 color = *(ptr++);
-                hagl_put_pixel(surface, x0 + x, y0 + y, color);
+                hagl_put_pixel(_surface, x0 + x, y0 + y, color);
             }
         }
     }
@@ -97,7 +97,7 @@ hagl_blit_xywh(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint1
                 uint16_t px = ((x * x_ratio) >> 16);
                 uint16_t py = ((y * y_ratio) >> 16);
                 color = ptr[(uint8_t)((py * source->width) + px)];
-                hagl_put_pixel(surface, x0 + x, y0 + y, color);
+                hagl_put_pixel(_surface, x0 + x, y0 + y, color);
             }
         }
     }

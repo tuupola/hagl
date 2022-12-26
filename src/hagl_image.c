@@ -86,8 +86,9 @@ tjpgd_data_writer(JDEC *decoder, void *bitmap, JRECT *rectangle)
 }
 
 uint32_t
-hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char *filename)
+hagl_load_image(void const *_surface, int16_t x0, int16_t y0, const char *filename)
 {
+    const hagl_surface_t *surface = _surface;
     uint8_t work[3100];
     JDEC decoder;
     JRESULT result;
@@ -104,7 +105,7 @@ hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char *filenam
     result = jd_prepare(&decoder, tjpgd_data_reader, work, 3100, (void *)&device);
     if (result == JDR_OK) {
         /* Ugly hack to get rid of DISPLAY_DEPTH macro */
-        hagl_display_depth = ((hagl_surface_t *)surface)->depth;
+        hagl_display_depth = surface->depth;
         result = jd_decomp(&decoder, tjpgd_data_writer, 0);
         if (JDR_OK != result) {
             fclose(device.fp);

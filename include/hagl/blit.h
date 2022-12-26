@@ -56,7 +56,7 @@ extern "C" {
  * @param source pointer to a bitmap
  */
 void
-hagl_blit_xy(void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *source);
+hagl_blit_xy(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source);
 
 
 /**
@@ -70,9 +70,9 @@ hagl_blit_xy(void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *source)
  * @param source pointer to a bitmap
  */
 static void inline
-hagl_blit(void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *source)
+hagl_blit(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source)
 {
-    hagl_blit_xy(surface, x0, y0, source);
+    hagl_blit_xy(_surface, x0, y0, source);
 };
 
 /**
@@ -88,7 +88,7 @@ hagl_blit(void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *source)
  * @param source pointer to a bitmap
  */
 void
-hagl_blit_xywh(void const *surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source);
+hagl_blit_xywh(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source);
 
 /**
  * Blit and scale a bitmap to a surface
@@ -103,9 +103,9 @@ hagl_blit_xywh(void const *surface, uint16_t x0, uint16_t y0, uint16_t w, uint16
  * @param source pointer to a bitmap
  */
 static void inline
-hagl_blit_xyxy(void const *surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, hagl_bitmap_t *source)
+hagl_blit_xyxy(void const *_surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, hagl_bitmap_t *source)
 {
-    hagl_blit_xywh(surface, x0, y0, abs(x1 - x0) + 1, abs(y1 - y0) + 1, source);
+    hagl_blit_xywh(_surface, x0, y0, abs(x1 - x0) + 1, abs(y1 - y0) + 1, source);
 };
 
 #ifdef __cplusplus
