@@ -55,6 +55,10 @@ typedef struct _hagl_char_style_t {
     color_t background_color;
     color_t foreground_color;
     hagl_char_mode_t mode;
+    uint16_t scale_x_numerator;
+    uint16_t scale_x_denominator;
+    uint16_t scale_y_numerator;
+    uint16_t scale_y_denominator;
 } hagl_char_style_t;
 
 /**

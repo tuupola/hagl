@@ -133,9 +133,22 @@ hagl_put_char_styled(void const *_surface, wchar_t code, int16_t x0, int16_t y0,
         glyph.buffer += glyph.pitch;
     }
 
-    hagl_blit(_surface, x0, y0, &bitmap);
-
-    return bitmap.width;
+    if (
+        style->scale_x_numerator <= 1 && style->scale_x_denominator <= 1 
+        && style->scale_y_numerator <= 1 && style->scale_y_denominator <= 1
+    ) {
+        hagl_blit(_surface, x0, y0, &bitmap);
+        return bitmap.width;
+    } else {
+        hagl_blit_xywh(
+            _surface, 
+            x0, y0, 
+            bitmap.width  * style->scale_x_numerator / style->scale_x_denominator, 
+            bitmap.height * style->scale_y_numerator / style->scale_y_denominator, 
+            &bitmap
+        );
+        return bitmap.width * style->scale_x_numerator / style->scale_x_denominator;
+    }
 }
 
 uint8_t
