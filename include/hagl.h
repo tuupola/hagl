@@ -62,8 +62,6 @@ extern "C" {
 
 #define ABS(x)  ((x) > 0 ? (x) : -(x))
 
-#define HAGL_CHAR_BUFFER_SIZE    (16 * 16 * DISPLAY_DEPTH / 2)
-
 #define HAGL_OK                  (0)
 #define HAGL_ERR_GENERAL         (1)
 #define HAGL_ERR_FILE_IO         (2)

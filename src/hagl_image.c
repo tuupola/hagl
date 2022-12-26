@@ -61,6 +61,9 @@ tjpgd_data_reader(JDEC *decoder, uint8_t *buffer, uint16_t size)
     }
 }
 
+/* Ugly hack to get rid of DISPLAY_DEPTH macro */
+static uint8_t hagl_display_depth;
+
 static uint16_t
 tjpgd_data_writer(JDEC *decoder, void *bitmap, JRECT *rectangle)
 {
@@ -71,9 +74,9 @@ tjpgd_data_writer(JDEC *decoder, void *bitmap, JRECT *rectangle)
     hagl_bitmap_t block = {
         .width = width,
         .height = height,
-        .depth = DISPLAY_DEPTH,
-        .pitch = width * (DISPLAY_DEPTH / 8),
-        .size =  width * (DISPLAY_DEPTH / 8) * height,
+        .depth = hagl_display_depth,
+        .pitch = width * (hagl_display_depth / 8),
+        .size =  width * (hagl_display_depth / 8) * height,
         .buffer = (uint8_t *)bitmap
     };
 
@@ -100,6 +103,8 @@ hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char *filenam
     }
     result = jd_prepare(&decoder, tjpgd_data_reader, work, 3100, (void *)&device);
     if (result == JDR_OK) {
+        /* Ugly hack to get rid of DISPLAY_DEPTH macro */
+        hagl_display_depth = ((hagl_surface_t *)surface)->depth;
         result = jd_decomp(&decoder, tjpgd_data_writer, 0);
         if (JDR_OK != result) {
             fclose(device.fp);

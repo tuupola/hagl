@@ -34,10 +34,10 @@ SPDX-License-Identifier: MIT
 
 #include <stdint.h>
 
+#include "hagl/surface.h"
 #include "hagl/color.h"
+#include "hagl/line.h"
 #include "hagl/hline.h"
-/* TODO: remove after getting DISPLAY_HEIGHT from surface */
-#include "hagl.h"
 
 void
 hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, color_t color)
@@ -75,7 +75,7 @@ hagl_fill_polygon(void const *surface, int16_t amount, int16_t *vertices, color_
     float x1;
     float y1;
 
-    int16_t miny = DISPLAY_HEIGHT;
+    int16_t miny = ((hagl_surface_t *)surface)->height;
     int16_t maxy = 0;
 
     for (uint8_t i = 0; i < amount; i++) {
