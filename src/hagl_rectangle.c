@@ -123,7 +123,7 @@ hagl_fill_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, int16_t x
             /* Already clipped so can call HAL directly. */
             surface->hline(&surface, x0, y0 + i, width, color);
         } else {
-            hagl_draw_hline(surface, x0, y0 + i, width, color);
+            hagl_draw_hline(_surface, x0, y0 + i, width, color);
         }
     }
 }
@@ -165,10 +165,10 @@ hagl_draw_rounded_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, i
     height = y1 - y0 + 1;
     r = MIN(r, MIN(width / 2, height / 2));
 
-    hagl_draw_hline(surface, x0 + r, y0, width - 2 * r, color);
-    hagl_draw_hline(surface, x0 + r, y1, width - 2 * r, color);
-    hagl_draw_vline(surface, x0, y0 + r, height - 2 * r, color);
-    hagl_draw_vline(surface, x1, y0 + r, height - 2 * r, color);
+    hagl_draw_hline(_surface, x0 + r, y0, width - 2 * r, color);
+    hagl_draw_hline(_surface, x0 + r, y1, width - 2 * r, color);
+    hagl_draw_vline(_surface, x0, y0 + r, height - 2 * r, color);
+    hagl_draw_vline(_surface, x1, y0 + r, height - 2 * r, color);
 
     x = 0;
     y = r;
@@ -185,20 +185,20 @@ hagl_draw_rounded_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, i
         }
 
         /* Top right */
-        hagl_put_pixel(surface, x1 - r + x, y0 + r - y, color);
-        hagl_put_pixel(surface, x1 - r + y, y0 + r - x, color);
+        hagl_put_pixel(_surface, x1 - r + x, y0 + r - y, color);
+        hagl_put_pixel(_surface, x1 - r + y, y0 + r - x, color);
 
         /* Top left */
-        hagl_put_pixel(surface, x0 + r - x, y0 + r - y, color);
-        hagl_put_pixel(surface, x0 + r - y, y0 + r - x, color);
+        hagl_put_pixel(_surface, x0 + r - x, y0 + r - y, color);
+        hagl_put_pixel(_surface, x0 + r - y, y0 + r - x, color);
 
         /* Bottom right */
-        hagl_put_pixel(surface, x1 - r + x, y1 - r + y, color);
-        hagl_put_pixel(surface, x1 - r + y, y1 - r + x, color);
+        hagl_put_pixel(_surface, x1 - r + x, y1 - r + y, color);
+        hagl_put_pixel(_surface, x1 - r + y, y1 - r + x, color);
 
         /* Bottom left */
-        hagl_put_pixel(surface, x0 + r - x, y1 - r + y, color);
-        hagl_put_pixel(surface, x0 + r - y, y1 - r + x, color);
+        hagl_put_pixel(_surface, x0 + r - x, y1 - r + y, color);
+        hagl_put_pixel(_surface, x0 + r - y, y1 - r + x, color);
     }
 };
 
@@ -258,28 +258,28 @@ hagl_fill_rounded_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, i
         rx0 = x0 + r - y;
         rx1 = x1 - r + y;
         width = rx1 -  rx0;
-        hagl_draw_hline(surface, rx0, ry0, width, color);
+        hagl_draw_hline(_surface, rx0, ry0, width, color);
 
         ry0 = y0 + r - y;
         rx0 = x0 + r - x;
         rx1 = x1 - r + x;
         width = rx1 -  rx0;
-        hagl_draw_hline(surface, rx0, ry0, width, color);
+        hagl_draw_hline(_surface, rx0, ry0, width, color);
 
         /* Bottom */
         ry0 = y1 - r + y;
         rx0 = x0 + r - x;
         rx1 = x1 - r + x;
         width = rx1 -  rx0;
-        hagl_draw_hline(surface, rx0, ry0, width, color);
+        hagl_draw_hline(_surface, rx0, ry0, width, color);
 
         ry0 = y1 - r + x;
         rx0 = x0 + r - y;
         rx1 = x1 - r + y;
         width = rx1 -  rx0;
-        hagl_draw_hline(surface, rx0, ry0, width, color);
+        hagl_draw_hline(_surface, rx0, ry0, width, color);
     }
 
     /* Center */
-    hagl_fill_rectangle_xyxy(surface, x0, y0 + r, x1, y1 - r, color);
+    hagl_fill_rectangle_xyxy(_surface, x0, y0 + r, x1, y1 - r, color);
 };
