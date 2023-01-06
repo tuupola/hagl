@@ -95,22 +95,6 @@ for (uint16_t i = 1; i < 1000; i++) {
 
 ![Random lines](https://www.appelsiini.net/img/2020/pod-draw-line.png)
 
-### Draw a line
-
-```c
-for (uint16_t i = 1; i < 1000; i++) {
-    int16_t x0 = rand() % DISPLAY_WIDTH;
-    int16_t y0 = rand() % DISPLAY_HEIGHT;
-    int16_t x1 = rand() % DISPLAY_WIDTH;
-    int16_t y1 = rand() % DISPLAY_HEIGHT;
-    color_t color = rand() % 0xffff;
-
-    hagl_draw_line(display, x0, y0, x1, y1, color);
-}
-```
-
-![Random lines](https://www.appelsiini.net/img/2020/pod-draw-line.png)
-
 ### Draw a horizontal line
 
 ```c
