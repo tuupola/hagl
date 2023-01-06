@@ -71,9 +71,9 @@ tjpgd_data_writer(JDEC *decoder, void *bitmap, JRECT *rectangle)
     hagl_bitmap_t block = {
         .width = width,
         .height = height,
-        .depth = DISPLAY_DEPTH,
-        .pitch = width * (DISPLAY_DEPTH / 8),
-        .size =  width * (DISPLAY_DEPTH / 8) * height,
+        .depth = device->surface->depth,
+        .pitch = width * (device->surface->depth / 8),
+        .size =  width * (device->surface->depth / 8) * height,
         .buffer = (uint8_t *)bitmap
     };
 
