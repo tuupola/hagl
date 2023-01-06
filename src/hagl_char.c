@@ -41,7 +41,7 @@ SPDX-License-Identifier: MIT
 uint8_t
 hagl_get_glyph(void const *_surface, wchar_t code, color_t color, hagl_bitmap_t *bitmap, const uint8_t *font)
 {
-    hagl_surface_t *surface = _surface;
+    const hagl_surface_t *surface = _surface;
     uint8_t status, set;
     fontx_glyph_t glyph;
 
@@ -78,7 +78,7 @@ hagl_get_glyph(void const *_surface, wchar_t code, color_t color, hagl_bitmap_t 
 uint8_t
 hagl_put_char(void const *_surface, wchar_t code, int16_t x0, int16_t y0, color_t color, const uint8_t *font)
 {
-    hagl_surface_t *surface = _surface;
+    const hagl_surface_t *surface = _surface;
     uint8_t set, status;
     color_t buffer[HAGL_CHAR_BUFFER_SIZE];
     hagl_bitmap_t bitmap;
