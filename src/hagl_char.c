@@ -100,6 +100,7 @@ hagl_put_char_styled(void const *_surface, wchar_t code, int16_t x0, int16_t y0,
     hagl_bitmap_init(&bitmap,  glyph.width, glyph.height, surface->depth, (uint8_t *)buffer);
     hagl_color_t *ptr = (hagl_color_t *) bitmap.buffer;
 
+    color_t *ptr = (color_t *) bitmap.buffer;
     for (uint8_t y = 0; y < glyph.height; y++) {
         for (uint8_t x = 0; x < glyph.width; x++) {
             set = *(glyph.buffer + x / 8) & (0x80 >> (x % 8));
@@ -117,6 +118,7 @@ hagl_put_char_styled(void const *_surface, wchar_t code, int16_t x0, int16_t y0,
                     *ptr = background_color;
                 }
             }
+            ptr++;
             ptr++;
         }
         glyph.buffer += glyph.pitch;
@@ -178,10 +180,12 @@ hagl_put_text_styled(void const *_surface, const wchar_t *str, int16_t x0, int16
     fontx_meta_t meta;
 
     status = fontx_meta(&meta, style->font);
+    status = fontx_meta(&meta, style->font);
     if (0 != status) {
         return 0;
     }
 
+    while (*str != 0) {
     while (*str != 0) {
         temp = *str++;
         if (13 == temp || 10 == temp) {
@@ -192,6 +196,7 @@ hagl_put_text_styled(void const *_surface, const wchar_t *str, int16_t x0, int16
         }
     }
 
+    /* NB: result is junk if text wrapped through CR or LF */
     /* NB: result is junk if text wrapped through CR or LF */
     return x0 - original;
 }
