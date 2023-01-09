@@ -369,7 +369,7 @@ hagl_fill_polygon(display, 5, vertices, color);
 
 ### Put a single char
 
-The library supports Unicode fonts in fontx format. It only includes three fonts by default. You can find more at [tuupola/embedded-fonts](https://github.com/tuupola/embedded-fonts) repository.
+The library supports Unicode fonts in fontx format. It only includes three fonts by default. You can find more at [tuupola/embedded-fonts](https://github.com/tuupola/embedded-fonts) and [CHiPs44/fontx2-fonts](https://github.com/CHiPs44/fontx2-fonts) repositories.
 
 ```c
 for (uint16_t i = 1; i < 10000; i++) {
