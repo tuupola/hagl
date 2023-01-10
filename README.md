@@ -10,7 +10,7 @@ This can still be considered work in progress. API should be 90% stable.
 
 ## Backend
 
-To use HAGL you must provide a backend. The backend must provide atleast a function for putting a pixel. If nothing else is provided all higher level graphical functions will use this function to draw the primitives. While proper documentation is lacking see the example backend implementations for [GD](https://github.com/tuupola/hagl_gd), [SDL2](https://github.com/tuupola/hagl_sdl2), [ESP-IDF (Ilitek, Sitronix, Galaxycore)](https://github.com/tuupola/hagl_esp_mipi), [ESP-IDF (Solomon)](https://github.com/tuupola/hagl_esp_solomon), [Nuclei RISC-V SDK](https://github.com/tuupola/hagl_gd32v_mipi) and [Raspberry Pi Pico SDK](https://github.com/tuupola/hagl_pico_mipi).
+To use HAGL you must provide a backend. The backend must provide atleast a function for putting a pixel. If nothing else is provided all higher level graphical functions will use this function to draw the primitives. While proper documentation is lacking see the example backend implementations for [GD](https://github.com/tuupola/hagl_gd), [SDL2](https://github.com/tuupola/hagl_sdl2), [ESP-IDF (Ilitek, Sitronix, Galaxycore)](https://github.com/tuupola/hagl_esp_mipi), [ESP-IDF (Solomon)](https://github.com/tuupola/hagl_esp_solomon), [Nuclei RISC-V SDK](https://github.com/tuupola/hagl_gd32v_mipi), [Raspberry Pi Pico SDK](https://github.com/tuupola/hagl_pico_mipi) and [Raspberry Pi Pico VGA board](https://github.com/CHiPs44/hagl_pico_vgaboard).
 
 ## Usage
 
@@ -366,7 +366,7 @@ hagl_fill_polygon(display, 5, vertices, color);
 
 ### Put a single char
 
-The library supports Unicode fonts in fontx format. It only includes three fonts by default. You can find more at [tuupola/embedded-fonts](https://github.com/tuupola/embedded-fonts) repository.
+The library supports Unicode fonts in fontx format. It only includes three fonts by default. You can find more at [tuupola/embedded-fonts](https://github.com/tuupola/embedded-fonts) and [CHiPs44/fontx2-fonts](https://github.com/CHiPs44/fontx2-fonts) repositories.
 
 ```c
 for (uint16_t i = 1; i < 10000; i++) {
