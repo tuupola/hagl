@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 - Initialize character buffer only when used and move it to heap ([#101](https://github.com/tuupola/hagl/pull/101), [#44](https://github.com/tuupola/hagl/issues/44)) .
+- Overflow bug when resizing big bitmaps ([#102](https://github.com/tuupola/hagl/pull/102), [#49](https://github.com/tuupola/hagl/issues/49)) .
 
 ### Added
 - New `hagl_bitmap_init()` function ([#98](https://github.com/tuupola/hagl/pull/98)).
