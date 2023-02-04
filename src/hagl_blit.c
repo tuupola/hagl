@@ -96,7 +96,7 @@ hagl_blit_xywh(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint1
             for (uint16_t x = 0; x < w; x++) {
                 uint16_t px = ((x * x_ratio) >> 16);
                 uint16_t py = ((y * y_ratio) >> 16);
-                color = ptr[((py * source->width) + px)];
+                color = *(ptr + (py * source->width) + px);
                 hagl_put_pixel(surface, x0 + x, y0 + y, color);
             }
         }
