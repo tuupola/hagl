@@ -78,9 +78,9 @@ hagl_get_glyph(void const *_surface, wchar_t code, color_t color, hagl_bitmap_t 
 uint8_t
 hagl_put_char(void const *_surface, wchar_t code, int16_t x0, int16_t y0, color_t color, const uint8_t *font)
 {
+    static uint8_t *buffer = NULL;
     const hagl_surface_t *surface = _surface;
     uint8_t set, status;
-    color_t buffer[HAGL_CHAR_BUFFER_SIZE];
     hagl_bitmap_t bitmap;
     fontx_glyph_t glyph;
 
@@ -88,6 +88,11 @@ hagl_put_char(void const *_surface, wchar_t code, int16_t x0, int16_t y0, color_
 
     if (0 != status) {
         return 0;
+    }
+
+    /* Initialize character buffer when first called. */
+    if (NULL == buffer) {
+        buffer = calloc(HAGL_CHAR_BUFFER_SIZE, sizeof(uint8_t));
     }
 
     hagl_bitmap_init(&bitmap,  glyph.width, glyph.height, surface->depth, (uint8_t *)buffer);
