@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## [0.7.0-dev](https://github.com/tuupola/hagl/compare/0.6.0...master) - unreleased
+
+### Added
+
+- New `hagl_bitmap_init()` function ([#98](https://github.com/tuupola/hagl/pull/98)).
+
+### Removed
+
+- Legacy `bitmap_init()` function ([#98](https://github.com/tuupola/hagl/pull/98)).
+
+
 ## [0.6.0](https://github.com/tuupola/hagl/compare/0.5.0...0.6.0) - 2023-03-04
 
 ### Changed
