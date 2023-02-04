@@ -233,11 +233,15 @@ scale_blit(void *_dst, int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth, voi
 
 /* Initialise bitmap with given buffer. */
 void
-bitmap_init(hagl_bitmap_t *bitmap, uint8_t *buffer)
+hagl_bitmap_init(hagl_bitmap_t *bitmap, int16_t width, uint16_t height, uint8_t depth, void *buffer)
 {
+    bitmap->width = width;
+    bitmap->height = height;
+    bitmap->depth = depth;
+    bitmap->buffer = (uint8_t *) buffer;
+
     bitmap->pitch = bitmap->width * (bitmap->depth / 8);
     bitmap->size = bitmap->pitch * bitmap->height;
-    bitmap->buffer = buffer;
 
     bitmap->clip.x0 = 0;
     bitmap->clip.y0 = 0;
