@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## [0.6.0-dev](https://github.com/tuupola/hagl/compare/0.5.0...master)
+## [0.6.0](https://github.com/tuupola/hagl/compare/0.5.0...0.6.0) - 2023-02-04
 
 ### Changed
 - You must now pass drawing surface to all drawing functions ([#65](https://github.com/tuupola/hagl/pull/65)).
@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file, in reverse 
 ### Removed
 
 - Remove `hagl_clear_clip_window()` ([#88](https://github.com/tuupola/hagl/pull/88)).
+- Internal use of `DISPLAY_*` defines ([#94](https://github.com/tuupola/hagl/pull/94)).
 
 
 ### Added
@@ -27,7 +28,7 @@ All notable changes to this project will be documented in this file, in reverse 
     fps_update(&fps);
     fps_reset(&fps);
     ```
-- Possibility to use multiple aps counter ([#69](https://github.com/tuupola/hagl/pull/70)).
+- Possibility to use multiple aps counters ([#69](https://github.com/tuupola/hagl/pull/70)).
     ```c
     aps_instance_t aps;
     aps_init(&aps);
