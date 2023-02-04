@@ -17,7 +17,7 @@ if (ESP_PLATFORM)
             "src/hagl_rectangle.c"
             "src/hagl_triangle.c"
             "src/hagl_vline.c"
-            "src/bitmap.c"
+            "src/hagl_bitmap.c"
             "src/fontx.c"
             "src/hsl.c"
             "src/rgb565.c"
@@ -48,7 +48,7 @@ else()
         ${CMAKE_CURRENT_LIST_DIR}/src/hagl_rectangle.c
         ${CMAKE_CURRENT_LIST_DIR}/src/hagl_triangle.c
         ${CMAKE_CURRENT_LIST_DIR}/src/hagl_vline.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/bitmap.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/hagl_bitmap.c
         ${CMAKE_CURRENT_LIST_DIR}/src/fontx.c
         ${CMAKE_CURRENT_LIST_DIR}/src/hsl.c
         ${CMAKE_CURRENT_LIST_DIR}/src/rgb565.c

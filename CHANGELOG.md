@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ## [0.7.0-dev](https://github.com/tuupola/hagl/compare/0.6.0...master) - unreleased
 
+### Changed
+- Rename `bitmap.c` to `hagl_bitmap.c` ([#100](https://github.com/tuupola/hagl/pull/100)).
+
 ### Added
 - New `hagl_bitmap_init()` function ([#98](https://github.com/tuupola/hagl/pull/98)).
 
