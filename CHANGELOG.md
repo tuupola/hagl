@@ -4,14 +4,12 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ## [0.7.0-dev](https://github.com/tuupola/hagl/compare/0.6.0...master) - unreleased
 
-### Changed
-- Rename bitmap_size() to hagl_bitmap_size() ([#99](https://github.com/tuupola/hagl/pull/99)).
-
 ### Added
 - New `hagl_bitmap_init()` function ([#98](https://github.com/tuupola/hagl/pull/98)).
 
 ### Removed
 - Legacy `bitmap_init()` function ([#98](https://github.com/tuupola/hagl/pull/98)).
+- Legacy `bitmap_size()` function ([#99](https://github.com/tuupola/hagl/pull/99)).
 
 
 ## [0.6.0](https://github.com/tuupola/hagl/compare/0.5.0...0.6.0) - 2023-03-04

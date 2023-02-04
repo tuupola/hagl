@@ -70,12 +70,6 @@ typedef struct {
 void
 hagl_bitmap_init(hagl_bitmap_t *bitmap, int16_t width, uint16_t height, uint8_t depth, void *buffer);
 
-static inline uint32_t
-hagl_bitmap_size(hagl_bitmap_t *bitmap)
-{
-    return bitmap->width * (bitmap->depth / 8) * bitmap->height;
-};
-
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
