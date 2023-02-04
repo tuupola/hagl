@@ -251,3 +251,27 @@ bitmap_init(hagl_bitmap_t *bitmap, uint8_t *buffer)
     bitmap->blit = blit;
     bitmap->scale_blit = scale_blit;
 }
+
+void
+hagl_bitmap_init(hagl_bitmap_t *bitmap, int16_t width, uint16_t height, uint8_t depth, void *buffer)
+{
+    bitmap->width = width;
+    bitmap->height = height;
+    bitmap->depth = depth;
+    bitmap->buffer = (uint8_t *) buffer;
+
+    bitmap->pitch = bitmap->width * (bitmap->depth / 8);
+    bitmap->size = bitmap->pitch * bitmap->height;
+
+    bitmap->clip.x0 = 0;
+    bitmap->clip.y0 = 0;
+    bitmap->clip.x1 = bitmap->width - 1;
+    bitmap->clip.y1 = bitmap->height - 1;
+
+    bitmap->put_pixel = put_pixel;
+    bitmap->get_pixel = get_pixel;
+    bitmap->hline = hline;
+    bitmap->vline = vline;
+    bitmap->blit = blit;
+    bitmap->scale_blit = scale_blit;
+}
