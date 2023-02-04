@@ -42,13 +42,6 @@ SPDX-License-Identifier: MIT
 #include <stdio.h>
 #include "hagl_hal.h"
 
-/* Get bitmap size in bytes. */
-uint32_t
-bitmap_size(hagl_bitmap_t *bitmap)
-{
-    return bitmap->width * (bitmap->depth / 8) * bitmap->height;
-};
-
 static void
 put_pixel(void *_bitmap, int16_t x0, int16_t y0, color_t color)
 {
