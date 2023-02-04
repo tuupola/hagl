@@ -90,11 +90,7 @@ hagl_put_char(void const *_surface, wchar_t code, int16_t x0, int16_t y0, color_
         return 0;
     }
 
-    bitmap.width = glyph.width,
-    bitmap.height = glyph.height,
-    bitmap.depth = surface->depth,
-
-    bitmap_init(&bitmap, (uint8_t *)buffer);
+    hagl_bitmap_init(&bitmap,  glyph.width, glyph.height, surface->depth, (uint8_t *)buffer);
 
     color_t *ptr = (color_t *) bitmap.buffer;
 
