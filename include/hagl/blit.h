@@ -36,6 +36,7 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_BLIT_H
 #define _HAGL_BLIT_H
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -46,67 +47,84 @@ extern "C" {
 #endif /* __cplusplus */
 
 /**
- * Blit a bitmap to a surface
+ * Blit a bitmap to a _surface, with optional transparency
  *
  * Output will be clipped to the current clip window.
  *
- * @param surface
+ * @param _surface
  * @param x0
  * @param y0
  * @param source pointer to a bitmap
+ * @param is_transparent
+ * @param transparent_color
  */
 void
-hagl_blit_xy(void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *source);
+hagl_blit_xy_extended(void const *_surface, uint16_t x0, uint16_t y0, hagl_bitmap_t *source, bool is_transparent, color_t transparent_color);
 
-
-/**
- * Blit a bitmap to a surface
- *
- * Output will be clipped to the current clip window.
- *
- * @param surface
- * @param x0
- * @param y0
- * @param source pointer to a bitmap
- */
 static void inline
-hagl_blit(void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *source)
+hagl_blit(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source)
 {
-    hagl_blit_xy(surface, x0, y0, source);
+    hagl_blit_xy_extended(_surface, x0, y0, source, false, 0);
+};
+
+static void inline
+hagl_blit_xy(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source)
+{
+    hagl_blit_xy_extended(_surface, x0, y0, source, false, 0);
+};
+
+static void inline
+hagl_blit_transparent(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source, color_t transparent_color)
+{
+    hagl_blit_xy_extended(_surface, x0, y0, source, true, transparent_color);
+};
+
+static void inline
+hagl_blit_xy_transparent(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source, color_t transparent_color)
+{
+    hagl_blit_xy_extended(_surface, x0, y0, source, true, transparent_color);
+};
+
+void
+hagl_blit_xywh_extended(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source, bool is_transparent, color_t transparent_color);
+
+static void inline
+hagl_blit_xywh(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source)
+{
+    hagl_blit_xywh_extended(_surface, x0, y0, w, h, source, false, 0);
+};
+
+static void inline
+hagl_blit_xyxy(void const *_surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, hagl_bitmap_t *source)
+{
+    hagl_blit_xywh_extended(_surface, x0, y0, abs(x1 - x0) + 1, abs(y1 - y0) + 1, source, false, 0);
+};
+
+static void inline
+hagl_blit_xywh_transparent(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source, color_t transparent_color)
+{
+    hagl_blit_xywh_extended(_surface, x0, y0, w, h, source, true, transparent_color);
+};
+
+static void inline
+hagl_blit_xyxy_transparent(void const *_surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, hagl_bitmap_t *source, color_t transparent_color)
+{
+    hagl_blit_xywh_extended(_surface, x0, y0, abs(x1 - x0) + 1, abs(y1 - y0) + 1, source, true, transparent_color);
 };
 
 /**
- * Blit and scale a bitmap to a surface
+ * Blit and scale a bitmap to a _surface with transparency
  *
  * Output will be clipped to the current clip window.
  *
- * @param surface
+ * @param _surface
  * @param x0
  * @param y0
  * @param w target width
  * @param h target height
  * @param source pointer to a bitmap
+ * @param transparent_color
  */
-void
-hagl_blit_xywh(void const *surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source);
-
-/**
- * Blit and scale a bitmap to a surface
- *
- * Output will be clipped to the current clip window.
- *
- * @param surface
- * @param x0
- * @param y0
- * @param x1
- * @param y1
- * @param source pointer to a bitmap
- */
-static void inline
-hagl_blit_xyxy(void const *surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, hagl_bitmap_t *source)
-{
-    hagl_blit_xywh(surface, x0, y0, abs(x1 - x0) + 1, abs(y1 - y0) + 1, source);
-};
 
 #ifdef __cplusplus
 }
