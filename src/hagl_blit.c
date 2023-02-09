@@ -33,7 +33,9 @@ SPDX-License-Identifier: MIT
 */
 
 #include <stdbool.h>
+#include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdio.h>
 
 #include "hagl/color.h"
@@ -66,6 +68,10 @@ hagl_blit_xy_extended(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_
             (y0 >= surface->clip.y0) &&
             (x0 + source->width <= surface->clip.x1) &&
             (y0 + source->height <= surface->clip.y1)
+            (x0 >= surface->clip.x0) &&
+            (y0 >= surface->clip.y0) &&
+            (x0 + source->width <= surface->clip.x1) &&
+            (y0 + source->height <= surface->clip.y1)
         ) {
             /* Inside of bounds, can use HAL provided blit. */
             if (is_transparent) {
@@ -83,6 +89,12 @@ hagl_blit_xy_extended(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_
         for (uint16_t y = 0; y < source->height; y++) {
             for (uint16_t x = 0; x < source->width; x++) {
                 color = *(ptr++);
+                if ((!is_transparent) || (is_transparent && transparent_color!=color)) {
+                    hagl_put_pixel(surface, x0 + x, y0 + y, color);
+                }
+            }
+        }
+    }
                 if ((!is_transparent) || (is_transparent && transparent_color!=color)) {
                     hagl_put_pixel(surface, x0 + x, y0 + y, color);
                 }
