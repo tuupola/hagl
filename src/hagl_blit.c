@@ -57,7 +57,7 @@ hagl_blit_xy_extended(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_
     //     );
     // }
 
-    if (surface->blit) {
+    if ((!is_transparent && surface->blit) || (is_transparent && surface->blit_alpha)) {
         /* Check if bitmap is inside clip windows bounds */
         if (
             (x0 >= surface->clip.x0) &&
@@ -66,8 +66,11 @@ hagl_blit_xy_extended(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_
             (y0 + source->height <= surface->clip.y1)
         ) {
             /* Inside of bounds, can use HAL provided blit. */
-            /* Beware, no transparency parameters yet! */
-            surface->blit(&surface, x0, y0, source);
+            if (is_transparent) {
+                surface->blit_alpha(&surface, x0, y0, source, transparent_color);
+            } else {
+                surface->blit(&surface, x0, y0, source);
+            }
             done = true;
         }
     }
@@ -91,10 +94,12 @@ hagl_blit_xywh_extended(void const *_surface, uint16_t x0, uint16_t y0, uint16_t
 {
     const hagl_surface_t *surface = _surface;
 
-    if (surface->scale_blit) {
-        /* Beware, no transparency parameters yet! */
+    if (!is_transparent && surface->scale_blit) {
         surface->scale_blit(&surface, x0, y0, w, h, source);
+    } else if (is_transparent && surface->scale_blit_alpha) {
+        surface->scale_blit_alpha(&surface, x0, y0, w, h, source, transparent_color);
     } else {
+        /* local put_pixel fallback */
         color_t color;
         color_t *ptr = (color_t *) source->buffer;
         uint32_t x_ratio = (uint32_t)((source->width << 16) / w);

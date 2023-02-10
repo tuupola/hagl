@@ -53,6 +53,8 @@ typedef struct {
     color_t (*color)(void *self, uint8_t r, uint8_t g, uint8_t b);
     void (*blit)(void *self, uint16_t x0, uint16_t y0, hagl_bitmap_t *src);
     void (*scale_blit)(void *self, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *src);
+    void (*blit_alpha)(void *self, int16_t x0, int16_t y0, hagl_bitmap_t *src, color_t alpha);
+    void (*scale_blit_alpha)(void *self, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *src, color_t alpha);
     void (*hline)(void *self, int16_t x0, int16_t y0, uint16_t width, color_t color);
     void (*vline)(void *self, int16_t x0, int16_t y0, uint16_t height, color_t color);
 } hagl_surface_t;
