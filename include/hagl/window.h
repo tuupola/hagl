@@ -35,6 +35,8 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_WINDOW_H
 #define _HAGL_WINDOW_H
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
