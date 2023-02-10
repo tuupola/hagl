@@ -104,10 +104,17 @@ hagl_put_char_styled(void const *_surface, wchar_t code, int16_t x0, int16_t y0,
     for (uint8_t y = 0; y < glyph.height; y++) {
         for (uint8_t x = 0; x < glyph.width; x++) {
             set = *(glyph.buffer + x / 8) & (0x80 >> (x % 8));
-            if (set) {
-                *ptr = foreground_color;
+            if (style->mode & HAGL_CHAR_MODE_TRANSPARENT)
+            {
+                if (set) {
+                    *ptr = foreground_color;
+                }
             } else {
-                *ptr = background_color;
+                if (set) {
+                    *ptr = foreground_color;
+                } else {
+                    *ptr = background_color;
+                }
             }
             ptr++;
         }

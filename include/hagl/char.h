@@ -47,7 +47,7 @@ extern "C" {
 typedef enum _hagl_char_mode_t {
     HAGL_CHAR_MODE_OPAQUE = 0x00,
     HAGL_CHAR_MODE_REVERSE = 0x01,
-    /* HAGL_CHAR_MODE_TRANSPARENT = 0x02, */
+    HAGL_CHAR_MODE_TRANSPARENT = 0x02
 } hagl_char_mode_t;
 
 typedef struct _hagl_char_style_t {
