@@ -113,8 +113,9 @@ hagl_blit_xywh_extended(void const *_surface, uint16_t x0, uint16_t y0, uint16_t
     } else if (is_transparent && surface->scale_blit_alpha) {
         surface->scale_blit_alpha(&surface, x0, y0, w, h, source, transparent_color);
     } else {
-        hagl_color_t color;
-        hagl_color_t *ptr = (hagl_color_t *) source->buffer;
+        /* local put_pixel fallback */
+        color_t color;
+        color_t *ptr = (color_t *) source->buffer;
         uint32_t x_ratio = (uint32_t)((source->width << 16) / w);
         uint32_t y_ratio = (uint32_t)((source->height << 16) / h);
         for (uint16_t y = 0; y < h; y++) {
