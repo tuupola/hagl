@@ -51,7 +51,7 @@ extern "C" {
  * @param surface
  * @return color
  */
-color_t
+hagl_color_t
 hagl_color(void const *surface, uint8_t r, uint8_t g, uint8_t b);
 
 #ifdef __cplusplus

@@ -50,7 +50,7 @@ extern "C" {
  * Output will be clipped to the current clip window. Polygon does
  * not need to be convex. They can also be concave or complex.
  *
- * color_t color = hagl_color(0, 255, 0);
+ * hagl_color_t color = hagl_color(0, 255, 0);
  * int16_t vertices[10] = {x0, y0, x1, y1, x2, y2, x3, y3, x4, y4};
  * hagl_draw_polygon(5, vertices, color);
  *
@@ -60,7 +60,7 @@ extern "C" {
  * @param color
  */
 void
-hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, color_t color);
+hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, hagl_color_t color);
 
 /**
  * Draw a filled polygon
@@ -68,7 +68,7 @@ hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, color_
  * Output will be clipped to the current clip window. Polygon does
  * not need to be convex. They can also be concave or complex.
  *
- * color_t color = hagl_color(0, 255, 0);
+ * hagl_color_t color = hagl_color(0, 255, 0);
  * int16_t vertices[10] = {x0, y0, x1, y1, x2, y2, x3, y3, x4, y4};
  * hagl_draw_polygon(5, vertices, color);
  *
@@ -78,7 +78,7 @@ hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, color_
  * @param color
  */
 void
-hagl_fill_polygon(void const *surface, int16_t amount, int16_t *vertices, color_t color);
+hagl_fill_polygon(void const *surface, int16_t amount, int16_t *vertices, hagl_color_t color);
 
 #ifdef __cplusplus
 }
