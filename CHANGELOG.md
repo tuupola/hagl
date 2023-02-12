@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 - Rename `bitmap.c` to `hagl_bitmap.c` ([#100](https://github.com/tuupola/hagl/pull/100)).
+- Rename `color_t` to `hagl_color_t` ([#104](https://github.com/tuupola/hagl/pull/104)).
 
 ### Fixed
 - Initialize character buffer only when used and move it to heap ([#101](https://github.com/tuupola/hagl/pull/101), [#44](https://github.com/tuupola/hagl/issues/44)) .

@@ -61,7 +61,7 @@ extern "C" {
  * @return width of the drawn character
  */
 uint8_t
-hagl_put_char(void const *surface, wchar_t code, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
+hagl_put_char(void const *surface, wchar_t code, int16_t x0, int16_t y0, hagl_color_t color, const unsigned char *font);
 
 /**
  * Draw a string
@@ -80,7 +80,7 @@ hagl_put_char(void const *surface, wchar_t code, int16_t x0, int16_t y0, color_t
  * @return width of the drawn string
  */
 uint16_t
-hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font);
+hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int16_t y0, hagl_color_t color, const unsigned char *font);
 
 /**
  * Extract a glyph into a bitmap
@@ -96,7 +96,7 @@ hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int16_t y0, c
  * @return Width of the drawn string
  */
 uint8_t
-hagl_get_glyph(void const *surface, wchar_t code, color_t color, hagl_bitmap_t *bitmap, const uint8_t *font);
+hagl_get_glyph(void const *surface, wchar_t code, hagl_color_t color, hagl_bitmap_t *bitmap, const uint8_t *font);
 
 
 #ifdef __cplusplus

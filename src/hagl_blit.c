@@ -53,8 +53,8 @@ hagl_blit_xy(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source
             (y0 + source->height > surface->clip.y1)
         ) {
             /* Out of bounds, use local putpixel fallback. */
-            color_t color;
-            color_t *ptr = (color_t *) source->buffer;
+            hagl_color_t color;
+            hagl_color_t *ptr = (hagl_color_t *) source->buffer;
 
             for (uint16_t y = 0; y < source->height; y++) {
                 for (uint16_t x = 0; x < source->width; x++) {
@@ -67,8 +67,8 @@ hagl_blit_xy(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source
             surface->blit(&surface, x0, y0, source);
         }
     } else {
-        color_t color;
-        color_t *ptr = (color_t *) source->buffer;
+        hagl_color_t color;
+        hagl_color_t *ptr = (hagl_color_t *) source->buffer;
 
         for (uint16_t y = 0; y < source->height; y++) {
             for (uint16_t x = 0; x < source->width; x++) {
@@ -87,8 +87,8 @@ hagl_blit_xywh(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint1
     if (surface->scale_blit) {
         surface->scale_blit(&surface, x0, y0, w, h, source);
     } else {
-        color_t color;
-        color_t *ptr = (color_t *) source->buffer;
+        hagl_color_t color;
+        hagl_color_t *ptr = (hagl_color_t *) source->buffer;
         uint32_t x_ratio = (uint32_t)((source->width << 16) / w);
         uint32_t y_ratio = (uint32_t)((source->height << 16) / h);
 

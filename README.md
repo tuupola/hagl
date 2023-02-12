@@ -41,7 +41,7 @@ hagl_close(display);
 HAL defines what kind of pixel format is used. Most common is RGB565 which is represented by two bytes. If you are sure you will be using only RGB565 colors you could use the following shortcut to create a random color.
 
 ```c
-color_t color = rand() % 0xffff;
+hagl_color_t color = rand() % 0xffff;
 ```
 
 To write portable code which can be run with different pixel formats use the following instead.
@@ -50,7 +50,7 @@ To write portable code which can be run with different pixel formats use the fol
 uint8_t r = rand() % 255;
 uint8_t g = rand() % 255;
 uint8_t b = rand() % 255;
-color_t color = hagl_color(display, r, g, b);
+hagl_color_t color = hagl_color(display, r, g, b);
 ```
 
 ### Put a pixel
@@ -59,7 +59,7 @@ color_t color = hagl_color(display, r, g, b);
 for (uint32_t i = 1; i < 100000; i++) {
     int16_t x0 = rand() % display->width;
     int16_t y0 = rand() % display->height;
-    color_t color = rand() % 0xffff;
+    hagl_color_t color = rand() % 0xffff;
 
     hagl_put_pixel(display, x0, y0, color);
 }
@@ -73,7 +73,7 @@ for (uint32_t i = 1; i < 100000; i++) {
 int16_t x0 = rand() % display->width;
 int16_t y0 = rand() % display->height;
 
-color_t pixel = hagl_get_pixel(display, x0, y0);
+hagl_color_t pixel = hagl_get_pixel(display, x0, y0);
 ```
 
 Note that if requesting coordinates outside the clip window color black is returned. This behaviour is unoptimal and might change in the future.
@@ -86,7 +86,7 @@ for (uint16_t i = 1; i < 1000; i++) {
     int16_t y0 = rand() % display->height;
     int16_t x1 = rand() % display->width;
     int16_t y1 = rand() % display->height;
-    color_t color = rand() % 0xffff;
+    hagl_color_t color = rand() % 0xffff;
 
     hagl_draw_line(display, x0, y0, x1, y1, color);
 }
@@ -102,7 +102,7 @@ for (uint16_t i = 1; i < 1000; i++) {
     int16_t y0 = rand() % display->height;
     int16_t x1 = rand() % (display->width / 2);
     int16_t width = rand() % (display->width - x0);
-    color_t color = rand() % 0xffff;
+    hagl_color_t color = rand() % 0xffff;
 
     /* First two are aliases. */
     hagl_draw_hline(display, x0, y0, width, color);
@@ -122,7 +122,7 @@ for (uint16_t i = 1; i < 1000; i++) {
     int16_t y0 = rand() % (display->height / 2);
     int16_t y1 = rand() % (display->height / 2);
     int16_t height = rand() % (display->height - y0);
-    color_t color = rand() % 0xffff;
+    hagl_color_t color = rand() % 0xffff;
 
     /* First two are aliases. */
     hagl_draw_vline(display, x0, y0, height, color);
@@ -141,7 +141,7 @@ for (uint16_t i = 1; i < 500; i++) {
     int16_t x0 = display->width / 2;
     int16_t y0 = display->height / 2;
     int16_t radius = rand() % display->width;
-    color_t color = rand() % 0xffff;
+    hagl_color_t color = rand() % 0xffff;
 
     hagl_draw_circle(display, x0, y0, radius, color);
 }
@@ -156,7 +156,7 @@ for (uint16_t i = 1; i < 500; i++) {
     int16_t x0 = rand() % display->width;
     int16_t y0 = rand() % display->height;
     int16_t radius = rand() % 100;
-    color_t color = rand() % 0xffff;
+    hagl_color_t color = rand() % 0xffff;
 
     hagl_fill_circle(display, x0, y0, radius, color);
 }
@@ -172,7 +172,7 @@ for (uint16_t i = 1; i < 500; i++) {
     int16_t y0 = display->height / 2;
     int16_t rx = rand() % display->width;
     int16_t ry = rand() % display->height;
-    color_t color = rand() % 0xffff;
+    hagl_color_t color = rand() % 0xffff;
 
     hagl_draw_ellipse(display, x0, y0, rx, ry, color);
 }
@@ -188,7 +188,7 @@ for (uint16_t i = 1; i < 500; i++) {
     int16_t y0 = rand() % display->height;
     int16_t rx = rand() % display->width / 4;
     int16_t ry = rand() % display->height / 4;
-    color_t color = rand() % 0xffff;
+    hagl_color_t color = rand() % 0xffff;
 
     hagl_fill_ellipse(display, x0, y0, rx, ry, color);
 }
@@ -205,7 +205,7 @@ int16_t x1 = rand() % display->width;
 int16_t y1 = rand() % display->height;
 int16_t x2 = rand() % display->width;
 int16_t y2 = rand() % display->height;
-color_t color = rand() % 0xffff;
+hagl_color_t color = rand() % 0xffff;
 
 hagl_draw_triangle(display, x0, y0, x1, y1, x2, y2, color);
 ```
@@ -221,7 +221,7 @@ int16_t x1 = rand() % display->width;
 int16_t y1 = rand() % display->height;
 int16_t x2 = rand() % display->width;
 int16_t y2 = rand() % display->height;
-color_t color = rand() % 0xffff;
+hagl_color_t color = rand() % 0xffff;
 
 hagl_fill_triangle(display, x0, y0, x1, y1, x2, y2, color);
 ```
@@ -238,7 +238,7 @@ for (uint16_t i = 1; i < 50; i++) {
     int16_t y1 = rand() % display->height;
     int16_t w = rand() % display->width / 2;
     int16_t h = rand() % display->height / 2;
-    color_t color = rand() % 0xffff;
+    hagl_color_t color = rand() % 0xffff;
 
     /* First two are aliases. */
     hagl_draw_rectangle(display, x0, y0, x1, y1, color);
@@ -260,7 +260,7 @@ for (uint16_t i = 1; i < 10; i++) {
     int16_t y1 = rand() % display->height;
     int16_t w = rand() % display->width / 2;
     int16_t h = rand() % display->height / 2;
-    color_t color = rand() % 0xffff;
+    hagl_color_t color = rand() % 0xffff;
 
     /* First two are aliases. */
     hagl_fill_rectangle(display, x0, y0, x1, y1, color);
@@ -283,7 +283,7 @@ for (uint16_t i = 1; i < 30; i++) {
     int16_t w = rand() % display->width / 2;
     int16_t h = rand() % display->height / 2;
     int16_t r = 10
-    color_t color = rand() % 0xffff;
+    hagl_color_t color = rand() % 0xffff;
 
     /* First two are aliases. */
     hagl_draw_rounded_rectangle(display, x0, y0, x1, y1, r, color);
@@ -306,7 +306,7 @@ for (uint16_t i = 1; i < 30; i++) {
     int16_t w = rand() % display->width / 2;
     int16_t h = rand() % display->height / 2;
     int16_t r = 10
-    color_t color = rand() % 0xffff;
+    hagl_color_t color = rand() % 0xffff;
 
     /* First two are aliases. */
     hagl_fill_rounded_rectangle(display, x0, y0, x1, y1, r, color);
@@ -333,7 +333,7 @@ int16_t x3 = rand() % display->width;
 int16_t y3 = rand() % display->height;
 int16_t x4 = rand() % display->width;
 int16_t y4 = rand() % display->height;
-color_t color = rand() % 0xffff;
+hagl_color_t color = rand() % 0xffff;
 int16_t vertices[10] = {x0, y0, x1, y1, x2, y2, x3, y3, x4, y4};
 
 hagl_draw_polygon(display, 5, vertices, color);
@@ -356,7 +356,7 @@ int16_t x3 = rand() % display->width;
 int16_t y3 = rand() % display->height;
 int16_t x4 = rand() % display->width;
 int16_t y4 = rand() % display->height;
-color_t color = rand() % 0xffff;
+hagl_color_t color = rand() % 0xffff;
 int16_t vertices[10] = {x0, y0, x1, y1, x2, y2, x3, y3, x4, y4};
 
 hagl_fill_polygon(display, 5, vertices, color);
@@ -372,7 +372,7 @@ The library supports Unicode fonts in fontx format. It only includes three fonts
 for (uint16_t i = 1; i < 10000; i++) {
     int16_t x0 = rand() % display->width;
     int16_t y0 = rand() % display->height;
-    color_t color = rand() % 0xffff;
+    hagl_color_t color = rand() % 0xffff;
     char code = rand() % 255;
 
     hagl_put_char(display, code, x0, y0, color, font8x8);
@@ -389,7 +389,7 @@ The library supports Unicode fonts in fontx format. It only includes three fonts
 for (uint16_t i = 1; i < 10000; i++) {
     int16_t x0 = rand() % display->width;
     int16_t y0 = rand() % display->height;
-    color_t color = rand() % 0xffff;
+    hagl_color_t color = rand() % 0xffff;
 
     hagl_put_text(display, u"YO! MTV raps.", x0, y0, color, font6x9);
 }
@@ -403,12 +403,12 @@ Blit copies a [bitmap](https://github.com/tuupola/hagl/blob/master/bitmap.c) to 
 
 ```c
 hagl_bitmap_t bitmap;
-bitmap.buffer = (uint8_t *) malloc(6 * 9 * sizeof(color_t));
+bitmap.buffer = (uint8_t *) malloc(6 * 9 * sizeof(hagl_color_t));
 
 for (uint16_t i = 1; i < 20000; i++) {
     int16_t x0 = rand() % display->width;
     int16_t y0 = rand() % display->height;
-    color_t color = rand() % 0xffff;
+    hagl_color_t color = rand() % 0xffff;
     uint16_t code = rand() % 0xffff;
     hagl_get_glyph(display, code, color, &bitmap, font6x9);
 
@@ -426,12 +426,12 @@ Scale blit copies and scales a [bitmap](https://github.com/tuupola/hagl/blob/mas
 
 ```c
 hagl_bitmap_t bitmap;
-bitmap.buffer = (uint8_t *) malloc(6 * 9 * sizeof(color_t));
+bitmap.buffer = (uint8_t *) malloc(6 * 9 * sizeof(hagl_color_t));
 
 for (uint16_t i = 1; i < 20000; i++) {
     int16_t x0 = rand() % display->width;
     int16_t y0 = rand() % display->height;
-    color_t color = rand() % 0xffff;
+    hagl_color_t color = rand() % 0xffff;
     uint16_t code = rand() % 0xffff;
     hagl_get_glyph(display, code, color, &bitmap, font6x9);
 
@@ -454,7 +454,7 @@ for (uint16_t i = 1; i < 500; i++) {
     int16_t x0 = rand() % display->width;
     int16_t y0 = rand() % display->height;
     int16_t radius = rand() % 100;
-    color_t color = rand() % 0xffff;
+    hagl_color_t color = rand() % 0xffff;
 
     hagl_fill_circle(display, x0, y0, radius, color);
 }
