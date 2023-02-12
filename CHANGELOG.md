@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## [0.7.0-dev](https://github.com/tuupola/hagl/compare/0.6.0...master) - unreleased
+
+### Changed
+- Rename `bitmap.c` to `hagl_bitmap.c` ([#100](https://github.com/tuupola/hagl/pull/100)).
+
+### Fixed
+- Initialize character buffer only when used and move it to heap ([#101](https://github.com/tuupola/hagl/pull/101), [#44](https://github.com/tuupola/hagl/issues/44)) .
+- Overflow bug when resizing big bitmaps ([#102](https://github.com/tuupola/hagl/pull/102), [#49](https://github.com/tuupola/hagl/issues/49)) .
+
+### Added
+- New `hagl_bitmap_init()` function ([#98](https://github.com/tuupola/hagl/pull/98)).
+
+### Removed
+- Legacy `bitmap_init()` function ([#98](https://github.com/tuupola/hagl/pull/98)).
+- Legacy `bitmap_size()` function ([#99](https://github.com/tuupola/hagl/pull/99)).
+
+
 ## [0.6.0](https://github.com/tuupola/hagl/compare/0.5.0...0.6.0) - 2023-03-04
 
 ### Changed

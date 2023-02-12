@@ -41,13 +41,6 @@ SPDX-License-Identifier: MIT
 #include "hagl/bitmap.h"
 #include "hagl_hal.h"
 
-/* Get bitmap size in bytes. */
-uint32_t
-bitmap_size(hagl_bitmap_t *bitmap)
-{
-    return bitmap->width * bitmap->depth * bitmap->height / 8;
-};
-
 static void
 put_pixel(void *_bitmap, int16_t x0, int16_t y0, color_t color)
 {
@@ -90,7 +83,6 @@ vline(void *_bitmap, int16_t x0, int16_t y0, uint16_t height, color_t color)
 /*
  * Blit source bitmap to a destination bitmap
  */
-
 static void
 blit(void *_dst, int16_t x0, int16_t y0, void *_src)
 {
@@ -232,11 +224,15 @@ scale_blit(void *_dst, int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth, voi
 
 /* Initialise bitmap with given buffer. */
 void
-bitmap_init(hagl_bitmap_t *bitmap, uint8_t *buffer)
+hagl_bitmap_init(hagl_bitmap_t *bitmap, int16_t width, uint16_t height, uint8_t depth, void *buffer)
 {
+    bitmap->width = width;
+    bitmap->height = height;
+    bitmap->depth = depth;
+    bitmap->buffer = (uint8_t *) buffer;
+
     bitmap->pitch = bitmap->width * bitmap->depth / 8;
     bitmap->size = bitmap->pitch * bitmap->height;
-    bitmap->buffer = buffer;
 
     bitmap->clip.x0 = 0;
     bitmap->clip.y0 = 0;
@@ -247,8 +243,9 @@ bitmap_init(hagl_bitmap_t *bitmap, uint8_t *buffer)
     bitmap->get_pixel = get_pixel;
     bitmap->hline = hline;
     bitmap->vline = vline;
-    bitmap->blit = blit;
-    bitmap->scale_blit = scale_blit;
+    /* HAGL provided implementation are compatible with 8 or 16 bits depth only for now */
+    bitmap->blit = 8==depth || 16==depth ? blit : NULL;
+    bitmap->scale_blit = 8==depth || 16==depth ? scale_blit : NULL;
     /* No HAGL provided implementation */
     bitmap->blit_alpha = NULL;
     bitmap->scale_blit_alpha = NULL;

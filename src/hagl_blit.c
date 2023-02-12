@@ -110,7 +110,7 @@ hagl_blit_xywh_extended(void const *_surface, uint16_t x0, uint16_t y0, uint16_t
             for (uint16_t x = 0; x < w; x++) {
                 uint16_t px = ((x * x_ratio) >> 16);
                 uint16_t py = ((y * y_ratio) >> 16);
-                color = ptr[(uint8_t)((py * source->width) + px)];
+                color = *(ptr + (py * source->width) + px);
                 if ((!is_transparent) || (is_transparent && transparent_color!=color)) {
                     hagl_put_pixel(surface, x0 + x, y0 + y, color);
                 }
