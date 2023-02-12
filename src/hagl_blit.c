@@ -47,15 +47,17 @@ hagl_blit_xy_extended(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_
     const hagl_surface_t *surface = _surface;
     bool done = false;
 
-    // static bool test = false;
-    // if (!test) {
-    //     printf(
-    //         "width=%d, height=%d, depth=%d, pitch=%d, buffer=%p, size=%d, is_transparent=%d, transparent_color=%06x\n", 
-    //         source->width, source->height, source->depth, 
-    //         source->pitch, source->buffer, source->size, 
-    //         is_transparent, transparent_color
-    //     );
-    // }
+    /*
+    static bool test = false;
+    if (!test) {
+        printf(
+            "hagl_blit_xy_extended: width=%d, height=%d, depth=%d, pitch=%d, buffer=%p, size=%d, is_transparent=%d, transparent_color=%06x\n", 
+            source->width, source->height, source->depth, 
+            source->pitch, source->buffer, source->size, 
+            is_transparent, transparent_color
+        );
+    }
+    */
 
     if ((!is_transparent && surface->blit) || (is_transparent && surface->blit_alpha)) {
         /* Check if bitmap is inside clip windows bounds */
