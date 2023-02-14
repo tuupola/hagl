@@ -42,38 +42,38 @@ SPDX-License-Identifier: MIT
 #include "hagl_hal.h"
 
 static void
-put_pixel(void *_bitmap, int16_t x0, int16_t y0, color_t color)
+put_pixel(void *_bitmap, int16_t x0, int16_t y0, hagl_color_t color)
 {
     hagl_bitmap_t *bitmap = _bitmap;
 
-    color_t *ptr = (color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth * x0 / 8));
+    hagl_color_t *ptr = (hagl_color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth * x0 / 8));
     *ptr = color;
 }
 
-static color_t
+static hagl_color_t
 get_pixel(void *_bitmap, int16_t x0, int16_t y0)
 {
     hagl_bitmap_t *bitmap = _bitmap;
-    return *(color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth * x0/ 8));
+    return *(hagl_color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth * x0 / 8));
 }
 
 void
-hline(void *_bitmap, int16_t x0, int16_t y0, uint16_t width, color_t color)
+hline(void *_bitmap, int16_t x0, int16_t y0, uint16_t width, hagl_color_t color)
 {
     hagl_bitmap_t *bitmap = _bitmap;
 
-    color_t *ptr = (color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth * x0 / 8));
+    hagl_color_t *ptr = (hagl_color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth * x0 / 8));
     for (uint16_t x = 0; x < width; x++) {
         *ptr++ = color;
     }
 }
 
 void
-vline(void *_bitmap, int16_t x0, int16_t y0, uint16_t height, color_t color)
+vline(void *_bitmap, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color)
 {
     hagl_bitmap_t *bitmap = _bitmap;
 
-    color_t *ptr = (color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth * x0 / 8));
+    hagl_color_t *ptr = (hagl_color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth * x0 / 8));
     for (uint16_t y = 0; y < height; y++) {
         *ptr = color;
         ptr += bitmap->pitch / bitmap->depth / 8;

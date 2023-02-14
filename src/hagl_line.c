@@ -41,7 +41,7 @@ SPDX-License-Identifier: MIT
 #include "hagl.h"
 
 void
-hagl_draw_line(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, color_t color)
+hagl_draw_line(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, hagl_color_t color)
 {
     const hagl_surface_t *surface = _surface;
 
