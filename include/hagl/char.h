@@ -52,8 +52,8 @@ typedef enum _hagl_char_mode_t {
 
 typedef struct _hagl_char_style_t {
     const uint8_t *font;
-    color_t background_color;
-    color_t foreground_color;
+    hagl_color_t background_color;
+    hagl_color_t foreground_color;
     hagl_char_mode_t mode;
     uint16_t scale_x_numerator;
     uint16_t scale_x_denominator;

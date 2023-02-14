@@ -59,7 +59,7 @@ extern "C" {
  * @param transparent_color
  */
 void
-hagl_blit_xy_extended(void const *_surface, uint16_t x0, uint16_t y0, hagl_bitmap_t *source, bool is_transparent, color_t transparent_color);
+hagl_blit_xy_extended(void const *_surface, uint16_t x0, uint16_t y0, hagl_bitmap_t *source, bool is_transparent, hagl_color_t transparent_color);
 
 static void inline
 hagl_blit(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source)
@@ -74,19 +74,19 @@ hagl_blit_xy(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source
 };
 
 static void inline
-hagl_blit_transparent(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source, color_t transparent_color)
+hagl_blit_transparent(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source, hagl_color_t transparent_color)
 {
     hagl_blit_xy_extended(_surface, x0, y0, source, true, transparent_color);
 };
 
 static void inline
-hagl_blit_xy_transparent(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source, color_t transparent_color)
+hagl_blit_xy_transparent(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source, hagl_color_t transparent_color)
 {
     hagl_blit_xy_extended(_surface, x0, y0, source, true, transparent_color);
 };
 
 void
-hagl_blit_xywh_extended(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source, bool is_transparent, color_t transparent_color);
+hagl_blit_xywh_extended(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source, bool is_transparent, hagl_color_t transparent_color);
 
 static void inline
 hagl_blit_xywh(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source)
@@ -101,13 +101,13 @@ hagl_blit_xyxy(void const *_surface, uint16_t x0, uint16_t y0, uint16_t x1, uint
 };
 
 static void inline
-hagl_blit_xywh_transparent(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source, color_t transparent_color)
+hagl_blit_xywh_transparent(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source, hagl_color_t transparent_color)
 {
     hagl_blit_xywh_extended(_surface, x0, y0, w, h, source, true, transparent_color);
 };
 
 static void inline
-hagl_blit_xyxy_transparent(void const *_surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, hagl_bitmap_t *source, color_t transparent_color)
+hagl_blit_xyxy_transparent(void const *_surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, hagl_bitmap_t *source, hagl_color_t transparent_color)
 {
     hagl_blit_xywh_extended(_surface, x0, y0, abs(x1 - x0) + 1, abs(y1 - y0) + 1, source, true, transparent_color);
 };

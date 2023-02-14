@@ -42,7 +42,7 @@ SPDX-License-Identifier: MIT
 #include "hagl/surface.h"
 
 void
-hagl_blit_xy_extended(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source, bool is_transparent, color_t transparent_color)
+hagl_blit_xy_extended(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source, bool is_transparent, hagl_color_t transparent_color)
 {
     const hagl_surface_t *surface = _surface;
     bool done = false;
@@ -78,8 +78,8 @@ hagl_blit_xy_extended(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_
     }
     /* No blit function or out of bounds, use local put_pixel fallback */
     if (!done) {
-        color_t color;
-        color_t *ptr = (color_t *) source->buffer;
+        hagl_color_t color;
+        hagl_color_t *ptr = (hagl_color_t *) source->buffer;
         for (uint16_t y = 0; y < source->height; y++) {
             for (uint16_t x = 0; x < source->width; x++) {
                 color = *(ptr++);
@@ -92,7 +92,7 @@ hagl_blit_xy_extended(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_
 };
 
 void
-hagl_blit_xywh_extended(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source, bool is_transparent, color_t transparent_color)
+hagl_blit_xywh_extended(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source, bool is_transparent, hagl_color_t transparent_color)
 {
     const hagl_surface_t *surface = _surface;
 
