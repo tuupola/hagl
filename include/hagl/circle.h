@@ -49,26 +49,26 @@ extern "C" {
  *
  * Output will be clipped to the current clip window.
  *
- * @param x0 center X
- * @param y0 center Y
+ * @param xc center X
+ * @param yc center Y
  * @param r radius
  * @param color
  */
 void
-hagl_draw_circle(void const *surface, int16_t x0, int16_t y0, int16_t r, hagl_color_t color);
+hagl_draw_circle(void const *surface, int16_t xc, int16_t yc, int16_t r, hagl_color_t color);
 
 /**
  * Draw a filled circle
  *
  * Output will be clipped to the current clip window.
  *
- * @param x0 center X
- * @param y0 center Y
+ * @param xc center X
+ * @param yc center Y
  * @param r radius
  * @param color
  */
 void
-hagl_fill_circle(void const *surface, int16_t x0, int16_t y0, int16_t r, hagl_color_t color);
+hagl_fill_circle(void const *surface, int16_t xc, int16_t yc, int16_t r, hagl_color_t color);
 
 #ifdef __cplusplus
 }
