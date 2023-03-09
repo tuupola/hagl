@@ -53,7 +53,7 @@ draw_circle_helper_Pixel(void const *surface, int xc, int yc, int x, int y, hagl
 void
 draw_circle_helper_Line(void const *surface, int xc, int yc, int x, int y, int len, hagl_color_t color ){
     if(len==1){
-        draw_circle_helper_Pixel(xc,yc,x-1,y,color);
+        draw_circle_helper_Pixel(surface,xc,yc,x-1,y,color);
         return;
     }
     hagl_draw_hline(surface, xc+x-len, yc-y, len, color ); // UR
@@ -69,7 +69,7 @@ draw_circle_helper_Line(void const *surface, int xc, int yc, int x, int y, int l
 void
 draw_circle_helper_URDL(void const *surface, int xc, int yc, int x, int y, int len, hagl_color_t color ){
     if(len==1){
-        draw_circle_helper_Pixel(xc,yc,x-1,y,color);
+        draw_circle_helper_Pixel(surface,xc,yc,x-1,y,color);
         return;
     }
     hagl_draw_hline(surface, xc-x+1, yc-y, len*2-1, color ); // ULR
@@ -93,9 +93,9 @@ hagl_draw_circle(void const *surface, int16_t xc, int16_t yc, int16_t r, hagl_co
             dx++;
         } else {
             if(edgesDrawed){
-                draw_circle_helper_Line( xc, yc, x+1, y, dx+1, color );
+                draw_circle_helper_Line( surface, xc, yc, x+1, y, dx+1, color );
             } else {
-                draw_circle_helper_URDL( xc, yc, x+1, y, dx+1, color );
+                draw_circle_helper_URDL( surface, xc, yc, x+1, y, dx+1, color );
                 edgesDrawed = 1;
             }
             dx = 0;
