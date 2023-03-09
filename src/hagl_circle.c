@@ -39,7 +39,7 @@ SPDX-License-Identifier: MIT
 #include "hagl/hline.h"
 
 void
-draw_circle_helper_Pixel( int xc, int yc, int x, int y, hagl_color_t color ){
+draw_circle_helper_Pixel(void const *surface, int xc, int yc, int x, int y, hagl_color_t color ){
     hagl_put_pixel(surface, xc+x, yc-y, color ); // UR
     hagl_put_pixel(surface, xc+x, yc+y, color ); // DR
     hagl_put_pixel(surface, xc-x, yc+y, color ); // DL
@@ -51,7 +51,7 @@ draw_circle_helper_Pixel( int xc, int yc, int x, int y, hagl_color_t color ){
 }
 
 void
-draw_circle_helper_Line( int xc, int yc, int x, int y, int len, hagl_color_t color ){
+draw_circle_helper_Line(void const *surface, int xc, int yc, int x, int y, int len, hagl_color_t color ){
     if(len==1){
         draw_circle_helper_Pixel(xc,yc,x-1,y,color);
         return;
@@ -67,7 +67,7 @@ draw_circle_helper_Line( int xc, int yc, int x, int y, int len, hagl_color_t col
 }
 
 void
-draw_circle_helper_URDL( int xc, int yc, int x, int y, int len, hagl_color_t color ){
+draw_circle_helper_URDL(void const *surface, int xc, int yc, int x, int y, int len, hagl_color_t color ){
     if(len==1){
         draw_circle_helper_Pixel(xc,yc,x-1,y,color);
         return;
