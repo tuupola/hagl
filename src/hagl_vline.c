@@ -56,17 +56,17 @@ hagl_draw_vline_xyh(void const *_surface, int16_t x0, int16_t y0, uint16_t h, ha
         }
 
         /* Everything outside clip window, nothing to do. */
-        if (height < 0)  {
+        if (height <= 0)  {
             return;
         }
 
         /* Cut anything going over right edge. */
         if (((y0 + height) > surface->clip.y1))  {
-            height = height - (y0 + height - surface->clip.y1);
+            height = height - (y0 + height - 1 - surface->clip.y1);
         }
 
         surface->vline(&surface, x0, y0, height, color);
     } else {
-        hagl_draw_line(surface, x0, y0, x0, y0 + h, color);
+        hagl_draw_line(surface, x0, y0, x0, y0 + h - 1, color);
     }
 }

@@ -7,10 +7,11 @@ All notable changes to this project will be documented in this file, in reverse 
 ### Changed
 - Rename `bitmap.c` to `hagl_bitmap.c` ([#100](https://github.com/tuupola/hagl/pull/100)).
 - Rename `color_t` to `hagl_color_t` ([#104](https://github.com/tuupola/hagl/pull/104)).
+- Initialize character buffer only when used and move it to heap ([#101](https://github.com/tuupola/hagl/pull/101), [#44](https://github.com/tuupola/hagl/issues/44)).
 
 ### Fixed
-- Initialize character buffer only when used and move it to heap ([#101](https://github.com/tuupola/hagl/pull/101), [#44](https://github.com/tuupola/hagl/issues/44)) .
 - Overflow bug when resizing big bitmaps ([#102](https://github.com/tuupola/hagl/pull/102), [#49](https://github.com/tuupola/hagl/issues/49)) .
+- Both horizontal and vertical lines were one pixel too short ([#110](https://github.com/tuupola/hagl/pull/110)) .
 
 ### Added
 - New `hagl_bitmap_init()` function ([#98](https://github.com/tuupola/hagl/pull/98)).

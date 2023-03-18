@@ -56,17 +56,17 @@ hagl_draw_hline_xyw(void const *_surface, int16_t x0, int16_t y0, uint16_t w, ha
         }
 
         /* Everything outside clip window, nothing to do. */
-        if (width < 0)  {
+        if (width <= 0)  {
             return;
         }
 
         /* Cut anything going over right edge of clip window. */
         if (((x0 + width) > surface->clip.x1)) {
-            width = width - (x0 + width - surface->clip.x1);
+            width = width - (x0 + width - 1 - surface->clip.x1);
         }
 
         surface->hline(&surface, x0, y0, width, color);
     } else {
-        hagl_draw_line(surface, x0, y0, x0 + w, y0, color);
+        hagl_draw_line(surface, x0, y0, x0 + w - 1, y0, color);
     }
 }
