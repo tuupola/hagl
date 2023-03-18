@@ -64,7 +64,7 @@ hline(void *_bitmap, int16_t x0, int16_t y0, uint16_t width, hagl_color_t color)
     hagl_bitmap_t *bitmap = _bitmap;
 
     hagl_color_t *ptr = (hagl_color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
-    for (uint16_t x = 0; x < width; x++) {
+    for (uint16_t x = 0; x <= width; x++) {
         *ptr++ = color;
     }
 }
@@ -75,7 +75,7 @@ vline(void *_bitmap, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color
     hagl_bitmap_t *bitmap = _bitmap;
 
     hagl_color_t *ptr = (hagl_color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
-    for (uint16_t y = 0; y < height; y++) {
+    for (uint16_t y = 0; y <= height; y++) {
         *ptr = color;
         ptr += bitmap->pitch / (bitmap->depth / 8);
     }
