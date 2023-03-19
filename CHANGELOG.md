@@ -11,7 +11,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 - Overflow bug when resizing big bitmaps ([#102](https://github.com/tuupola/hagl/pull/102), [#49](https://github.com/tuupola/hagl/issues/49)) .
-- Both horizontal and vertical lines were one pixel too short ([#110](https://github.com/tuupola/hagl/pull/110), [#111](https://github.com/tuupola/hagl/pull/111)) .
+- Circle rendering was slightly malformed ([#106](https://github.com/tuupola/hagl/pull/106), [#109](https://github.com/tuupola/hagl/pull/109)) .
+- Both horizontal and vertical lines were one pixel too short ([#110](https://github.com/tuupola/hagl/pull/110), [#111](https://github.com/tuupola/hagl/pull/111)).
 
 ### Added
 - New `hagl_bitmap_init()` function ([#98](https://github.com/tuupola/hagl/pull/98)).
