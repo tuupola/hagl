@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## [0.7.0-dev](https://github.com/tuupola/hagl/compare/0.6.0...master) - unreleased
+## [0.7.0](https://github.com/tuupola/hagl/compare/0.6.0...0.7.0) - 2023-03-19
 
 ### Changed
 - Rename `bitmap.c` to `hagl_bitmap.c` ([#100](https://github.com/tuupola/hagl/pull/100)).
