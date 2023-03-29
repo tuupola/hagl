@@ -53,20 +53,10 @@ typedef struct {
     hagl_color_t (*color)(void *self, uint8_t r, uint8_t g, uint8_t b);
     void (*blit)(void *self, uint16_t x0, uint16_t y0, hagl_bitmap_t *src);
     void (*scale_blit)(void *self, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *src);
-<<<<<<< HEAD
     void (*blit_alpha)(void *self, int16_t x0, int16_t y0, hagl_bitmap_t *src, hagl_color_t alpha);
     void (*scale_blit_alpha)(void *self, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *src, hagl_color_t alpha);
-=======
-<<<<<<< HEAD
->>>>>>> 2bf60ed (Added blit_alpha and scale_blit_alpha to backend, bitmap and surface)
     void (*hline)(void *self, int16_t x0, int16_t y0, uint16_t width, hagl_color_t color);
     void (*vline)(void *self, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color);
-=======
-    void (*blit_alpha)(void *self, int16_t x0, int16_t y0, hagl_bitmap_t *src, color_t alpha);
-    void (*scale_blit_alpha)(void *self, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *src, color_t alpha);
-    void (*hline)(void *self, int16_t x0, int16_t y0, uint16_t width, color_t color);
-    void (*vline)(void *self, int16_t x0, int16_t y0, uint16_t height, color_t color);
->>>>>>> f9196ad (Added blit_alpha and scale_blit_alpha to backend, bitmap and surface)
 } hagl_surface_t;
 
 #ifdef __cplusplus

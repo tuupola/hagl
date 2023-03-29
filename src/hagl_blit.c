@@ -67,7 +67,7 @@ hagl_blit_xy_extended(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_
             (x0 >= surface->clip.x0) &&
             (y0 >= surface->clip.y0) &&
             (x0 + source->width <= surface->clip.x1) &&
-            (y0 + source->height <= surface->clip.y1)
+            (y0 + source->height <= surface->clip.y1) &&
             (x0 >= surface->clip.x0) &&
             (y0 >= surface->clip.y0) &&
             (x0 + source->width <= surface->clip.x1) &&
@@ -95,12 +95,6 @@ hagl_blit_xy_extended(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_
             }
         }
     }
-                if ((!is_transparent) || (is_transparent && transparent_color!=color)) {
-                    hagl_put_pixel(surface, x0 + x, y0 + y, color);
-                }
-            }
-        }
-    }
 };
 
 void
@@ -114,8 +108,8 @@ hagl_blit_xywh_extended(void const *_surface, uint16_t x0, uint16_t y0, uint16_t
         surface->scale_blit_alpha(&surface, x0, y0, w, h, source, transparent_color);
     } else {
         /* local put_pixel fallback */
-        color_t color;
-        color_t *ptr = (color_t *) source->buffer;
+        hagl_color_t color;
+        hagl_color_t *ptr = (hagl_color_t *) source->buffer;
         uint32_t x_ratio = (uint32_t)((source->width << 16) / w);
         uint32_t y_ratio = (uint32_t)((source->height << 16) / h);
         for (uint16_t y = 0; y < h; y++) {
