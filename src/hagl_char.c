@@ -118,7 +118,6 @@ hagl_put_char_styled(void const *_surface, wchar_t code, int16_t x0, int16_t y0,
                 }
             }
             ptr++;
-            ptr++;
         }
         glyph.buffer += glyph.pitch;
     }
