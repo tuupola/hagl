@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## [0.7.0-dev](https://github.com/tuupola/hagl/compare/0.6.0...master) - unreleased
+## [0.7.0](https://github.com/tuupola/hagl/compare/0.6.0...0.7.0) - 2023-03-19
 
 ### Changed
 - Rename `bitmap.c` to `hagl_bitmap.c` ([#100](https://github.com/tuupola/hagl/pull/100)).
@@ -11,7 +11,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 - Overflow bug when resizing big bitmaps ([#102](https://github.com/tuupola/hagl/pull/102), [#49](https://github.com/tuupola/hagl/issues/49)) .
-- Both horizontal and vertical lines were one pixel too short ([#110](https://github.com/tuupola/hagl/pull/110), [#111](https://github.com/tuupola/hagl/pull/111)) .
+- Circle rendering was slightly malformed ([#106](https://github.com/tuupola/hagl/pull/106), [#109](https://github.com/tuupola/hagl/pull/109)) .
+- Both horizontal and vertical lines were one pixel too short ([#110](https://github.com/tuupola/hagl/pull/110), [#111](https://github.com/tuupola/hagl/pull/111)).
 
 ### Added
 - New `hagl_bitmap_init()` function ([#98](https://github.com/tuupola/hagl/pull/98)).
