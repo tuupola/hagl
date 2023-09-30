@@ -33,8 +33,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_PIXEL_H
-#define _HAGL_PIXEL_H
+#ifndef _HAGL_IMAGE_H
+#define _HAGL_IMAGE_H
 
 #include <stdint.h>
 
@@ -48,7 +48,8 @@ extern "C" {
  * Load an image
  *
  * Output will be clipped to the current clip window. Does not do
- * any scaling. Currently supports only baseline jpg images.
+ * any scaling. Currently supports only baseline jpg images
+ * (i.e. it does not support progressive jpg).
  *
  * @param surface
  * @param x0
@@ -64,4 +65,4 @@ hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char *filenam
 }
 #endif /* __cplusplus */
 
-#endif /* _HAGL_PIXEL_H */
+#endif /* _HAGL_IMAGE_H */
