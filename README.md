@@ -289,7 +289,7 @@ for (uint16_t i = 1; i < 30; i++) {
     hagl_draw_rounded_rectangle(display, x0, y0, x1, y1, r, color);
     hagl_draw_rounded_rectangle_xyxy(display, x0, y0, x1, y1, r, color);
 
-    hagl_draw_rounded_rectangle_xyxy(display, x0, y0, w, h, r, color);
+    hagl_draw_rounded_rectangle_xywh(display, x0, y0, w, h, r, color);
 }
 ```
 
