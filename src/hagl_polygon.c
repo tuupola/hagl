@@ -68,7 +68,7 @@ void
 hagl_fill_polygon(void const *_surface, int16_t amount, int16_t *vertices, hagl_color_t color)
 {
     const hagl_surface_t *surface = _surface;
-    uint16_t nodes[64];
+    int16_t nodes[64];
     int16_t y;
 
     float x0;
