@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## [0.8.0](https://github.com/tuupola/hagl/compare/0.7.0...master) - unreleased
+
+### Fixed
+- Polygon and rectangle output did not match ([#123](https://github.com/tuupola/hagl/pull/123), [#124](https://github.com/tuupola/hagl/pull/124)) .
+
+
 ## [0.7.0](https://github.com/tuupola/hagl/compare/0.6.0...0.7.0) - 2023-03-19
 
 ### Changed
