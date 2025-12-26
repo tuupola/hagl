@@ -116,11 +116,7 @@ hagl_fill_polygon(void const *_surface, int16_t amount, int16_t *vertices, hagl_
                 count++;
             } else if (y == y0 && y == y1) {
                 /*  Draw horizontal lines */
-                if (x0 < x1) {
-                    hagl_draw_hline(surface, x0, y0, x1 - x0 + 1, color);
-                } else {
-                    hagl_draw_hline(surface, x1, y0, x0 - x1 + 1, color);
-                }
+                hagl_draw_hline_xyx(surface, x0, y0, x1, color);
             }
             j = i;
         }
@@ -142,8 +138,7 @@ hagl_fill_polygon(void const *_surface, int16_t amount, int16_t *vertices, hagl_
 
         /* Draw lines between nodes. */
         for (int16_t i = 0; i < count; i += 2) {
-            int16_t width = nodes[i + 1] - nodes[i] + 1;
-            hagl_draw_hline(surface, nodes[i], y, width, color);
+            hagl_draw_hline_xyx(surface, nodes[i], y, nodes[i + 1], color);
         }
     }
 }
