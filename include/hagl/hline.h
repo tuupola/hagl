@@ -75,7 +75,8 @@ hagl_draw_hline_xyw(void const *surface, int16_t x0, int16_t y0, uint16_t width,
 static inline void
 hagl_draw_hline_xyx(void const *surface, int16_t x0, int16_t y0, int16_t x1, hagl_color_t color)
 {
-    hagl_draw_hline_xyw(surface, x0, y0, abs(x1 - x0) + 1, color);
+    int16_t min_x = (x0 < x1) ? x0 : x1;
+    hagl_draw_hline_xyw(surface, min_x, y0, abs(x1 - x0) + 1, color);
 }
 
 /**
