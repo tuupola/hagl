@@ -107,13 +107,13 @@ hagl_fill_polygon(void const *_surface, int16_t amount, int16_t *vertices, hagl_
             ) {
                 nodes[count] = (int16_t)(x0 + (y - y0) / (y1 - y0) * (x1 - x0));
                 count++;
-            }
-            /*  Draw horizonlat lines. */
-            else if(y == y0 && y == y1) {
-                if(x0 < x1)
+            } else if (y == y0 && y == y1) {
+                /*  Draw horizontal lines */
+                if (x0 < x1) {
                     hagl_draw_hline(surface, x0, y0, x1 - x0 + 1, color);
-                else
+                } else {
                     hagl_draw_hline(surface, x1, y0, x0 - x1 + 1, color);
+                }
             }
             j = i;
         }
