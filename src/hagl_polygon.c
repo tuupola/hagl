@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2018-2023 Mika Tuupola
+Copyright (c) 2018-2025 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -108,12 +108,7 @@ hagl_fill_polygon(void const *_surface, int16_t amount, int16_t *vertices, hagl_
                 nodes[count] = (int16_t)(x0 + (y - y0) / (y1 - y0) * (x1 - x0));
                 count++;
             } else if (y == y0 && y == y1) {
-                /*  Draw horizontal lines */
-                if (x0 < x1) {
-                    hagl_draw_hline(surface, x0, y0, x1 - x0 + 1, color);
-                } else {
-                    hagl_draw_hline(surface, x1, y0, x0 - x1 + 1, color);
-                }
+                hagl_draw_hline_xyx(surface, x0, y0, x1, color);
             }
             j = i;
         }
@@ -135,8 +130,7 @@ hagl_fill_polygon(void const *_surface, int16_t amount, int16_t *vertices, hagl_
 
         /* Draw lines between nodes. */
         for (int16_t i = 0; i < count; i += 2) {
-            int16_t width = nodes[i + 1] - nodes[i] + 1;
-            hagl_draw_hline(surface, nodes[i], y, width, color);
+            hagl_draw_hline_xyx(surface, nodes[i], y, nodes[i + 1], color);
         }
     }
 }
