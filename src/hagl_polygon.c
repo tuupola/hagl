@@ -89,7 +89,7 @@ hagl_fill_polygon(void const *_surface, int16_t amount, int16_t *vertices, hagl_
     }
 
     /*  Loop through the rows of the image. */
-    for (y = miny; y < maxy; y++) {
+    for (y = miny; y <= maxy; y++) {
 
         /*  Build a list of nodes. */
         int16_t count = 0;
@@ -107,6 +107,13 @@ hagl_fill_polygon(void const *_surface, int16_t amount, int16_t *vertices, hagl_
             ) {
                 nodes[count] = (int16_t)(x0 + (y - y0) / (y1 - y0) * (x1 - x0));
                 count++;
+            } else if (y == y0 && y == y1) {
+                /*  Draw horizontal lines */
+                if (x0 < x1) {
+                    hagl_draw_hline(surface, x0, y0, x1 - x0 + 1, color);
+                } else {
+                    hagl_draw_hline(surface, x1, y0, x0 - x1 + 1, color);
+                }
             }
             j = i;
         }
@@ -128,7 +135,7 @@ hagl_fill_polygon(void const *_surface, int16_t amount, int16_t *vertices, hagl_
 
         /* Draw lines between nodes. */
         for (int16_t i = 0; i < count; i += 2) {
-            int16_t width = nodes[i + 1] - nodes[i];
+            int16_t width = nodes[i + 1] - nodes[i] + 1;
             hagl_draw_hline(surface, nodes[i], y, width, color);
         }
     }
