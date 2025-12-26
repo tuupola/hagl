@@ -72,7 +72,8 @@ hagl_draw_vline_xyh(void const *surface, int16_t x0, int16_t y0, uint16_t height
 static inline void
 hagl_draw_vline_xyy(void const *surface, int16_t x0, int16_t y0, int16_t y1, hagl_color_t color)
 {
-    hagl_draw_vline_xyh(surface, x0, y0, abs(y1 - y0) + 1, color);
+    int16_t min_y = (y0 < y1) ? y0 : y1;
+    hagl_draw_vline_xyh(surface, x0, min_y, abs(y1 - y0) + 1, color);
 }
 
 /**
