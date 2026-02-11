@@ -34,6 +34,7 @@ SPDX-License-Identifier: MIT
 #include <string.h>
 
 #include "greatest.h"
+#include "crc32.h"
 #include "hagl.h"
 
 static hagl_backend_t backend;
@@ -80,9 +81,21 @@ TEST fill_polygon_square(void) {
     PASS();
 }
 
+TEST fill_polygon_square_regression(void) {
+    int16_t vertices[] = {10, 10, 20, 10, 20, 20, 10, 20};
+    hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc = crc32(backend.buffer, size);
+
+    ASSERT_EQ(0x52CF24BD, crc);
+    PASS();
+}
+
 SUITE(polygon_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(fill_polygon_square);
+    RUN_TEST(fill_polygon_square_regression);
 }
 
 GREATEST_MAIN_DEFS();
