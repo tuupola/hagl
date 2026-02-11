@@ -110,11 +110,70 @@ TEST test_fill_polygon_square_match_rectangle(void) {
     PASS();
 }
 
+TEST test_fill_polygon_triangle(void) {
+    /* Right triangle: (10,10) -> (30,10) -> (10,30) */
+    int16_t vertices[] = {10, 10, 30, 10, 10, 30};
+    hagl_fill_polygon(&backend, 3, vertices, 0xFFFF);
+
+    /* Inside: points well within the triangle */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 15));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 12, 20));
+
+    /* Inside: all three vertices */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 30, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 30));
+
+    /* Inside: edge midpoints */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 20));
+
+    /* Outside: beyond the hypotenuse */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 25, 25));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 30, 30));
+
+    /* Outside: beyond the axis-aligned edges */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 9, 20));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 20, 9));
+
+    PASS();
+}
+
+TEST test_fill_polygon_triangle_regression(void) {
+    int16_t vertices[] = {10, 10, 30, 10, 10, 30};
+    hagl_fill_polygon(&backend, 3, vertices, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc = crc32(backend.buffer, size);
+
+    ASSERT_EQ(0x61E1F4F0, crc);
+    PASS();
+}
+
+TEST test_fill_polygon_triangle_match_fill_triangle(void) {
+    int16_t vertices[] = {10, 10, 30, 10, 10, 30};
+    hagl_fill_polygon(&backend, 3, vertices, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc_polygon = crc32(backend.buffer, size);
+
+    memset(backend.buffer, 0, size);
+    hagl_fill_triangle(&backend, 10, 10, 30, 10, 10, 30, 0xFFFF);
+
+    uint32_t crc_triangle = crc32(backend.buffer, size);
+
+    ASSERT_EQ(crc_triangle, crc_polygon);
+    PASS();
+}
+
 SUITE(polygon_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_fill_polygon_square);
     RUN_TEST(test_fill_polygon_square_regression);
     RUN_TEST(test_fill_polygon_square_match_rectangle);
+    RUN_TEST(test_fill_polygon_triangle);
+    RUN_TEST(test_fill_polygon_triangle_regression);
+    RUN_TEST(test_fill_polygon_triangle_match_fill_triangle);
 }
 
 GREATEST_MAIN_DEFS();

@@ -14,6 +14,7 @@ SRCS = \
     ../src/hagl_line.c \
     ../src/hagl.c \
     ../src/hagl_rectangle.c \
+    ../src/hagl_triangle.c \
     ../src/rgb565.c
 
 all: test_fill_polygon
