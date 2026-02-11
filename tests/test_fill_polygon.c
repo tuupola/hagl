@@ -166,6 +166,63 @@ TEST test_fill_polygon_triangle_match_fill_triangle(void) {
     PASS();
 }
 
+/*
+ * Concave L-shape polygon:
+ *
+ * (10,10)-----(30,10)
+ *   |             |
+ *   |  (20,20)--(30,20)
+ *   |    |
+ *   |    |
+ * (10,40)-(20,40)
+ */
+
+TEST test_fill_polygon_concave(void) {
+    int16_t vertices[] = {10, 10, 30, 10, 30, 20, 20, 20, 20, 40, 10, 40};
+    hagl_fill_polygon(&backend, 6, vertices, 0xFFFF);
+
+    /* Inside: top arm */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 25, 15));
+
+    /* Inside: bottom arm */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 30));
+
+    /* Inside: all six vertices */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 30, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 30, 20));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 20));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 40));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 40));
+
+    /* Inside: where both arms meet */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 20));
+
+    /* Outside: inside bounding box but outside the L */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 25, 25));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 25, 30));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 25, 39));
+
+    /* Outside: beyond edges */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 9, 25));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 21, 30));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 9));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 41));
+
+    PASS();
+}
+
+TEST test_fill_polygon_concave_regression(void) {
+    int16_t vertices[] = {10, 10, 30, 10, 30, 20, 20, 20, 20, 40, 10, 40};
+    hagl_fill_polygon(&backend, 6, vertices, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc = crc32(backend.buffer, size);
+
+    ASSERT_EQ(0x080BDE15, crc);
+    PASS();
+}
+
 SUITE(polygon_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_fill_polygon_square);
@@ -174,6 +231,8 @@ SUITE(polygon_suite) {
     RUN_TEST(test_fill_polygon_triangle);
     RUN_TEST(test_fill_polygon_triangle_regression);
     RUN_TEST(test_fill_polygon_triangle_match_fill_triangle);
+    RUN_TEST(test_fill_polygon_concave);
+    RUN_TEST(test_fill_polygon_concave_regression);
 }
 
 GREATEST_MAIN_DEFS();
