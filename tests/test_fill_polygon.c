@@ -39,6 +39,20 @@ SPDX-License-Identifier: MIT
 
 static hagl_backend_t backend;
 
+static uint32_t
+count_pixels(hagl_backend_t *backend, hagl_color_t color)
+{
+    uint32_t count = 0;
+    for (int16_t y = 0; y < backend->height; y++) {
+        for (int16_t x = 0; x < backend->width; x++) {
+            if (hagl_get_pixel(backend, x, y) == color) {
+                count++;
+            }
+        }
+    }
+    return count;
+}
+
 static void setup_callback(void *data) {
     memset(&backend, 0, sizeof(hagl_backend_t));
     hagl_hal_init(&backend);
@@ -84,6 +98,9 @@ TEST test_fill_polygon_square(void) {
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 21, 9));
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 21, 21));
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 9, 21));
+
+    /* Total filled area: 11 x 11 = 121 pixels */
+    ASSERT_EQ(121, count_pixels(&backend, 0xFFFF));
 
     PASS();
 }
@@ -223,6 +240,9 @@ TEST test_fill_polygon_concave(void) {
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 21, 30));
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 9));
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 41));
+
+    /* Total filled area: top 21x11 + bottom 11x20 = 451 pixels */
+    ASSERT_EQ(451, count_pixels(&backend, 0xFFFF));
 
     PASS();
 }
