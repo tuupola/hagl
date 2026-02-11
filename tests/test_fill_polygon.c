@@ -46,7 +46,7 @@ static void setup_callback(void *data) {
     hagl_clear(&backend);
 }
 
-TEST fill_polygon_square(void) {
+TEST test_fill_polygon_square(void) {
     /* Square: 10,10 -> 20,10 -> 20,20 -> 10,20 */
     int16_t vertices[] = {10, 10, 20, 10, 20, 20, 10, 20};
     hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
@@ -81,7 +81,7 @@ TEST fill_polygon_square(void) {
     PASS();
 }
 
-TEST fill_polygon_square_regression(void) {
+TEST test_fill_polygon_square_regression(void) {
     int16_t vertices[] = {10, 10, 20, 10, 20, 20, 10, 20};
     hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
 
@@ -92,10 +92,29 @@ TEST fill_polygon_square_regression(void) {
     PASS();
 }
 
+TEST test_fill_polygon_square_match_rectangle(void) {
+    /* Draw a filled square polygon. */
+    int16_t vertices[] = {10, 10, 20, 10, 20, 20, 10, 20};
+    hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc_polygon = crc32(backend.buffer, size);
+
+    /* Clear and draw the same area with fill rectangle. */
+    memset(backend.buffer, 0, size);
+    hagl_fill_rectangle_xyxy(&backend, 10, 10, 20, 20, 0xFFFF);
+
+    uint32_t crc_rectangle = crc32(backend.buffer, size);
+
+    ASSERT_EQ(crc_rectangle, crc_polygon);
+    PASS();
+}
+
 SUITE(polygon_suite) {
     SET_SETUP(setup_callback, NULL);
-    RUN_TEST(fill_polygon_square);
-    RUN_TEST(fill_polygon_square_regression);
+    RUN_TEST(test_fill_polygon_square);
+    RUN_TEST(test_fill_polygon_square_regression);
+    RUN_TEST(test_fill_polygon_square_match_rectangle);
 }
 
 GREATEST_MAIN_DEFS();
