@@ -258,6 +258,61 @@ TEST test_fill_polygon_concave_regression(void) {
     PASS();
 }
 
+/*
+ * Self-intersecting bowtie shape:
+ *
+ * (10,10)-------(30,10)
+ *     \#########/
+ *       \#####/
+ *         \#/
+ *          X
+ *         /#\
+ *       /#####\
+ *     /#########\
+ * (10,30)-------(30,30)
+ */
+TEST test_fill_polygon_bowtie(void) {
+    int16_t vertices[] = {10, 10, 30, 10, 10, 30, 30, 30};
+    hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
+
+    /* Inside: top triangle */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 12));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 15));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 11));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 25, 11));
+
+    /* Inside: bottom triangle */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 28));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 25));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 29));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 25, 29));
+
+    /* Outside: left and right of center */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 11, 15));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 29, 15));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 11, 25));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 29, 25));
+
+    /* Outside: beyond bounding box */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 9, 20));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 31, 20));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 20, 9));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 20, 31));
+
+    PASS();
+}
+
+TEST test_fill_polygon_bowtie_regression(void) {
+    int16_t vertices[] = {10, 10, 30, 10, 10, 30, 30, 30};
+    hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc = crc32(backend.buffer, size);
+
+    ASSERT_EQ(0x803DF4F1, crc);
+    PASS();
+}
+
 SUITE(polygon_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_fill_polygon_square);
@@ -268,6 +323,8 @@ SUITE(polygon_suite) {
     RUN_TEST(test_fill_polygon_triangle_match_fill_triangle);
     RUN_TEST(test_fill_polygon_concave);
     RUN_TEST(test_fill_polygon_concave_regression);
+    RUN_TEST(test_fill_polygon_bowtie);
+    RUN_TEST(test_fill_polygon_bowtie_regression);
 }
 
 GREATEST_MAIN_DEFS();
