@@ -46,8 +46,15 @@ static void setup_callback(void *data) {
     hagl_clear(&backend);
 }
 
+/*
+ * Axis-aligned square:
+ *
+ * (10,10)-----(20,10)
+ *   |             |
+ *   |             |
+ * (10,20)-----(20,20)
+ */
 TEST test_fill_polygon_square(void) {
-    /* Square: 10,10 -> 20,10 -> 20,20 -> 10,20 */
     int16_t vertices[] = {10, 10, 20, 10, 20, 20, 10, 20};
     hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
 
@@ -110,8 +117,17 @@ TEST test_fill_polygon_square_match_rectangle(void) {
     PASS();
 }
 
+/*
+ * Right triangle:
+ *
+ * (10,10)-----(30,10)
+ *   |        /
+ *   |      /
+ *   |    /
+ *   |  /
+ * (10,30)
+ */
 TEST test_fill_polygon_triangle(void) {
-    /* Right triangle: (10,10) -> (30,10) -> (10,30) */
     int16_t vertices[] = {10, 10, 30, 10, 10, 30};
     hagl_fill_polygon(&backend, 3, vertices, 0xFFFF);
 
@@ -176,7 +192,6 @@ TEST test_fill_polygon_triangle_match_fill_triangle(void) {
  *   |    |
  * (10,40)-(20,40)
  */
-
 TEST test_fill_polygon_concave(void) {
     int16_t vertices[] = {10, 10, 30, 10, 30, 20, 20, 20, 20, 40, 10, 40};
     hagl_fill_polygon(&backend, 6, vertices, 0xFFFF);
