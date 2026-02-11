@@ -16,15 +16,15 @@ SRCS = \
     ../src/hagl_rectangle.c \
     ../src/rgb565.c
 
-all: test_polygon
+all: test_fill_polygon
 
-test_polygon: test_polygon.c $(SRCS)
+test_fill_polygon: test_fill_polygon.c $(SRCS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
-test: test_polygon
-	./test_polygon
+test: test_fill_polygon
+	./test_fill_polygon
 
 clean:
-	rm -f test_polygon
+	rm -f test_fill_polygon
 
 .PHONY: all test clean
