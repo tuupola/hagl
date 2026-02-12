@@ -72,19 +72,15 @@ hagl_fill_polygon(void const *_surface, int16_t amount, int16_t *vertices, hagl_
 {
     const hagl_surface_t *surface = _surface;
     int16_t nodes[64];
-    int16_t y;
+    int16_t y, miny, maxy;
+    float x0, y0, x1, y1;
 
     if (amount < 3) {
         return;
     }
 
-    float x0;
-    float y0;
-    float x1;
-    float y1;
-
-    int16_t miny = surface->height;
-    int16_t maxy = 0;
+    miny = surface->height;
+    maxy = 0;
 
     for (uint8_t i = 0; i < amount; i++) {
         if (miny > vertices[(i << 1) + 1]) {
