@@ -512,6 +512,33 @@ TEST test_fill_polygon_trapezoid_regression(void) {
     PASS();
 }
 
+TEST test_fill_polygon_degenerate_zero_vertices(void) {
+    int16_t vertices[] = {0, 0};
+    hagl_fill_polygon(&backend, 0, vertices, 0xFFFF);
+
+    /* Should not crash, should not draw anything */
+    ASSERT_EQ(0, count_pixels(&backend, 0xFFFF));
+    PASS();
+}
+
+TEST test_fill_polygon_degenerate_one_vertex(void) {
+    int16_t vertices[] = {20, 20};
+    hagl_fill_polygon(&backend, 1, vertices, 0xFFFF);
+
+    /* Should not crash, should not draw anything */
+    ASSERT_EQ(0, count_pixels(&backend, 0xFFFF));
+    PASS();
+}
+
+TEST test_fill_polygon_degenerate_two_vertices(void) {
+    int16_t vertices[] = {10, 10, 20, 20};
+    hagl_fill_polygon(&backend, 2, vertices, 0xFFFF);
+
+    /* Should not crash, should not draw anything */
+    ASSERT_EQ(0, count_pixels(&backend, 0xFFFF));
+    PASS();
+}
+
 SUITE(polygon_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_fill_polygon_square);
@@ -533,6 +560,9 @@ SUITE(polygon_suite) {
     RUN_TEST(test_fill_polygon_clip_outside);
     RUN_TEST(test_fill_polygon_trapezoid);
     RUN_TEST(test_fill_polygon_trapezoid_regression);
+    RUN_TEST(test_fill_polygon_degenerate_zero_vertices);
+    RUN_TEST(test_fill_polygon_degenerate_one_vertex);
+    RUN_TEST(test_fill_polygon_degenerate_two_vertices);
 }
 
 GREATEST_MAIN_DEFS();
