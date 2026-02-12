@@ -64,8 +64,8 @@ static void setup_callback(void *data) {
  * Axis-aligned square:
  *
  * (10,10)-----(20,10)
- *   |             |
- *   |             |
+ *   |###########|
+ *   |###########|
  * (10,20)-----(20,20)
  */
 TEST test_fill_polygon_square(void) {
@@ -134,14 +134,33 @@ TEST test_fill_polygon_square_match_rectangle(void) {
     PASS();
 }
 
+TEST test_fill_polygon_square_winding_order(void) {
+    /* Clockwise */
+    int16_t cw[] = {10, 10, 20, 10, 20, 20, 10, 20};
+    hagl_fill_polygon(&backend, 4, cw, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc_cw = crc32(backend.buffer, size);
+
+    /* Clear and draw counterclockwise */
+    memset(backend.buffer, 0, size);
+    int16_t ccw[] = {10, 10, 10, 20, 20, 20, 20, 10};
+    hagl_fill_polygon(&backend, 4, ccw, 0xFFFF);
+
+    uint32_t crc_ccw = crc32(backend.buffer, size);
+
+    ASSERT_EQ(crc_cw, crc_ccw);
+    PASS();
+}
+
 /*
  * Right triangle:
  *
  * (10,10)-----(30,10)
- *   |        /
- *   |      /
- *   |    /
- *   |  /
+ *   |########/
+ *   |######/
+ *   |####/
+ *   |##/
  * (10,30)
  */
 TEST test_fill_polygon_triangle(void) {
@@ -199,14 +218,33 @@ TEST test_fill_polygon_triangle_match_fill_triangle(void) {
     PASS();
 }
 
+TEST test_fill_polygon_triangle_winding_order(void) {
+    /* Clockwise */
+    int16_t cw[] = {10, 10, 30, 10, 10, 30};
+    hagl_fill_polygon(&backend, 3, cw, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc_cw = crc32(backend.buffer, size);
+
+    /* Clear and draw counterclockwise */
+    memset(backend.buffer, 0, size);
+    int16_t ccw[] = {10, 10, 10, 30, 30, 10};
+    hagl_fill_polygon(&backend, 3, ccw, 0xFFFF);
+
+    uint32_t crc_ccw = crc32(backend.buffer, size);
+
+    ASSERT_EQ(crc_cw, crc_ccw);
+    PASS();
+}
+
 /*
  * Concave L-shape polygon:
  *
  * (10,10)-----(30,10)
- *   |             |
- *   |  (20,20)--(30,20)
- *   |    |
- *   |    |
+ *   |#############|
+ *   |##(20,20)--(30,20)
+ *   |####|
+ *   |####|
  * (10,40)-(20,40)
  */
 TEST test_fill_polygon_concave(void) {
@@ -318,9 +356,11 @@ SUITE(polygon_suite) {
     RUN_TEST(test_fill_polygon_square);
     RUN_TEST(test_fill_polygon_square_regression);
     RUN_TEST(test_fill_polygon_square_match_rectangle);
+    RUN_TEST(test_fill_polygon_square_winding_order);
     RUN_TEST(test_fill_polygon_triangle);
     RUN_TEST(test_fill_polygon_triangle_regression);
     RUN_TEST(test_fill_polygon_triangle_match_fill_triangle);
+    RUN_TEST(test_fill_polygon_triangle_winding_order);
     RUN_TEST(test_fill_polygon_concave);
     RUN_TEST(test_fill_polygon_concave_regression);
     RUN_TEST(test_fill_polygon_bowtie);
