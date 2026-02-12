@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2018-2023 Mika Tuupola
+Copyright (c) 2018-2026 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -46,7 +46,7 @@ hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, hagl_c
         return;
     }
 
-    for(int16_t i = 0; i < amount - 1; i++) {
+    for (int16_t i = 0; i < amount - 1; i++) {
         hagl_draw_line(
             surface,
             vertices[(i << 1 ) + 0],
@@ -66,25 +66,21 @@ hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, hagl_c
     );
 }
 
-/* Adapted from  http://alienryderflex.com/polygon_fill/ */
+/* Adapted from http://alienryderflex.com/polygon_fill/ */
 void
 hagl_fill_polygon(void const *_surface, int16_t amount, int16_t *vertices, hagl_color_t color)
 {
     const hagl_surface_t *surface = _surface;
     int16_t nodes[64];
-    int16_t y;
+    int16_t y, miny, maxy;
+    float x0, y0, x1, y1;
 
     if (amount < 3) {
         return;
     }
 
-    float x0;
-    float y0;
-    float x1;
-    float y1;
-
-    int16_t miny = surface->height;
-    int16_t maxy = 0;
+    miny = surface->height;
+    maxy = 0;
 
     for (uint8_t i = 0; i < amount; i++) {
         if (miny > vertices[(i << 1) + 1]) {
@@ -112,15 +108,12 @@ hagl_fill_polygon(void const *_surface, int16_t amount, int16_t *vertices, hagl_
                 (y0 < (float)y && y1 >= (float)y) ||
                 (y1 < (float)y && y0 >= (float)y)
             ) {
-                nodes[count] = (int16_t)(x0 + (y - y0) / (y1 - y0) * (x1 - x0));
-                count++;
-            } else if (y == y0 && y == y1) {
-                /*  Draw horizontal lines */
-                if (x0 < x1) {
-                    hagl_draw_hline(surface, x0, y0, x1 - x0 + 1, color);
-                } else {
-                    hagl_draw_hline(surface, x1, y0, x0 - x1 + 1, color);
+                if (count < 64) {
+                    nodes[count] = (int16_t)(x0 + (y - y0) / (y1 - y0) * (x1 - x0));
+                    count++;
                 }
+            } else if (y == y0 && y == y1) {
+                hagl_draw_hline_xyx(surface, x0, y0, x1, color);
             }
             j = i;
         }
@@ -142,8 +135,7 @@ hagl_fill_polygon(void const *_surface, int16_t amount, int16_t *vertices, hagl_
 
         /* Draw lines between nodes. */
         for (int16_t i = 0; i < count; i += 2) {
-            int16_t width = nodes[i + 1] - nodes[i] + 1;
-            hagl_draw_hline(surface, nodes[i], y, width, color);
+            hagl_draw_hline_xyx(surface, nodes[i], y, nodes[i + 1], color);
         }
     }
 }
