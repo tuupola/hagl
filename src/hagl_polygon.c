@@ -46,7 +46,7 @@ hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, hagl_c
         return;
     }
 
-    for(int16_t i = 0; i < amount - 1; i++) {
+    for (int16_t i = 0; i < amount - 1; i++) {
         hagl_draw_line(
             surface,
             vertices[(i << 1 ) + 0],
@@ -66,7 +66,7 @@ hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, hagl_c
     );
 }
 
-/* Adapted from  http://alienryderflex.com/polygon_fill/ */
+/* Adapted from http://alienryderflex.com/polygon_fill/ */
 void
 hagl_fill_polygon(void const *_surface, int16_t amount, int16_t *vertices, hagl_color_t color)
 {
