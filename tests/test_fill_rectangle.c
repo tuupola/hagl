@@ -134,11 +134,30 @@ test_fill_rectangle_xyxy_match_xywh(void) {
     PASS();
 }
 
+TEST
+test_fill_rectangle_xyxy_swapped(void) {
+    /* Draw with swapped coordinates (x0 > x1, y0 > y1). */
+    hagl_fill_rectangle_xyxy(&backend, 20, 20, 10, 10, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc_swapped = crc32(backend.buffer, size);
+
+    /* Clear and draw with normal coordinates. */
+    memset(backend.buffer, 0, size);
+    hagl_fill_rectangle_xyxy(&backend, 10, 10, 20, 20, 0xFFFF);
+
+    uint32_t crc_normal = crc32(backend.buffer, size);
+
+    ASSERT_EQ(crc_normal, crc_swapped);
+    PASS();
+}
+
 SUITE(fill_rectangle_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_fill_rectangle_xyxy);
     RUN_TEST(test_fill_rectangle_xyxy_regression);
     RUN_TEST(test_fill_rectangle_xyxy_match_xywh);
+    RUN_TEST(test_fill_rectangle_xyxy_swapped);
 }
 
 GREATEST_MAIN_DEFS();
