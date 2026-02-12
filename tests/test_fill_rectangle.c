@@ -152,12 +152,123 @@ test_fill_rectangle_xyxy_swapped(void) {
     PASS();
 }
 
+/*
+ * Rectangle clipped by top-left corner of display:
+ *
+ *            .(0,0)
+ *             |
+ * (-10,-10)-------(10,-10)
+ *    |        |######|
+ *    |        |######|
+ * (-10,10)----+---(10,10)
+ *
+ * Only the (0,0) to (10,10) portion is visible.
+ */
+TEST
+test_fill_rectangle_xyxy_clip_top_left(void) {
+    hagl_fill_rectangle_xyxy(&backend, -10, -10, 10, 10, 0xFFFF);
+
+    /* Inside: visible portion */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 5, 5));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 0, 0));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 0));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 0, 10));
+
+    /* Outside: beyond the rectangle inside display */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 11, 5));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 5, 11));
+
+    /* Total filled area: 11 x 11 = 121 pixels */
+    ASSERT_EQ(121, count_pixels(&backend, 0xFFFF));
+
+    PASS();
+}
+
+TEST
+test_fill_rectangle_xyxy_clip_top_left_regression(void) {
+    hagl_fill_rectangle_xyxy(&backend, -10, -10, 10, 10, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc = crc32(backend.buffer, size);
+
+    ASSERT_EQ(0x22DBDA01, crc);
+    PASS();
+}
+
+/*
+ * Rectangle clipped by bottom-right corner of display (320x240):
+ *
+ * (310,230)-------(330,230)
+ *    |######|      |
+ *    |######|      |
+ * (310,250)-+---(330,250)
+ *           |
+ *        .(319,239)
+ *
+ * Only the (310,230) to (319,239) portion is visible.
+ */
+TEST
+test_fill_rectangle_xyxy_clip_bottom_right(void) {
+    hagl_fill_rectangle_xyxy(&backend, 310, 230, 330, 250, 0xFFFF);
+
+    /* Inside: visible portion */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 315, 235));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 310, 230));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 319, 239));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 319, 230));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 310, 239));
+
+    /* Outside: beyond the rectangle inside display */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 309, 235));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 315, 229));
+
+    /* Total filled area: 10 x 10 = 100 pixels */
+    ASSERT_EQ(100, count_pixels(&backend, 0xFFFF));
+
+    PASS();
+}
+
+TEST
+test_fill_rectangle_xyxy_clip_bottom_right_regression(void) {
+    hagl_fill_rectangle_xyxy(&backend, 310, 230, 330, 250, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc = crc32(backend.buffer, size);
+
+    ASSERT_EQ(0xB46E0159, crc);
+    PASS();
+}
+
+/*
+ * Rectangle entirely outside display:
+ *
+ * (-30,-30)-----(-10,-30)
+ *    |              |
+ *    |              |
+ * (-30,-10)-----(-10,-10)
+ *
+ *                     .(0,0) display starts here
+ */
+TEST
+test_fill_rectangle_xyxy_clip_outside(void) {
+    hagl_fill_rectangle_xyxy(&backend, -30, -30, -10, -10, 0xFFFF);
+
+    ASSERT_EQ(0, count_pixels(&backend, 0xFFFF));
+    PASS();
+}
+
 SUITE(fill_rectangle_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_fill_rectangle_xyxy);
     RUN_TEST(test_fill_rectangle_xyxy_regression);
     RUN_TEST(test_fill_rectangle_xyxy_match_xywh);
     RUN_TEST(test_fill_rectangle_xyxy_swapped);
+    RUN_TEST(test_fill_rectangle_xyxy_clip_top_left);
+    RUN_TEST(test_fill_rectangle_xyxy_clip_top_left_regression);
+    RUN_TEST(test_fill_rectangle_xyxy_clip_bottom_right);
+    RUN_TEST(test_fill_rectangle_xyxy_clip_bottom_right_regression);
+    RUN_TEST(test_fill_rectangle_xyxy_clip_outside);
 }
 
 GREATEST_MAIN_DEFS();
