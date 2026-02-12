@@ -561,7 +561,7 @@ test_fill_polygon_degenerate_two_vertices(void) {
     PASS();
 }
 
-SUITE(polygon_suite) {
+SUITE(fill_polygon_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_fill_polygon_square);
     RUN_TEST(test_fill_polygon_square_regression);
@@ -592,6 +592,6 @@ GREATEST_MAIN_DEFS();
 int
 main(int argc, char **argv) {
     GREATEST_MAIN_BEGIN();
-    RUN_SUITE(polygon_suite);
+    RUN_SUITE(fill_polygon_suite);
     GREATEST_MAIN_END();
 }
