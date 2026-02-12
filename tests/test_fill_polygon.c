@@ -457,6 +457,61 @@ TEST test_fill_polygon_clip_outside(void) {
     PASS();
 }
 
+/*
+ * Trapezoid with horizontal edges (exercises y0 == y1 code path):
+ *
+ *     (15,10)---(25,10)
+ *    /################\
+ *   /##################\
+ * (10,30)---------(30,30)
+ */
+TEST test_fill_polygon_trapezoid(void) {
+    int16_t vertices[] = {15, 10, 25, 10, 30, 30, 10, 30};
+    hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
+
+    /* Inside: center */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 20));
+
+    /* Inside: vertices */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 25, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 30));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 30, 30));
+
+    /* Inside: midpoints of horizontal edges */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 30));
+
+    /* Inside: midpoints of diagonal edges */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 13, 20));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 27, 20));
+
+    /* Outside: above and below */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 20, 9));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 20, 31));
+
+    /* Outside: beyond the narrow top edge */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 14, 10));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 26, 10));
+
+    /* Outside: beyond the diagonal edges */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 9, 30));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 31, 30));
+
+    PASS();
+}
+
+TEST test_fill_polygon_trapezoid_regression(void) {
+    int16_t vertices[] = {15, 10, 25, 10, 30, 30, 10, 30};
+    hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc = crc32(backend.buffer, size);
+
+    ASSERT_EQ(0x88B26E34, crc);
+    PASS();
+}
+
 SUITE(polygon_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_fill_polygon_square);
@@ -476,6 +531,8 @@ SUITE(polygon_suite) {
     RUN_TEST(test_fill_polygon_clip_bottom_right);
     RUN_TEST(test_fill_polygon_clip_bottom_right_regression);
     RUN_TEST(test_fill_polygon_clip_outside);
+    RUN_TEST(test_fill_polygon_trapezoid);
+    RUN_TEST(test_fill_polygon_trapezoid_regression);
 }
 
 GREATEST_MAIN_DEFS();
