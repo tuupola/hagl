@@ -108,8 +108,10 @@ hagl_fill_polygon(void const *_surface, int16_t amount, int16_t *vertices, hagl_
                 (y0 < (float)y && y1 >= (float)y) ||
                 (y1 < (float)y && y0 >= (float)y)
             ) {
-                nodes[count] = (int16_t)(x0 + (y - y0) / (y1 - y0) * (x1 - x0));
-                count++;
+                if (count < 64) {
+                    nodes[count] = (int16_t)(x0 + (y - y0) / (y1 - y0) * (x1 - x0));
+                    count++;
+                }
             } else if (y == y0 && y == y1) {
                 hagl_draw_hline_xyx(surface, x0, y0, x1, color);
             }
