@@ -56,33 +56,33 @@ static void
 setup_callback(void *data) {
     memset(&backend, 0, sizeof(hagl_backend_t));
     hagl_hal_init(&backend);
-    hagl_set_clip(&backend, 0, 0,  backend.width - 1,  backend.height - 1);
+    hagl_set_clip(&backend, 0, 0, backend.width - 1, backend.height - 1);
     hagl_clear(&backend);
 }
 
 /*
- * Axis-aligned square:
+ * Axis-aligned square outline:
  *
  * (10,10)-----(20,10)
- *   |###########|
- *   |###########|
+ *   |           |
+ *   |           |
  * (10,20)-----(20,20)
  */
 TEST
-test_fill_polygon_square(void) {
+test_polygon_square(void) {
     int16_t vertices[] = {10, 10, 20, 10, 20, 20, 10, 20};
-    hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
 
-    /* Inside: center of the square */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 15));
+    /* Inside: center of the square should be empty */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 15));
 
-    /* Inside: all four corners */
+    /* On edge: all four corners */
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 10));
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 20));
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 20));
 
-    /* Inside: edge midpoints */
+    /* On edge: edge midpoints */
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 10));
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 15));
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 20));
@@ -100,36 +100,36 @@ test_fill_polygon_square(void) {
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 21, 21));
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 9, 21));
 
-    /* Total filled area: 11 x 11 = 121 pixels */
-    ASSERT_EQ(121, count_pixels(&backend, 0xFFFF));
+    /* Total outline: 4 edges of 11 pixels, minus 4 shared corners = 40 */
+    ASSERT_EQ(40, count_pixels(&backend, 0xFFFF));
 
     PASS();
 }
 
 TEST
-test_fill_polygon_square_regression(void) {
+test_polygon_square_regression(void) {
     int16_t vertices[] = {10, 10, 20, 10, 20, 20, 10, 20};
-    hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
 
     size_t size = backend.width * backend.height * (backend.depth / 8);
     uint32_t crc = crc32(backend.buffer, size);
 
-    ASSERT_EQ(0x52CF24BD, crc);
+    ASSERT_EQ(0x92C59792, crc);
     PASS();
 }
 
 TEST
-test_fill_polygon_square_match_rectangle(void) {
-    /* Draw a filled square polygon. */
+test_polygon_square_match_rectangle(void) {
+    /* Draw a square polygon outline. */
     int16_t vertices[] = {10, 10, 20, 10, 20, 20, 10, 20};
-    hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
 
     size_t size = backend.width * backend.height * (backend.depth / 8);
     uint32_t crc_polygon = crc32(backend.buffer, size);
 
-    /* Clear and draw the same area with fill rectangle. */
+    /* Clear and draw the same area with draw rectangle. */
     memset(backend.buffer, 0, size);
-    hagl_fill_rectangle_xyxy(&backend, 10, 10, 20, 20, 0xFFFF);
+    hagl_draw_rectangle_xyxy(&backend, 10, 10, 20, 20, 0xFFFF);
 
     uint32_t crc_rectangle = crc32(backend.buffer, size);
 
@@ -138,10 +138,10 @@ test_fill_polygon_square_match_rectangle(void) {
 }
 
 TEST
-test_fill_polygon_square_winding_order(void) {
+test_polygon_square_winding_order(void) {
     /* Clockwise */
     int16_t cw[] = {10, 10, 20, 10, 20, 20, 10, 20};
-    hagl_fill_polygon(&backend, 4, cw, 0xFFFF);
+    hagl_draw_polygon(&backend, 4, cw, 0xFFFF);
 
     size_t size = backend.width * backend.height * (backend.depth / 8);
     uint32_t crc_cw = crc32(backend.buffer, size);
@@ -149,7 +149,7 @@ test_fill_polygon_square_winding_order(void) {
     /* Clear and draw counterclockwise */
     memset(backend.buffer, 0, size);
     int16_t ccw[] = {10, 10, 10, 20, 20, 20, 20, 10};
-    hagl_fill_polygon(&backend, 4, ccw, 0xFFFF);
+    hagl_draw_polygon(&backend, 4, ccw, 0xFFFF);
 
     uint32_t crc_ccw = crc32(backend.buffer, size);
 
@@ -158,30 +158,30 @@ test_fill_polygon_square_winding_order(void) {
 }
 
 /*
- * Right triangle:
+ * Right triangle outline:
  *
  * (10,10)-----(30,10)
- *   |########/
- *   |######/
- *   |####/
- *   |##/
+ *   |        /
+ *   |      /
+ *   |    /
+ *   |  /
  * (10,30)
  */
 TEST
-test_fill_polygon_triangle(void) {
+test_polygon_triangle(void) {
     int16_t vertices[] = {10, 10, 30, 10, 10, 30};
-    hagl_fill_polygon(&backend, 3, vertices, 0xFFFF);
+    hagl_draw_polygon(&backend, 3, vertices, 0xFFFF);
 
-    /* Inside: points well within the triangle */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 15));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 12, 20));
+    /* Inside: points well within the triangle should be empty */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 15));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 12, 20));
 
-    /* Inside: all three vertices */
+    /* On edge: all three vertices */
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 30, 10));
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 30));
 
-    /* Inside: edge midpoints */
+    /* On edge: edge midpoints of axis-aligned edges */
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 10));
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 20));
 
@@ -197,27 +197,27 @@ test_fill_polygon_triangle(void) {
 }
 
 TEST
-test_fill_polygon_triangle_regression(void) {
+test_polygon_triangle_regression(void) {
     int16_t vertices[] = {10, 10, 30, 10, 10, 30};
-    hagl_fill_polygon(&backend, 3, vertices, 0xFFFF);
+    hagl_draw_polygon(&backend, 3, vertices, 0xFFFF);
 
     size_t size = backend.width * backend.height * (backend.depth / 8);
     uint32_t crc = crc32(backend.buffer, size);
 
-    ASSERT_EQ(0x61E1F4F0, crc);
+    ASSERT_EQ(0xD5693D12, crc);
     PASS();
 }
 
 TEST
-test_fill_polygon_triangle_match_fill_triangle(void) {
+test_polygon_triangle_match_draw_triangle(void) {
     int16_t vertices[] = {10, 10, 30, 10, 10, 30};
-    hagl_fill_polygon(&backend, 3, vertices, 0xFFFF);
+    hagl_draw_polygon(&backend, 3, vertices, 0xFFFF);
 
     size_t size = backend.width * backend.height * (backend.depth / 8);
     uint32_t crc_polygon = crc32(backend.buffer, size);
 
     memset(backend.buffer, 0, size);
-    hagl_fill_triangle(&backend, 10, 10, 30, 10, 10, 30, 0xFFFF);
+    hagl_draw_triangle(&backend, 10, 10, 30, 10, 10, 30, 0xFFFF);
 
     uint32_t crc_triangle = crc32(backend.buffer, size);
 
@@ -226,47 +226,53 @@ test_fill_polygon_triangle_match_fill_triangle(void) {
 }
 
 TEST
-test_fill_polygon_triangle_winding_order(void) {
+test_polygon_triangle_winding_order(void) {
     /* Clockwise */
     int16_t cw[] = {10, 10, 30, 10, 10, 30};
-    hagl_fill_polygon(&backend, 3, cw, 0xFFFF);
+    hagl_draw_polygon(&backend, 3, cw, 0xFFFF);
+
+    /* Vertices should be drawn regardless of winding order */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 30, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 30));
+
+    /* Interior should be empty */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 15));
 
     size_t size = backend.width * backend.height * (backend.depth / 8);
-    uint32_t crc_cw = crc32(backend.buffer, size);
 
     /* Clear and draw counterclockwise */
     memset(backend.buffer, 0, size);
     int16_t ccw[] = {10, 10, 10, 30, 30, 10};
-    hagl_fill_polygon(&backend, 3, ccw, 0xFFFF);
+    hagl_draw_polygon(&backend, 3, ccw, 0xFFFF);
 
-    uint32_t crc_ccw = crc32(backend.buffer, size);
+    /* Same vertices should be drawn */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 30, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 30));
 
-    ASSERT_EQ(crc_cw, crc_ccw);
+    /* Interior should be empty */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 15));
+
     PASS();
 }
 
 /*
- * Concave L-shape polygon:
+ * Concave L-shape polygon outline:
  *
  * (10,10)-----(30,10)
- *   |#############|
- *   |##(20,20)--(30,20)
- *   |####|
- *   |####|
+ *   |               |
+ *   |  (20,20)--(30,20)
+ *   |    |
+ *   |    |
  * (10,40)-(20,40)
  */
 TEST
-test_fill_polygon_concave(void) {
+test_polygon_concave(void) {
     int16_t vertices[] = {10, 10, 30, 10, 30, 20, 20, 20, 20, 40, 10, 40};
-    hagl_fill_polygon(&backend, 6, vertices, 0xFFFF);
+    hagl_draw_polygon(&backend, 6, vertices, 0xFFFF);
 
-    /* Inside: top arm */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 25, 15));
-
-    /* Inside: bottom arm */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 30));
-
-    /* Inside: all six vertices */
+    /* On edge: all six vertices */
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 30, 10));
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 30, 20));
@@ -274,8 +280,14 @@ test_fill_polygon_concave(void) {
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 40));
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 40));
 
-    /* Inside: where both arms meet */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 20));
+    /* On edge: top arm edge midpoint */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 10));
+
+    /* Inside: interior of top arm should be empty */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 25, 15));
+
+    /* Inside: interior of bottom arm should be empty */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 30));
 
     /* Outside: inside bounding box but outside the L */
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 25, 25));
@@ -288,59 +300,56 @@ test_fill_polygon_concave(void) {
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 9));
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 41));
 
-    /* Total filled area: top 21x11 + bottom 11x20 = 451 pixels */
-    ASSERT_EQ(451, count_pixels(&backend, 0xFFFF));
+    /* Outline: 6 edges of 21 + 11 + 11 + 21 + 11 + 31 - 6 corners = 100 */
+    ASSERT_EQ(100, count_pixels(&backend, 0xFFFF));
 
     PASS();
 }
 
 TEST
-test_fill_polygon_concave_regression(void) {
+test_polygon_concave_regression(void) {
     int16_t vertices[] = {10, 10, 30, 10, 30, 20, 20, 20, 20, 40, 10, 40};
-    hagl_fill_polygon(&backend, 6, vertices, 0xFFFF);
+    hagl_draw_polygon(&backend, 6, vertices, 0xFFFF);
 
     size_t size = backend.width * backend.height * (backend.depth / 8);
     uint32_t crc = crc32(backend.buffer, size);
 
-    ASSERT_EQ(0x080BDE15, crc);
+    ASSERT_EQ(0xEF99E5ED, crc);
     PASS();
 }
 
 /*
- * Self-intersecting bowtie shape:
+ * Self-intersecting bowtie outline:
  *
  * (10,10)-------(30,10)
- *     \#########/
- *       \#####/
- *         \#/
+ *     \         /
+ *       \     /
+ *         \ /
  *          X
- *         /#\
- *       /#####\
- *     /#########\
+ *         / \
+ *       /     \
+ *     /         \
  * (10,30)-------(30,30)
  */
 TEST
-test_fill_polygon_bowtie(void) {
+test_polygon_bowtie(void) {
     int16_t vertices[] = {10, 10, 30, 10, 10, 30, 30, 30};
-    hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
 
-    /* Inside: top triangle */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 12));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 15));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 11));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 25, 11));
+    /* On edge: vertices */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 30, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 30));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 30, 30));
 
-    /* Inside: bottom triangle */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 28));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 25));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 29));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 25, 29));
+    /* On edge: top edge midpoint */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 10));
 
-    /* Outside: left and right of center */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 11, 15));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 29, 15));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 11, 25));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 29, 25));
+    /* On edge: bottom edge midpoint */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 30));
+
+    /* On edge: center crossing point */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 20));
 
     /* Outside: beyond bounding box */
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 9, 20));
@@ -352,14 +361,14 @@ test_fill_polygon_bowtie(void) {
 }
 
 TEST
-test_fill_polygon_bowtie_regression(void) {
+test_polygon_bowtie_regression(void) {
     int16_t vertices[] = {10, 10, 30, 10, 10, 30, 30, 30};
-    hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
 
     size_t size = backend.width * backend.height * (backend.depth / 8);
     uint32_t crc = crc32(backend.buffer, size);
 
-    ASSERT_EQ(0x803DF4F1, crc);
+    ASSERT_EQ(0x864446C1, crc);
     PASS();
 }
 
@@ -369,43 +378,45 @@ test_fill_polygon_bowtie_regression(void) {
  *            .(0,0)
  *             |
  * (-10,-10)-------(10,-10)
- *    |        |######|
- *    |        |######|
+ *    |        |        |
+ *    |        |        |
  * (-10,10)----+---(10,10)
  *
- * Only the (0,0) to (10,10) portion is visible.
+ * Only the (0,0) to (10,10) visible portion of the outline.
  */
 TEST
-test_fill_polygon_clip_top_left(void) {
+test_polygon_clip_top_left(void) {
     int16_t vertices[] = {-10, -10, 10, -10, 10, 10, -10, 10};
-    hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
 
-    /* Inside: visible portion */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 5, 5));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 0, 0));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
+    /* On edge: visible portion of right edge */
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 0));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 5));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
+
+    /* On edge: visible portion of bottom edge */
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 0, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 5, 10));
+
+    /* Inside: interior should be empty */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 5, 5));
 
     /* Outside: beyond the polygon inside display */
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 11, 5));
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 5, 11));
 
-    /* Total filled area: 11 x 11 = 121 pixels */
-    ASSERT_EQ(121, count_pixels(&backend, 0xFFFF));
-
     PASS();
 }
 
 TEST
-test_fill_polygon_clip_top_left_regression(void) {
+test_polygon_clip_top_left_regression(void) {
     int16_t vertices[] = {-10, -10, 10, -10, 10, 10, -10, 10};
-    hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
 
     size_t size = backend.width * backend.height * (backend.depth / 8);
     uint32_t crc = crc32(backend.buffer, size);
 
-    ASSERT_EQ(0x22DBDA01, crc);
+    ASSERT_EQ(0x4F2BB196, crc);
     PASS();
 }
 
@@ -413,45 +424,47 @@ test_fill_polygon_clip_top_left_regression(void) {
  * Square clipped by bottom-right corner of display (320x240):
  *
  * (310,230)-------(330,230)
- *    |######|      |
- *    |######|      |
+ *    |        |      |
+ *    |        |      |
  * (310,250)-+---(330,250)
  *           |
  *        .(319,239)
  *
- * Only the (310,230) to (319,239) portion is visible.
+ * Only the (310,230) to (319,239) visible portion of the outline.
  */
 TEST
-test_fill_polygon_clip_bottom_right(void) {
+test_polygon_clip_bottom_right(void) {
     int16_t vertices[] = {310, 230, 330, 230, 330, 250, 310, 250};
-    hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
 
-    /* Inside: visible portion */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 315, 235));
+    /* On edge: visible portion of top edge */
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 310, 230));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 319, 239));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 315, 230));
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 319, 230));
+
+    /* On edge: visible portion of left edge */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 310, 235));
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 310, 239));
+
+    /* Inside: interior should be empty */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 315, 235));
 
     /* Outside: beyond the polygon inside display */
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 309, 235));
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 315, 229));
 
-    /* Total filled area: 10 x 10 = 100 pixels */
-    ASSERT_EQ(100, count_pixels(&backend, 0xFFFF));
-
     PASS();
 }
 
 TEST
-test_fill_polygon_clip_bottom_right_regression(void) {
+test_polygon_clip_bottom_right_regression(void) {
     int16_t vertices[] = {310, 230, 330, 230, 330, 250, 310, 250};
-    hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
 
     size_t size = backend.width * backend.height * (backend.depth / 8);
     uint32_t crc = crc32(backend.buffer, size);
 
-    ASSERT_EQ(0xB46E0159, crc);
+    ASSERT_EQ(0x572BA9FB, crc);
     PASS();
 }
 
@@ -466,43 +479,39 @@ test_fill_polygon_clip_bottom_right_regression(void) {
  *                     .(0,0) display starts here
  */
 TEST
-test_fill_polygon_clip_outside(void) {
+test_polygon_clip_outside(void) {
     int16_t vertices[] = {-30, -30, -10, -30, -10, -10, -30, -10};
-    hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
 
     ASSERT_EQ(0, count_pixels(&backend, 0xFFFF));
     PASS();
 }
 
 /*
- * Trapezoid with horizontal edges (exercises y0 == y1 code path):
+ * Trapezoid outline with horizontal edges:
  *
  *     (15,10)---(25,10)
- *    /################\
- *   /##################\
+ *    /                \
+ *   /                  \
  * (10,30)---------(30,30)
  */
 TEST
-test_fill_polygon_trapezoid(void) {
+test_polygon_trapezoid(void) {
     int16_t vertices[] = {15, 10, 25, 10, 30, 30, 10, 30};
-    hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
 
-    /* Inside: center */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 20));
+    /* Inside: center should be empty */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 20, 20));
 
-    /* Inside: vertices */
+    /* On edge: vertices */
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 10));
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 25, 10));
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 30));
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 30, 30));
 
-    /* Inside: midpoints of horizontal edges */
+    /* On edge: midpoints of horizontal edges */
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 10));
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 30));
-
-    /* Inside: midpoints of diagonal edges */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 13, 20));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 27, 20));
 
     /* Outside: above and below */
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 20, 9));
@@ -520,21 +529,21 @@ test_fill_polygon_trapezoid(void) {
 }
 
 TEST
-test_fill_polygon_trapezoid_regression(void) {
+test_polygon_trapezoid_regression(void) {
     int16_t vertices[] = {15, 10, 25, 10, 30, 30, 10, 30};
-    hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
 
     size_t size = backend.width * backend.height * (backend.depth / 8);
     uint32_t crc = crc32(backend.buffer, size);
 
-    ASSERT_EQ(0x88B26E34, crc);
+    ASSERT_EQ(0xECA239F3, crc);
     PASS();
 }
 
 TEST
-test_fill_polygon_degenerate_zero_vertices(void) {
+test_polygon_degenerate_zero_vertices(void) {
     int16_t vertices[] = {0, 0};
-    hagl_fill_polygon(&backend, 0, vertices, 0xFFFF);
+    hagl_draw_polygon(&backend, 0, vertices, 0xFFFF);
 
     /* Should not crash, should not draw anything */
     ASSERT_EQ(0, count_pixels(&backend, 0xFFFF));
@@ -542,9 +551,9 @@ test_fill_polygon_degenerate_zero_vertices(void) {
 }
 
 TEST
-test_fill_polygon_degenerate_one_vertex(void) {
+test_polygon_degenerate_one_vertex(void) {
     int16_t vertices[] = {20, 20};
-    hagl_fill_polygon(&backend, 1, vertices, 0xFFFF);
+    hagl_draw_polygon(&backend, 1, vertices, 0xFFFF);
 
     /* Should not crash, should not draw anything */
     ASSERT_EQ(0, count_pixels(&backend, 0xFFFF));
@@ -552,39 +561,39 @@ test_fill_polygon_degenerate_one_vertex(void) {
 }
 
 TEST
-test_fill_polygon_degenerate_two_vertices(void) {
+test_polygon_degenerate_two_vertices(void) {
     int16_t vertices[] = {10, 10, 20, 20};
-    hagl_fill_polygon(&backend, 2, vertices, 0xFFFF);
+    hagl_draw_polygon(&backend, 2, vertices, 0xFFFF);
 
     /* Should not crash, should not draw anything */
     ASSERT_EQ(0, count_pixels(&backend, 0xFFFF));
     PASS();
 }
 
-SUITE(fill_polygon_suite) {
+SUITE(polygon_suite) {
     SET_SETUP(setup_callback, NULL);
-    RUN_TEST(test_fill_polygon_square);
-    RUN_TEST(test_fill_polygon_square_regression);
-    RUN_TEST(test_fill_polygon_square_match_rectangle);
-    RUN_TEST(test_fill_polygon_square_winding_order);
-    RUN_TEST(test_fill_polygon_triangle);
-    RUN_TEST(test_fill_polygon_triangle_regression);
-    RUN_TEST(test_fill_polygon_triangle_match_fill_triangle);
-    RUN_TEST(test_fill_polygon_triangle_winding_order);
-    RUN_TEST(test_fill_polygon_concave);
-    RUN_TEST(test_fill_polygon_concave_regression);
-    RUN_TEST(test_fill_polygon_bowtie);
-    RUN_TEST(test_fill_polygon_bowtie_regression);
-    RUN_TEST(test_fill_polygon_clip_top_left);
-    RUN_TEST(test_fill_polygon_clip_top_left_regression);
-    RUN_TEST(test_fill_polygon_clip_bottom_right);
-    RUN_TEST(test_fill_polygon_clip_bottom_right_regression);
-    RUN_TEST(test_fill_polygon_clip_outside);
-    RUN_TEST(test_fill_polygon_trapezoid);
-    RUN_TEST(test_fill_polygon_trapezoid_regression);
-    RUN_TEST(test_fill_polygon_degenerate_zero_vertices);
-    RUN_TEST(test_fill_polygon_degenerate_one_vertex);
-    RUN_TEST(test_fill_polygon_degenerate_two_vertices);
+    RUN_TEST(test_polygon_square);
+    RUN_TEST(test_polygon_square_regression);
+    RUN_TEST(test_polygon_square_match_rectangle);
+    RUN_TEST(test_polygon_square_winding_order);
+    RUN_TEST(test_polygon_triangle);
+    RUN_TEST(test_polygon_triangle_regression);
+    RUN_TEST(test_polygon_triangle_match_draw_triangle);
+    RUN_TEST(test_polygon_triangle_winding_order);
+    RUN_TEST(test_polygon_concave);
+    RUN_TEST(test_polygon_concave_regression);
+    RUN_TEST(test_polygon_bowtie);
+    RUN_TEST(test_polygon_bowtie_regression);
+    RUN_TEST(test_polygon_clip_top_left);
+    RUN_TEST(test_polygon_clip_top_left_regression);
+    RUN_TEST(test_polygon_clip_bottom_right);
+    RUN_TEST(test_polygon_clip_bottom_right_regression);
+    RUN_TEST(test_polygon_clip_outside);
+    RUN_TEST(test_polygon_trapezoid);
+    RUN_TEST(test_polygon_trapezoid_regression);
+    RUN_TEST(test_polygon_degenerate_zero_vertices);
+    RUN_TEST(test_polygon_degenerate_one_vertex);
+    RUN_TEST(test_polygon_degenerate_two_vertices);
 }
 
 GREATEST_MAIN_DEFS();
@@ -592,6 +601,6 @@ GREATEST_MAIN_DEFS();
 int
 main(int argc, char **argv) {
     GREATEST_MAIN_BEGIN();
-    RUN_SUITE(fill_polygon_suite);
+    RUN_SUITE(polygon_suite);
     GREATEST_MAIN_END();
 }
