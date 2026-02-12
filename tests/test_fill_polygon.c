@@ -40,8 +40,7 @@ SPDX-License-Identifier: MIT
 static hagl_backend_t backend;
 
 static uint32_t
-count_pixels(hagl_backend_t *backend, hagl_color_t color)
-{
+count_pixels(hagl_backend_t *backend, hagl_color_t color) {
     uint32_t count = 0;
     for (int16_t y = 0; y < backend->height; y++) {
         for (int16_t x = 0; x < backend->width; x++) {
@@ -53,7 +52,8 @@ count_pixels(hagl_backend_t *backend, hagl_color_t color)
     return count;
 }
 
-static void setup_callback(void *data) {
+static void
+setup_callback(void *data) {
     memset(&backend, 0, sizeof(hagl_backend_t));
     hagl_hal_init(&backend);
     hagl_set_clip(&backend, 0, 0,  backend.width - 1,  backend.height - 1);
@@ -68,7 +68,8 @@ static void setup_callback(void *data) {
  *   |###########|
  * (10,20)-----(20,20)
  */
-TEST test_fill_polygon_square(void) {
+TEST
+test_fill_polygon_square(void) {
     int16_t vertices[] = {10, 10, 20, 10, 20, 20, 10, 20};
     hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
 
@@ -105,7 +106,8 @@ TEST test_fill_polygon_square(void) {
     PASS();
 }
 
-TEST test_fill_polygon_square_regression(void) {
+TEST
+test_fill_polygon_square_regression(void) {
     int16_t vertices[] = {10, 10, 20, 10, 20, 20, 10, 20};
     hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
 
@@ -116,7 +118,8 @@ TEST test_fill_polygon_square_regression(void) {
     PASS();
 }
 
-TEST test_fill_polygon_square_match_rectangle(void) {
+TEST
+test_fill_polygon_square_match_rectangle(void) {
     /* Draw a filled square polygon. */
     int16_t vertices[] = {10, 10, 20, 10, 20, 20, 10, 20};
     hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
@@ -134,7 +137,8 @@ TEST test_fill_polygon_square_match_rectangle(void) {
     PASS();
 }
 
-TEST test_fill_polygon_square_winding_order(void) {
+TEST
+test_fill_polygon_square_winding_order(void) {
     /* Clockwise */
     int16_t cw[] = {10, 10, 20, 10, 20, 20, 10, 20};
     hagl_fill_polygon(&backend, 4, cw, 0xFFFF);
@@ -163,7 +167,8 @@ TEST test_fill_polygon_square_winding_order(void) {
  *   |##/
  * (10,30)
  */
-TEST test_fill_polygon_triangle(void) {
+TEST
+test_fill_polygon_triangle(void) {
     int16_t vertices[] = {10, 10, 30, 10, 10, 30};
     hagl_fill_polygon(&backend, 3, vertices, 0xFFFF);
 
@@ -191,7 +196,8 @@ TEST test_fill_polygon_triangle(void) {
     PASS();
 }
 
-TEST test_fill_polygon_triangle_regression(void) {
+TEST
+test_fill_polygon_triangle_regression(void) {
     int16_t vertices[] = {10, 10, 30, 10, 10, 30};
     hagl_fill_polygon(&backend, 3, vertices, 0xFFFF);
 
@@ -202,7 +208,8 @@ TEST test_fill_polygon_triangle_regression(void) {
     PASS();
 }
 
-TEST test_fill_polygon_triangle_match_fill_triangle(void) {
+TEST
+test_fill_polygon_triangle_match_fill_triangle(void) {
     int16_t vertices[] = {10, 10, 30, 10, 10, 30};
     hagl_fill_polygon(&backend, 3, vertices, 0xFFFF);
 
@@ -218,7 +225,8 @@ TEST test_fill_polygon_triangle_match_fill_triangle(void) {
     PASS();
 }
 
-TEST test_fill_polygon_triangle_winding_order(void) {
+TEST
+test_fill_polygon_triangle_winding_order(void) {
     /* Clockwise */
     int16_t cw[] = {10, 10, 30, 10, 10, 30};
     hagl_fill_polygon(&backend, 3, cw, 0xFFFF);
@@ -247,7 +255,8 @@ TEST test_fill_polygon_triangle_winding_order(void) {
  *   |####|
  * (10,40)-(20,40)
  */
-TEST test_fill_polygon_concave(void) {
+TEST
+test_fill_polygon_concave(void) {
     int16_t vertices[] = {10, 10, 30, 10, 30, 20, 20, 20, 20, 40, 10, 40};
     hagl_fill_polygon(&backend, 6, vertices, 0xFFFF);
 
@@ -285,7 +294,8 @@ TEST test_fill_polygon_concave(void) {
     PASS();
 }
 
-TEST test_fill_polygon_concave_regression(void) {
+TEST
+test_fill_polygon_concave_regression(void) {
     int16_t vertices[] = {10, 10, 30, 10, 30, 20, 20, 20, 20, 40, 10, 40};
     hagl_fill_polygon(&backend, 6, vertices, 0xFFFF);
 
@@ -309,7 +319,8 @@ TEST test_fill_polygon_concave_regression(void) {
  *     /#########\
  * (10,30)-------(30,30)
  */
-TEST test_fill_polygon_bowtie(void) {
+TEST
+test_fill_polygon_bowtie(void) {
     int16_t vertices[] = {10, 10, 30, 10, 10, 30, 30, 30};
     hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
 
@@ -340,7 +351,8 @@ TEST test_fill_polygon_bowtie(void) {
     PASS();
 }
 
-TEST test_fill_polygon_bowtie_regression(void) {
+TEST
+test_fill_polygon_bowtie_regression(void) {
     int16_t vertices[] = {10, 10, 30, 10, 10, 30, 30, 30};
     hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
 
@@ -363,7 +375,8 @@ TEST test_fill_polygon_bowtie_regression(void) {
  *
  * Only the (0,0) to (10,10) portion is visible.
  */
-TEST test_fill_polygon_clip_top_left(void) {
+TEST
+test_fill_polygon_clip_top_left(void) {
     int16_t vertices[] = {-10, -10, 10, -10, 10, 10, -10, 10};
     hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
 
@@ -384,7 +397,8 @@ TEST test_fill_polygon_clip_top_left(void) {
     PASS();
 }
 
-TEST test_fill_polygon_clip_top_left_regression(void) {
+TEST
+test_fill_polygon_clip_top_left_regression(void) {
     int16_t vertices[] = {-10, -10, 10, -10, 10, 10, -10, 10};
     hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
 
@@ -407,7 +421,8 @@ TEST test_fill_polygon_clip_top_left_regression(void) {
  *
  * Only the (310,230) to (319,239) portion is visible.
  */
-TEST test_fill_polygon_clip_bottom_right(void) {
+TEST
+test_fill_polygon_clip_bottom_right(void) {
     int16_t vertices[] = {310, 230, 330, 230, 330, 250, 310, 250};
     hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
 
@@ -428,7 +443,8 @@ TEST test_fill_polygon_clip_bottom_right(void) {
     PASS();
 }
 
-TEST test_fill_polygon_clip_bottom_right_regression(void) {
+TEST
+test_fill_polygon_clip_bottom_right_regression(void) {
     int16_t vertices[] = {310, 230, 330, 230, 330, 250, 310, 250};
     hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
 
@@ -449,7 +465,8 @@ TEST test_fill_polygon_clip_bottom_right_regression(void) {
  *
  *                     .(0,0) display starts here
  */
-TEST test_fill_polygon_clip_outside(void) {
+TEST
+test_fill_polygon_clip_outside(void) {
     int16_t vertices[] = {-30, -30, -10, -30, -10, -10, -30, -10};
     hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
 
@@ -465,7 +482,8 @@ TEST test_fill_polygon_clip_outside(void) {
  *   /##################\
  * (10,30)---------(30,30)
  */
-TEST test_fill_polygon_trapezoid(void) {
+TEST
+test_fill_polygon_trapezoid(void) {
     int16_t vertices[] = {15, 10, 25, 10, 30, 30, 10, 30};
     hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
 
@@ -501,7 +519,8 @@ TEST test_fill_polygon_trapezoid(void) {
     PASS();
 }
 
-TEST test_fill_polygon_trapezoid_regression(void) {
+TEST
+test_fill_polygon_trapezoid_regression(void) {
     int16_t vertices[] = {15, 10, 25, 10, 30, 30, 10, 30};
     hagl_fill_polygon(&backend, 4, vertices, 0xFFFF);
 
@@ -512,7 +531,8 @@ TEST test_fill_polygon_trapezoid_regression(void) {
     PASS();
 }
 
-TEST test_fill_polygon_degenerate_zero_vertices(void) {
+TEST
+test_fill_polygon_degenerate_zero_vertices(void) {
     int16_t vertices[] = {0, 0};
     hagl_fill_polygon(&backend, 0, vertices, 0xFFFF);
 
@@ -521,7 +541,8 @@ TEST test_fill_polygon_degenerate_zero_vertices(void) {
     PASS();
 }
 
-TEST test_fill_polygon_degenerate_one_vertex(void) {
+TEST
+test_fill_polygon_degenerate_one_vertex(void) {
     int16_t vertices[] = {20, 20};
     hagl_fill_polygon(&backend, 1, vertices, 0xFFFF);
 
@@ -530,7 +551,8 @@ TEST test_fill_polygon_degenerate_one_vertex(void) {
     PASS();
 }
 
-TEST test_fill_polygon_degenerate_two_vertices(void) {
+TEST
+test_fill_polygon_degenerate_two_vertices(void) {
     int16_t vertices[] = {10, 10, 20, 20};
     hagl_fill_polygon(&backend, 2, vertices, 0xFFFF);
 
@@ -567,7 +589,8 @@ SUITE(polygon_suite) {
 
 GREATEST_MAIN_DEFS();
 
-int main(int argc, char **argv) {
+int
+main(int argc, char **argv) {
     GREATEST_MAIN_BEGIN();
     RUN_SUITE(polygon_suite);
     GREATEST_MAIN_END();

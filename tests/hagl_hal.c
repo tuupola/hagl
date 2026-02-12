@@ -46,50 +46,42 @@ SPDX-License-Identifier: MIT
 static hagl_bitmap_t bb;
 
 static void
-put_pixel(void *self, int16_t x0, int16_t y0, hagl_color_t color)
-{
+put_pixel(void *self, int16_t x0, int16_t y0, hagl_color_t color) {
     bb.put_pixel(&bb, x0, y0, color);
 }
 
 static hagl_color_t
-get_pixel(void *self, int16_t x0, int16_t y0)
-{
+get_pixel(void *self, int16_t x0, int16_t y0) {
     return bb.get_pixel(&bb, x0, y0);
-
 }
 
 static void
-blit(void *self, int16_t x0, int16_t y0, hagl_bitmap_t *src)
-{
+blit(void *self, int16_t x0, int16_t y0, hagl_bitmap_t *src) {
     bb.blit(&bb, x0, y0, src);
 }
 
 static void
-scale_blit(void *self, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *src)
-{
+scale_blit(void *self, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *src) {
     bb.scale_blit(&bb, x0, y0, w, h, src);
 }
 
 static void
-hline(void *self, int16_t x0, int16_t y0, uint16_t width, hagl_color_t color)
-{
+hline(void *self, int16_t x0, int16_t y0, uint16_t width, hagl_color_t color) {
     bb.hline(&bb, x0, y0, width, color);
 }
 
 static void
-vline(void *self, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color)
-{
+vline(void *self, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color) {
     bb.vline(&bb, x0, y0, height, color);
 }
 
 void
-hagl_hal_init(hagl_backend_t *backend)
-{
+hagl_hal_init(hagl_backend_t *backend) {
     if (!backend->buffer) {
         backend->buffer = calloc(
-            TEST_DISPLAY_WIDTH * TEST_DISPLAY_HEIGHT * (TEST_DISPLAY_DEPTH / 8),
-            sizeof(uint8_t)
-        );
+                TEST_DISPLAY_WIDTH * TEST_DISPLAY_HEIGHT * (TEST_DISPLAY_DEPTH / 8),
+                sizeof(uint8_t)
+            );
     }
 
     backend->width = TEST_DISPLAY_WIDTH;
