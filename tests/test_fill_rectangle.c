@@ -258,6 +258,59 @@ test_fill_rectangle_xyxy_clip_outside(void) {
     PASS();
 }
 
+/*
+ * Rectangle clipped by a custom clip window:
+ *
+ *       (40,40)-----------(110,40)
+ *          |                  |
+ *          | (50,50)---(100,50)
+ *          |   |#########|  |
+ *          |   |#########|  |
+ *          | (50,100)-(100,100)
+ *          |                  |
+ *       (40,110)----------(110,110)
+ *
+ * Clip window set to (50,50)-(100,100).
+ * Only the (50,50) to (100,100) portion is visible.
+ */
+TEST
+test_fill_rectangle_xyxy_custom_clip(void) {
+    hagl_set_clip(&backend, 50, 50, 100, 100);
+    hagl_fill_rectangle_xyxy(&backend, 40, 40, 110, 110, 0xFFFF);
+
+    /* Inside: clip window corners */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 50, 50));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 100, 50));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 50, 100));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 100, 100));
+
+    /* Inside: center of clip window */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 75, 75));
+
+    /* Outside: 1 pixel beyond clip window */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 49, 75));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 101, 75));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 75, 49));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 75, 101));
+
+    /* Total filled area: 51 x 51 = 2601 pixels */
+    ASSERT_EQ(2601, count_pixels(&backend, 0xFFFF));
+
+    PASS();
+}
+
+TEST
+test_fill_rectangle_xyxy_custom_clip_regression(void) {
+    hagl_set_clip(&backend, 50, 50, 100, 100);
+    hagl_fill_rectangle_xyxy(&backend, 40, 40, 110, 110, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc = crc32(backend.buffer, size);
+
+    ASSERT_EQ(0xDC5E143B, crc);
+    PASS();
+}
+
 SUITE(fill_rectangle_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_fill_rectangle_xyxy);
@@ -269,6 +322,8 @@ SUITE(fill_rectangle_suite) {
     RUN_TEST(test_fill_rectangle_xyxy_clip_bottom_right);
     RUN_TEST(test_fill_rectangle_xyxy_clip_bottom_right_regression);
     RUN_TEST(test_fill_rectangle_xyxy_clip_outside);
+    RUN_TEST(test_fill_rectangle_xyxy_custom_clip);
+    RUN_TEST(test_fill_rectangle_xyxy_custom_clip_regression);
 }
 
 GREATEST_MAIN_DEFS();
