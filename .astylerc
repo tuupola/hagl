@@ -1,4 +1,4 @@
---style=1tbs
+--style=java
 --indent=spaces=4
 --attach-extern-c
 --indent-switches
@@ -19,3 +19,5 @@
 --ignore-exclude-errors
 --exclude=tjpgd.c
 --exclude=tjpgd.h
+--exclude=greatest.h
+
