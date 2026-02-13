@@ -202,7 +202,7 @@ hagl_draw_rounded_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, i
         hagl_put_pixel(surface, x0 + r - x, y1 - r + y, color);
         hagl_put_pixel(surface, x0 + r - y, y1 - r + x, color);
     }
-};
+}
 
 void
 hagl_fill_rounded_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, hagl_color_t color)
@@ -284,4 +284,4 @@ hagl_fill_rounded_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, i
 
     /* Center */
     hagl_fill_rectangle_xyxy(surface, x0, y0 + r, x1, y1 - r, color);
-};
+}
