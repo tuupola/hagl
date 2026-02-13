@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2018-2023 Mika Tuupola
+Copyright (c) 2018-2026 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -47,6 +47,7 @@ void
 hagl_draw_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, hagl_color_t color)
 {
     const hagl_surface_t *surface = _surface;
+    uint16_t width, height;
 
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
@@ -72,8 +73,8 @@ hagl_draw_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, int16_t x
         return;
     }
 
-    uint16_t width = x1 - x0 + 1;
-    uint16_t height = y1 - y0 + 1;
+    width = x1 - x0 + 1;
+    height = y1 - y0 + 1;
 
     hagl_draw_hline(surface, x0, y0, width, color);
     hagl_draw_hline(surface, x0, y1, width, color);
@@ -85,6 +86,7 @@ void
 hagl_fill_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, hagl_color_t color)
 {
     const hagl_surface_t *surface = _surface;
+    uint16_t width, height;
 
     /* Make sure x0 is smaller than x1. */
     if (x0 > x1) {
@@ -115,8 +117,8 @@ hagl_fill_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, int16_t x
     x1 = MIN(x1, surface->clip.x1);
     y1 = MIN(y1, surface->clip.y1);
 
-    uint16_t width = x1 - x0 + 1;
-    uint16_t height = y1 - y0 + 1;
+    width = x1 - x0 + 1;
+    height = y1 - y0 + 1;
 
     for (uint16_t i = 0; i < height; i++) {
         if (surface->hline) {
