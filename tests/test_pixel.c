@@ -220,24 +220,33 @@ test_put_pixel_clip_outside(void) {
 }
 
 /*
- * Pixel inside a custom clip window is drawn:
- *
- *        (50,50)-------(100,50)
- *          |               |
- *          |    (75,75)    |
- *          |               |
- *        (50,100)------(100,100)
+ * Pixels inside a custom clip window are drawn. The clip
+ * window boundary is inclusive.
  */
 TEST
 test_put_pixel_custom_clip_inside(void) {
     hagl_set_clip(&backend, 50, 50, 100, 100);
+
+    /* Interior point */
     hagl_put_pixel(&backend, 75, 75, 0xFFFF);
 
-    /* On pixel: the pixel itself */
+    /* All four corners of the clip window */
+    hagl_put_pixel(&backend, 50, 50, 0xFFFF);
+    hagl_put_pixel(&backend, 100, 50, 0xFFFF);
+    hagl_put_pixel(&backend, 50, 100, 0xFFFF);
+    hagl_put_pixel(&backend, 100, 100, 0xFFFF);
+
+    /* On pixel: interior is set */
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 75, 75));
 
-    /* Total: exactly 1 pixel */
-    ASSERT_EQ(1, count_pixels(&backend, 0xFFFF));
+    /* On pixel: all four clip corners are set */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 50, 50));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 100, 50));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 50, 100));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 100, 100));
+
+    /* Total: exactly 5 pixels */
+    ASSERT_EQ(5, count_pixels(&backend, 0xFFFF));
 
     PASS();
 }
