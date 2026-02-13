@@ -278,6 +278,50 @@ test_put_pixel_custom_clip_outside(void) {
     PASS();
 }
 
+/*
+ * Reading pixels outside the display bounds returns black.
+ */
+TEST
+test_get_pixel_clip_outside(void) {
+    /* Place a pixel so the framebuffer is not empty */
+    hagl_put_pixel(&backend, 100, 120, 0xFFFF);
+
+    /* Negative coordinates */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, -1, 0));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 0, -1));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, -1, -1));
+
+    /* Beyond display bounds */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 320, 0));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 0, 240));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 320, 240));
+
+    /* Far outside */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, -1000, -1000));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 1000, 1000));
+
+    PASS();
+}
+
+/*
+ * Reading a pixel that exists in the buffer but is outside
+ * the current clip window returns black.
+ */
+TEST
+test_get_pixel_custom_clip_outside(void) {
+    /* Place a pixel with the default clip window */
+    hagl_put_pixel(&backend, 75, 75, 0xFFFF);
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 75, 75));
+
+    /* Shrink the clip window to exclude (75,75) */
+    hagl_set_clip(&backend, 0, 0, 49, 49);
+
+    /* Pixel data exists but is outside the clip window */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 75, 75));
+
+    PASS();
+}
+
 SUITE(pixel_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_put_pixel);
@@ -288,6 +332,8 @@ SUITE(pixel_suite) {
     RUN_TEST(test_put_pixel_clip_outside);
     RUN_TEST(test_put_pixel_custom_clip_inside);
     RUN_TEST(test_put_pixel_custom_clip_outside);
+    RUN_TEST(test_get_pixel_clip_outside);
+    RUN_TEST(test_get_pixel_custom_clip_outside);
 }
 
 GREATEST_MAIN_DEFS();
