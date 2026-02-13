@@ -219,6 +219,56 @@ test_put_pixel_clip_outside(void) {
     PASS();
 }
 
+/*
+ * Pixel inside a custom clip window is drawn:
+ *
+ *        (50,50)-------(100,50)
+ *          |               |
+ *          |    (75,75)    |
+ *          |               |
+ *        (50,100)------(100,100)
+ */
+TEST
+test_put_pixel_custom_clip_inside(void) {
+    hagl_set_clip(&backend, 50, 50, 100, 100);
+    hagl_put_pixel(&backend, 75, 75, 0xFFFF);
+
+    /* On pixel: the pixel itself */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 75, 75));
+
+    /* Total: exactly 1 pixel */
+    ASSERT_EQ(1, count_pixels(&backend, 0xFFFF));
+
+    PASS();
+}
+
+/*
+ * Pixels outside a custom clip window are discarded:
+ *
+ *  (49,75).  (50,50)-------(100,50)
+ *              |               |
+ *  (75,49).   |               |
+ *              |               |
+ *            (50,100)------(100,100)  .(101,75)
+ *                                .
+ *                             (75,101)
+ */
+TEST
+test_put_pixel_custom_clip_outside(void) {
+    hagl_set_clip(&backend, 50, 50, 100, 100);
+
+    /* 1 pixel outside each edge of the clip window */
+    hagl_put_pixel(&backend, 49, 75, 0xFFFF);
+    hagl_put_pixel(&backend, 75, 49, 0xFFFF);
+    hagl_put_pixel(&backend, 101, 75, 0xFFFF);
+    hagl_put_pixel(&backend, 75, 101, 0xFFFF);
+
+    /* No pixels should have been drawn */
+    ASSERT_EQ(0, count_pixels(&backend, 0xFFFF));
+
+    PASS();
+}
+
 SUITE(pixel_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_put_pixel);
@@ -227,6 +277,8 @@ SUITE(pixel_suite) {
     RUN_TEST(test_put_pixel_overwrite);
     RUN_TEST(test_put_pixel_corners);
     RUN_TEST(test_put_pixel_clip_outside);
+    RUN_TEST(test_put_pixel_custom_clip_inside);
+    RUN_TEST(test_put_pixel_custom_clip_outside);
 }
 
 GREATEST_MAIN_DEFS();
