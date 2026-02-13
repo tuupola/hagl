@@ -3,7 +3,7 @@
 
 MIT License
 
-Copyright (c) 2018-2023 Mika Tuupola
+Copyright (c) 2018-2026 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -72,8 +72,7 @@ hagl_draw_rectangle_xyxy(void const *surface, int16_t x0, int16_t y0, int16_t x1
  * @param color
  */
 static void inline
-hagl_draw_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, hagl_color_t color)
-{
+hagl_draw_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, hagl_color_t color) {
     hagl_draw_rectangle_xyxy(surface, x0, y0, x1, y1, color);
 }
 
@@ -90,8 +89,7 @@ hagl_draw_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int
  * @param color
  */
 static void inline
-hagl_draw_rectangle_xywh(void const *surface, int16_t x0, int16_t y0, uint16_t width, uint16_t height, hagl_color_t color)
-{
+hagl_draw_rectangle_xywh(void const *surface, int16_t x0, int16_t y0, uint16_t width, uint16_t height, hagl_color_t color) {
     hagl_draw_rectangle_xyxy(surface, x0, y0, x0 + width - 1, y0 + height - 1, color);
 };
 
@@ -123,8 +121,7 @@ hagl_fill_rectangle_xyxy(void const *surface, int16_t x0, int16_t y0, int16_t x1
  * @param color
  */
 static void inline
-hagl_fill_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, hagl_color_t color)
-{
+hagl_fill_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, hagl_color_t color) {
     hagl_fill_rectangle_xyxy(surface, x0, y0, x1, y1, color);
 }
 
@@ -141,8 +138,7 @@ hagl_fill_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int
  * @param color
  */
 static void inline
-hagl_fill_rectangle_xywh(void const *surface, int16_t x0, int16_t y0, uint16_t width, uint16_t height, hagl_color_t color)
-{
+hagl_fill_rectangle_xywh(void const *surface, int16_t x0, int16_t y0, uint16_t width, uint16_t height, hagl_color_t color) {
     hagl_fill_rectangle_xyxy(surface, x0, y0, x0 + width - 1, y0 + height - 1, color);
 };
 
@@ -176,8 +172,7 @@ hagl_draw_rounded_rectangle_xyxy(void const *surface, int16_t x0, int16_t y0, in
  * @param color
  */
 static void inline
-hagl_draw_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, hagl_color_t color)
-{
+hagl_draw_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, hagl_color_t color) {
     hagl_draw_rounded_rectangle_xyxy(surface, x0, y0, x1, y1, r, color);
 }
 
@@ -195,8 +190,7 @@ hagl_draw_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t
  * @param color
  */
 static void inline
-hagl_draw_rounded_rectangle_xywh(void const *surface, int16_t x0, int16_t y0, uint16_t width, uint16_t height, int16_t r, hagl_color_t color)
-{
+hagl_draw_rounded_rectangle_xywh(void const *surface, int16_t x0, int16_t y0, uint16_t width, uint16_t height, int16_t r, hagl_color_t color) {
     hagl_draw_rounded_rectangle_xyxy(surface, x0, y0, x0 + width - 1, y0 + height - 1, r, color);
 }
 
@@ -230,8 +224,7 @@ hagl_fill_rounded_rectangle_xyxy(void const *surface, int16_t x0, int16_t y0, in
  * @param color
  */
 static void inline
-hagl_fill_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, hagl_color_t color)
-{
+hagl_fill_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, hagl_color_t color) {
     hagl_fill_rounded_rectangle_xyxy(surface, x0, y0, x1, y1, r, color);
 }
 
@@ -249,8 +242,7 @@ hagl_fill_rounded_rectangle(void const *surface, int16_t x0, int16_t y0, int16_t
  * @param color
  */
 static void inline
-hagl_fill_rounded_rectangle_xywh(void const *surface, int16_t x0, int16_t y0, uint16_t width, uint16_t height, int16_t r, hagl_color_t color)
-{
+hagl_fill_rounded_rectangle_xywh(void const *surface, int16_t x0, int16_t y0, uint16_t width, uint16_t height, int16_t r, hagl_color_t color) {
     hagl_fill_rounded_rectangle_xyxy(surface, x0, y0, x0 + width - 1, y0 + height - 1, r, color);
 }
 
