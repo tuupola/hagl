@@ -149,12 +149,40 @@ test_put_pixel_overwrite(void) {
     PASS();
 }
 
+/*
+ * Pixels placed outside the display bounds should be discarded.
+ */
+TEST
+test_put_pixel_clip_outside(void) {
+    /* Left of display */
+    hagl_put_pixel(&backend, -1, 100, 0xFFFF);
+
+    /* Above display */
+    hagl_put_pixel(&backend, 100, -1, 0xFFFF);
+
+    /* Right of display */
+    hagl_put_pixel(&backend, 320, 100, 0xFFFF);
+
+    /* Below display */
+    hagl_put_pixel(&backend, 100, 240, 0xFFFF);
+
+    /* Far outside in both directions */
+    hagl_put_pixel(&backend, -1000, -1000, 0xFFFF);
+    hagl_put_pixel(&backend, 1000, 1000, 0xFFFF);
+
+    /* No pixels should have been drawn */
+    ASSERT_EQ(0, count_pixels(&backend, 0xFFFF));
+
+    PASS();
+}
+
 SUITE(pixel_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_put_pixel);
     RUN_TEST(test_put_pixel_regression);
     RUN_TEST(test_put_pixel_color);
     RUN_TEST(test_put_pixel_overwrite);
+    RUN_TEST(test_put_pixel_clip_outside);
 }
 
 GREATEST_MAIN_DEFS();
