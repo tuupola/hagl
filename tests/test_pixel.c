@@ -150,6 +150,49 @@ test_put_pixel_overwrite(void) {
 }
 
 /*
+ * Pixels at all four display corners (320x240):
+ *
+ * (0,0)--------------(319,0)
+ *   |                    |
+ *   |                    |
+ * (0,239)------------(319,239)
+ */
+TEST
+test_put_pixel_corners(void) {
+    hagl_put_pixel(&backend, 0, 0, 0xFFFF);
+    hagl_put_pixel(&backend, 319, 0, 0xFFFF);
+    hagl_put_pixel(&backend, 0, 239, 0xFFFF);
+    hagl_put_pixel(&backend, 319, 239, 0xFFFF);
+
+    /* All four corners are set */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 0, 0));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 319, 0));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 0, 239));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 319, 239));
+
+    /* Neighbors of top-left */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 1, 0));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 0, 1));
+
+    /* Neighbors of top-right */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 318, 0));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 319, 1));
+
+    /* Neighbors of bottom-left */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 1, 239));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 0, 238));
+
+    /* Neighbors of bottom-right */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 318, 239));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 319, 238));
+
+    /* Total: exactly 4 pixels */
+    ASSERT_EQ(4, count_pixels(&backend, 0xFFFF));
+
+    PASS();
+}
+
+/*
  * Pixels placed outside the display bounds should be discarded.
  */
 TEST
@@ -182,6 +225,7 @@ SUITE(pixel_suite) {
     RUN_TEST(test_put_pixel_regression);
     RUN_TEST(test_put_pixel_color);
     RUN_TEST(test_put_pixel_overwrite);
+    RUN_TEST(test_put_pixel_corners);
     RUN_TEST(test_put_pixel_clip_outside);
 }
 
