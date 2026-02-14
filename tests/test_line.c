@@ -145,12 +145,65 @@ test_draw_line_vertical_regression(void) {
     PASS();
 }
 
+/*
+ * Diagonal line (45 degrees):
+ *
+ * (10,10)
+ *   \
+ *    \
+ *     (20,20)
+ *
+ * Bresenham produces a staircase pattern with 21 pixels:
+ * (10,10) (10,11) (11,11) (11,12) ... (19,20) (20,20)
+ */
+TEST
+test_draw_line_diagonal(void) {
+    hagl_draw_line(&backend, 10, 10, 20, 20, 0xFFFF);
+
+    /* On line: endpoints */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 20));
+
+    /* On line: midpoint */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 15));
+
+    /* On line: staircase neighbors of midpoint */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 14, 15));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 16));
+
+    /* Outside: off the staircase */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 16, 15));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 14));
+
+    /* Outside: beyond endpoints */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 9, 9));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 21, 21));
+
+    /* Total: 21 pixels (staircase pattern) */
+    ASSERT_EQ(21, count_pixels(&backend, 0xFFFF));
+
+    PASS();
+}
+
+TEST
+test_draw_line_diagonal_regression(void) {
+    hagl_draw_line(&backend, 10, 10, 20, 20, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc = crc32(backend.buffer, size);
+
+    ASSERT_EQ(0xAD9B84B1, crc);
+    PASS();
+}
+
 SUITE(line_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_line_horizontal);
     RUN_TEST(test_draw_line_horizontal_regression);
     RUN_TEST(test_draw_line_vertical);
     RUN_TEST(test_draw_line_vertical_regression);
+    RUN_TEST(test_draw_line_diagonal);
+    RUN_TEST(test_draw_line_diagonal_regression);
 }
 
 GREATEST_MAIN_DEFS();
