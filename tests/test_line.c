@@ -196,6 +196,30 @@ test_draw_line_diagonal_regression(void) {
     PASS();
 }
 
+/*
+ * Single pixel line:
+ *
+ * (50,50)
+ */
+TEST
+test_draw_line_single_pixel(void) {
+    hagl_draw_line(&backend, 50, 50, 50, 50, 0xFFFF);
+
+    /* On line: the pixel itself */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 50, 50));
+
+    /* Outside: all four neighbors */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 49, 50));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 51, 50));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 50, 49));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 50, 51));
+
+    /* Total: 1 pixel */
+    ASSERT_EQ(1, count_pixels(&backend, 0xFFFF));
+
+    PASS();
+}
+
 SUITE(line_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_line_horizontal);
@@ -204,6 +228,7 @@ SUITE(line_suite) {
     RUN_TEST(test_draw_line_vertical_regression);
     RUN_TEST(test_draw_line_diagonal);
     RUN_TEST(test_draw_line_diagonal_regression);
+    RUN_TEST(test_draw_line_single_pixel);
 }
 
 GREATEST_MAIN_DEFS();
