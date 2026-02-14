@@ -260,6 +260,73 @@ test_draw_line_clip_top_left_regression(void) {
     PASS();
 }
 
+/*
+ * Line entirely outside the display:
+ *
+ * (-30,-30)
+ *    \
+ *     \
+ *      (-10,-10)
+ *                  .(0,0) display starts here
+ */
+TEST
+test_draw_line_clip_outside(void) {
+    hagl_draw_line(&backend, -30, -30, -10, -10, 0xFFFF);
+
+    ASSERT_EQ(0, count_pixels(&backend, 0xFFFF));
+    PASS();
+}
+
+/*
+ * Line clipped by a custom clip window:
+ *
+ * (40,40)
+ *    \
+ *     (50,50)-------(100,50)
+ *       |               |
+ *       |               |
+ *     (50,100)------(100,100)
+ *                         \
+ *                          (110,110)
+ */
+TEST
+test_draw_line_custom_clip(void) {
+    hagl_set_clip(&backend, 50, 50, 100, 100);
+    hagl_draw_line(&backend, 40, 40, 110, 110, 0xFFFF);
+
+    /* On line: clip window corners */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 50, 50));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 100, 100));
+
+    /* On line: midpoint of visible portion */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 75, 75));
+
+    /* Outside: before clip window */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 49, 49));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 40, 40));
+
+    /* Outside: after clip window */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 101, 101));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 110, 110));
+
+    /* Total: 101 pixels (staircase from (50,50) to (100,100)) */
+    ASSERT_EQ(101, count_pixels(&backend, 0xFFFF));
+
+    PASS();
+}
+
+TEST
+test_draw_line_custom_clip_regression(void) {
+    hagl_set_clip(&backend, 50, 50, 100, 100);
+    hagl_draw_line(&backend, 40, 40, 110, 110, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc = crc32(backend.buffer, size);
+
+    ASSERT_EQ(0x5BC8B87A, crc);
+    PASS();
+}
+
 SUITE(line_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_line_horizontal);
@@ -271,6 +338,9 @@ SUITE(line_suite) {
     RUN_TEST(test_draw_line_single_pixel);
     RUN_TEST(test_draw_line_clip_top_left);
     RUN_TEST(test_draw_line_clip_top_left_regression);
+    RUN_TEST(test_draw_line_clip_outside);
+    RUN_TEST(test_draw_line_custom_clip);
+    RUN_TEST(test_draw_line_custom_clip_regression);
 }
 
 GREATEST_MAIN_DEFS();
