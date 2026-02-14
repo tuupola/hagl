@@ -220,6 +220,46 @@ test_draw_line_single_pixel(void) {
     PASS();
 }
 
+/*
+ * Line clipped by top-left corner of display:
+ */
+TEST
+test_draw_line_clip_top_left(void) {
+    hagl_draw_line(&backend, -10, -10, 10, 10, 0xFFFF);
+
+    /* On line: clipped start at origin */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 0, 0));
+
+    /* On line: visible endpoint */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
+
+    /* On line: midpoint of visible portion */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 5, 5));
+
+    /* Outside: beyond visible endpoint */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 11, 11));
+
+    /* Outside: off the staircase */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 1, 0));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 0, 2));
+
+    /* Total: 21 pixels (staircase from origin to (10,10)) */
+    ASSERT_EQ(21, count_pixels(&backend, 0xFFFF));
+
+    PASS();
+}
+
+TEST
+test_draw_line_clip_top_left_regression(void) {
+    hagl_draw_line(&backend, -10, -10, 10, 10, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc = crc32(backend.buffer, size);
+
+    ASSERT_EQ(0xC93AD1B1, crc);
+    PASS();
+}
+
 SUITE(line_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_line_horizontal);
@@ -229,6 +269,8 @@ SUITE(line_suite) {
     RUN_TEST(test_draw_line_diagonal);
     RUN_TEST(test_draw_line_diagonal_regression);
     RUN_TEST(test_draw_line_single_pixel);
+    RUN_TEST(test_draw_line_clip_top_left);
+    RUN_TEST(test_draw_line_clip_top_left_regression);
 }
 
 GREATEST_MAIN_DEFS();
