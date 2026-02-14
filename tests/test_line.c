@@ -101,10 +101,56 @@ test_draw_line_horizontal_regression(void) {
     PASS();
 }
 
+/*
+ * Vertical line:
+ *
+ * (50,10)
+ *   |
+ *   |
+ * (50,20)
+ */
+TEST
+test_draw_line_vertical(void) {
+    hagl_draw_line(&backend, 50, 10, 50, 20, 0xFFFF);
+
+    /* On line: endpoints */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 50, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 50, 20));
+
+    /* On line: midpoint */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 50, 15));
+
+    /* Outside: left and right of midpoint */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 49, 15));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 51, 15));
+
+    /* Outside: above and below endpoints */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 50, 9));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 50, 21));
+
+    /* Total: 11 pixels */
+    ASSERT_EQ(11, count_pixels(&backend, 0xFFFF));
+
+    PASS();
+}
+
+TEST
+test_draw_line_vertical_regression(void) {
+    hagl_draw_line(&backend, 50, 10, 50, 20, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc = crc32(backend.buffer, size);
+
+    ASSERT_EQ(0x538BB775, crc);
+    PASS();
+}
+
 SUITE(line_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_line_horizontal);
     RUN_TEST(test_draw_line_horizontal_regression);
+    RUN_TEST(test_draw_line_vertical);
+    RUN_TEST(test_draw_line_vertical_regression);
 }
 
 GREATEST_MAIN_DEFS();
