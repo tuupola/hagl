@@ -348,6 +348,72 @@ test_fill_circle_single_pixel(void) {
     PASS();
 }
 
+/*
+ * Filled circle entirely outside the display:
+ * Center at (-50,-50), radius 10. No pixels visible.
+ *
+ *       (-50,-40)
+ *      /XXXXXXXX\
+ * (-60,-50)XX(-40,-50)
+ *      \XXXXXXXX/
+ *       (-50,-60)
+ */
+TEST
+test_fill_circle_clip_outside(void) {
+    hagl_fill_circle(&backend, -50, -50, 10, 0xFFFF);
+
+    ASSERT_EQ(0, count_pixels(&backend, 0xFFFF));
+    PASS();
+}
+
+/*
+ * Filled circle clipped by a custom clip window:
+ * Center at (15,15), radius 10, clip (10,10)-(25,25).
+ */
+TEST
+test_fill_circle_custom_clip(void) {
+    hagl_set_clip(&backend, 10, 10, 25, 25);
+    hagl_fill_circle(&backend, 15, 15, 10, 0xFFFF);
+
+    /* Inside clip: center is filled */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 15));
+
+    /* Inside clip: top corners are filled */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 25, 10));
+
+    /* Inside clip: bottom cardinal */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 25));
+
+    /* Inside clip: right edge */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 25, 15));
+
+    /* Outside clip: clipped cardinals */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 5));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 5, 15));
+
+    /* Outside clip: just beyond clip edges */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 9, 15));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 9));
+
+    /* Total: 240 pixels */
+    ASSERT_EQ(240, count_pixels(&backend, 0xFFFF));
+
+    PASS();
+}
+
+TEST
+test_fill_circle_custom_clip_regression(void) {
+    hagl_set_clip(&backend, 10, 10, 25, 25);
+    hagl_fill_circle(&backend, 15, 15, 10, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc = crc32(backend.buffer, size);
+
+    ASSERT_EQ(0x7AE96857, crc);
+    PASS();
+}
+
 SUITE(circle_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_circle);
@@ -363,6 +429,9 @@ SUITE(circle_suite) {
     RUN_TEST(test_fill_circle);
     RUN_TEST(test_fill_circle_regression);
     RUN_TEST(test_fill_circle_single_pixel);
+    RUN_TEST(test_fill_circle_clip_outside);
+    RUN_TEST(test_fill_circle_custom_clip);
+    RUN_TEST(test_fill_circle_custom_clip_regression);
 }
 
 GREATEST_MAIN_DEFS();
