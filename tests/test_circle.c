@@ -178,6 +178,64 @@ test_draw_circle_radius_1_regression(void) {
     PASS();
 }
 
+/*
+ * Circle clipped by top-left corner of display:
+ * Center at (5,5), radius 10. Top and left arcs are clipped.
+ */
+TEST
+test_draw_circle_clip_top_left(void) {
+    hagl_draw_circle(&backend, 5, 5, 10, 0xFFFF);
+
+    /* On outline: visible cardinal points */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 5, 15));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 5));
+
+    /* Clipped: top and left cardinals are off-screen at (5,-5) and (-5,5) */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 5, 0));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 0, 5));
+
+    /* Inside: center is empty */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 5, 5));
+
+    /* On outline: near-diagonal points */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 12, 12));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 14, 0));
+
+    /* Total: 25 visible pixels */
+    ASSERT_EQ(25, count_pixels(&backend, 0xFFFF));
+
+    PASS();
+}
+
+TEST
+test_draw_circle_clip_top_left_regression(void) {
+    hagl_draw_circle(&backend, 5, 5, 10, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc = crc32(backend.buffer, size);
+
+    ASSERT_EQ(0x92716B4E, crc);
+    PASS();
+}
+
+/*
+ * Circle entirely outside the display:
+ * Center at (-50,-50), radius 10. No pixels visible.
+ *
+ *       (-50,-40)
+ *      /         \
+ * (-60,-50)  (-40,-50)
+ *      \         /
+ *       (-50,-60)
+ */
+TEST
+test_draw_circle_clip_outside(void) {
+    hagl_draw_circle(&backend, -50, -50, 10, 0xFFFF);
+
+    ASSERT_EQ(0, count_pixels(&backend, 0xFFFF));
+    PASS();
+}
+
 SUITE(circle_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_circle);
@@ -185,6 +243,9 @@ SUITE(circle_suite) {
     RUN_TEST(test_draw_circle_single_pixel);
     RUN_TEST(test_draw_circle_radius_1);
     RUN_TEST(test_draw_circle_radius_1_regression);
+    RUN_TEST(test_draw_circle_clip_top_left);
+    RUN_TEST(test_draw_circle_clip_top_left_regression);
+    RUN_TEST(test_draw_circle_clip_outside);
 }
 
 GREATEST_MAIN_DEFS();
