@@ -15,9 +15,10 @@ SRCS = \
     ../src/hagl.c \
     ../src/hagl_rectangle.c \
     ../src/hagl_triangle.c \
+    ../src/hagl_circle.c \
     ../src/rgb565.c
 
-all: test_fill_polygon test_polygon test_fill_rectangle test_rectangle test_pixel test_line
+all: test_fill_polygon test_polygon test_fill_rectangle test_rectangle test_pixel test_line test_circle
 
 test_fill_polygon: test_fill_polygon.c $(SRCS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
@@ -37,15 +38,19 @@ test_pixel: test_pixel.c $(SRCS)
 test_line: test_line.c $(SRCS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
-test: test_fill_polygon test_polygon test_fill_rectangle test_rectangle test_pixel test_line
+test_circle: test_circle.c $(SRCS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+test: test_fill_polygon test_polygon test_fill_rectangle test_rectangle test_pixel test_line test_circle
 	./test_fill_polygon
 	./test_polygon
 	./test_fill_rectangle
 	./test_rectangle
 	./test_pixel
 	./test_line
+	./test_circle
 
 clean:
-	rm -f test_fill_polygon test_polygon test_fill_rectangle test_rectangle test_pixel test_line
+	rm -f test_fill_polygon test_polygon test_fill_rectangle test_rectangle test_pixel test_line test_circle
 
 .PHONY: all test clean
