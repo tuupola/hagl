@@ -111,7 +111,7 @@ test_draw_circle_regression(void) {
  * Circle with radius 0:
  */
 TEST
-test_draw_circle_single_pixel(void) {
+test_draw_circle_radius_0(void) {
     hagl_draw_circle(&backend, 50, 50, 0, 0xFFFF);
 
     /* On outline: the center pixel */
@@ -330,7 +330,7 @@ test_fill_circle_regression(void) {
  * Filled circle with radius 0:
  */
 TEST
-test_fill_circle_single_pixel(void) {
+test_fill_circle_radius_0(void) {
     hagl_fill_circle(&backend, 50, 50, 0, 0xFFFF);
 
     /* On fill: the center pixel */
@@ -418,7 +418,7 @@ SUITE(circle_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_circle);
     RUN_TEST(test_draw_circle_regression);
-    RUN_TEST(test_draw_circle_single_pixel);
+    RUN_TEST(test_draw_circle_radius_0);
     RUN_TEST(test_draw_circle_radius_1);
     RUN_TEST(test_draw_circle_radius_1_regression);
     RUN_TEST(test_draw_circle_clip_top_left);
@@ -428,7 +428,7 @@ SUITE(circle_suite) {
     RUN_TEST(test_draw_circle_custom_clip_regression);
     RUN_TEST(test_fill_circle);
     RUN_TEST(test_fill_circle_regression);
-    RUN_TEST(test_fill_circle_single_pixel);
+    RUN_TEST(test_fill_circle_radius_0);
     RUN_TEST(test_fill_circle_clip_outside);
     RUN_TEST(test_fill_circle_custom_clip);
     RUN_TEST(test_fill_circle_custom_clip_regression);
