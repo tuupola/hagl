@@ -278,6 +278,56 @@ test_draw_circle_custom_clip_regression(void) {
     PASS();
 }
 
+/*
+ * Filled circle with center (100,100) and radius 10:
+ *
+ *          (100,90)
+ *         /XXXXXXXX\
+ *        /XXXXXXXXXX\
+ * (90,100)XXXXXXXXXXXX(109,100)
+ *        \XXXXXXXXXX/
+ *         \XXXXXXXX/
+ *          (100,110)
+ *
+ * TODO: hline width is y*2 so the rightmost pixel on each
+ * row is 1 short of the outline. The widest row covers
+ * x=90..109 (20 pixels) instead of x=90..110 (21 pixels).
+ */
+TEST
+test_fill_circle(void) {
+    hagl_fill_circle(&backend, 100, 100, 10, 0xFFFF);
+
+    /* On fill: cardinal points */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 100, 90));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 100, 110));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 90, 100));
+
+    /* Inside: center is filled */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 100, 100));
+
+    /* Outside: 1 pixel beyond each cardinal point */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 100, 89));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 100, 111));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 89, 100));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 111, 100));
+
+    /* Total: 328 pixels */
+    ASSERT_EQ(328, count_pixels(&backend, 0xFFFF));
+
+    PASS();
+}
+
+TEST
+test_fill_circle_regression(void) {
+    hagl_fill_circle(&backend, 100, 100, 10, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc = crc32(backend.buffer, size);
+
+    ASSERT_EQ(0x7BCF5A7A, crc);
+    PASS();
+}
+
 SUITE(circle_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_circle);
@@ -290,6 +340,8 @@ SUITE(circle_suite) {
     RUN_TEST(test_draw_circle_clip_outside);
     RUN_TEST(test_draw_circle_custom_clip);
     RUN_TEST(test_draw_circle_custom_clip_regression);
+    RUN_TEST(test_fill_circle);
+    RUN_TEST(test_fill_circle_regression);
 }
 
 GREATEST_MAIN_DEFS();
