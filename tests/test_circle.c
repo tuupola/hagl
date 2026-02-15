@@ -107,10 +107,35 @@ test_draw_circle_regression(void) {
     PASS();
 }
 
+/*
+ * Circle with radius 0:
+ *
+ *      (50,50)
+ */
+TEST
+test_draw_circle_single_pixel(void) {
+    hagl_draw_circle(&backend, 50, 50, 0, 0xFFFF);
+
+    /* On outline: the center pixel */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 50, 50));
+
+    /* Outside: immediate neighbors are empty */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 49, 50));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 51, 50));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 50, 49));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 50, 51));
+
+    /* Total: 1 pixel */
+    ASSERT_EQ(1, count_pixels(&backend, 0xFFFF));
+
+    PASS();
+}
+
 SUITE(circle_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_circle);
     RUN_TEST(test_draw_circle_regression);
+    RUN_TEST(test_draw_circle_single_pixel);
 }
 
 GREATEST_MAIN_DEFS();
