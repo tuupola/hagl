@@ -102,9 +102,33 @@ test_clip_line_boundary(void) {
     PASS();
 }
 
+TEST
+test_clip_line_reject(void) {
+    int16_t x0, y0, x1, y1;
+
+    /* Left */
+    x0 = -10; y0 = 30; x1 = -5; y1 = 30;
+    ASSERT_EQ(false, hagl_clip_line(&x0, &y0, &x1, &y1, window));
+
+    /* Right */
+    x0 = 60; y0 = 30; x1 = 70; y1 = 30;
+    ASSERT_EQ(false, hagl_clip_line(&x0, &y0, &x1, &y1, window));
+
+    /* Above */
+    x0 = 30; y0 = -10; x1 = 30; y1 = -5;
+    ASSERT_EQ(false, hagl_clip_line(&x0, &y0, &x1, &y1, window));
+
+    /* Below */
+    x0 = 30; y0 = 60; x1 = 30; y1 = 70;
+    ASSERT_EQ(false, hagl_clip_line(&x0, &y0, &x1, &y1, window));
+
+    PASS();
+}
+
 SUITE(clip_suite) {
     RUN_TEST(test_clip_line_inside);
     RUN_TEST(test_clip_line_boundary);
+    RUN_TEST(test_clip_line_reject);
 }
 
 GREATEST_MAIN_DEFS();
