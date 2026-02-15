@@ -236,6 +236,48 @@ test_draw_circle_clip_outside(void) {
     PASS();
 }
 
+/*
+ * Circle clipped by a custom clip window:
+ * Center at (15,15), radius 10, clip (10,10)-(25,25).
+ */
+TEST
+test_draw_circle_custom_clip(void) {
+    hagl_set_clip(&backend, 10, 10, 25, 25);
+    hagl_draw_circle(&backend, 15, 15, 10, 0xFFFF);
+
+    /* On outline: visible cardinal points */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 25));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 25, 15));
+
+    /* Clipped: top and left cardinals at (15,5) and (5,15) */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 10));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 10, 15));
+
+    /* Inside: center is empty */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 15));
+
+    /* On outline: near-diagonal points */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 22, 22));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 24, 10));
+
+    /* Total: 25 visible pixels */
+    ASSERT_EQ(25, count_pixels(&backend, 0xFFFF));
+
+    PASS();
+}
+
+TEST
+test_draw_circle_custom_clip_regression(void) {
+    hagl_set_clip(&backend, 10, 10, 25, 25);
+    hagl_draw_circle(&backend, 15, 15, 10, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc = crc32(backend.buffer, size);
+
+    ASSERT_EQ(0x260CB22C, crc);
+    PASS();
+}
+
 SUITE(circle_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_circle);
@@ -246,6 +288,8 @@ SUITE(circle_suite) {
     RUN_TEST(test_draw_circle_clip_top_left);
     RUN_TEST(test_draw_circle_clip_top_left_regression);
     RUN_TEST(test_draw_circle_clip_outside);
+    RUN_TEST(test_draw_circle_custom_clip);
+    RUN_TEST(test_draw_circle_custom_clip_regression);
 }
 
 GREATEST_MAIN_DEFS();
