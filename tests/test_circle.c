@@ -398,14 +398,49 @@ test_fill_circle_radius_1_regression(void) {
 }
 
 /*
+ * Filled circle clipped by top-left corner of display:
+ * Center at (5,5), radius 10. Top and left portions are clipped.
+ * Same dimensions as test_draw_circle_clip_top_left.
+ *
+ * TODO: hline width is y*2 so the rightmost pixel on each
+ * row is 1 short of the outline. Right cardinal (15,5) is
+ * not filled.
+ */
+TEST
+test_fill_circle_clip_top_left(void) {
+    hagl_fill_circle(&backend, 5, 5, 10, 0xFFFF);
+
+    /* On fill: visible cardinal points */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 5, 15));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 0, 5));
+
+    /* Inside: center and corner are filled */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 5, 5));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 0, 0));
+
+    /* Outside: beyond bottom cardinal */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 5, 16));
+
+    /* Total: 213 pixels */
+    ASSERT_EQ(213, count_pixels(&backend, 0xFFFF));
+
+    PASS();
+}
+
+TEST
+test_fill_circle_clip_top_left_regression(void) {
+    hagl_fill_circle(&backend, 5, 5, 10, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc = crc32(backend.buffer, size);
+
+    ASSERT_EQ(0x4A6D611B, crc);
+    PASS();
+}
+
+/*
  * Filled circle entirely outside the display:
  * Center at (-50,-50), radius 10. No pixels visible.
- *
- *       (-50,-40)
- *      /XXXXXXXX\
- * (-60,-50)XX(-40,-50)
- *      \XXXXXXXX/
- *       (-50,-60)
  */
 TEST
 test_fill_circle_clip_outside(void) {
@@ -480,6 +515,8 @@ SUITE(circle_suite) {
     RUN_TEST(test_fill_circle_radius_0);
     RUN_TEST(test_fill_circle_radius_1);
     RUN_TEST(test_fill_circle_radius_1_regression);
+    RUN_TEST(test_fill_circle_clip_top_left);
+    RUN_TEST(test_fill_circle_clip_top_left_regression);
     RUN_TEST(test_fill_circle_clip_outside);
     RUN_TEST(test_fill_circle_custom_clip);
     RUN_TEST(test_fill_circle_custom_clip_regression);
