@@ -349,6 +349,55 @@ test_fill_circle_radius_0(void) {
 }
 
 /*
+ * Filled circle with radius 1:
+ *
+ *        (100,99)
+ *          |
+ * (99,100) (100,100) (101,100)
+ *          |
+ *        (100,101)
+ *
+ * Should produce a filled cross with 5 pixels.
+ */
+TEST
+test_fill_circle_radius_1(void) {
+    hagl_fill_circle(&backend, 100, 100, 1, 0xFFFF);
+
+    /* On fill: cardinal neighbors */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 100, 99));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 100, 101));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 99, 100));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 101, 100));
+
+    /* Inside: center is filled */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 100, 100));
+
+    /* Outside: diagonal neighbors */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 99, 99));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 101, 99));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 99, 101));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 101, 101));
+
+    /* Total: 5 pixels */
+    ASSERT_EQ(5, count_pixels(&backend, 0xFFFF));
+
+    PASS();
+}
+
+/* TODO: Update CRC after hagl_fill_circle radius 0/1 fix is applied. */
+TEST
+test_fill_circle_radius_1_regression(void) {
+    hagl_fill_circle(&backend, 100, 100, 1, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc = crc32(backend.buffer, size);
+
+    /* TODO: Placeholder, waiting for hagl_fill_circle fix. */
+    ASSERT_EQ(0x00000000, crc);
+    PASS();
+}
+
+/*
  * Filled circle entirely outside the display:
  * Center at (-50,-50), radius 10. No pixels visible.
  *
@@ -429,6 +478,8 @@ SUITE(circle_suite) {
     RUN_TEST(test_fill_circle);
     RUN_TEST(test_fill_circle_regression);
     RUN_TEST(test_fill_circle_radius_0);
+    RUN_TEST(test_fill_circle_radius_1);
+    RUN_TEST(test_fill_circle_radius_1_regression);
     RUN_TEST(test_fill_circle_clip_outside);
     RUN_TEST(test_fill_circle_custom_clip);
     RUN_TEST(test_fill_circle_custom_clip_regression);
