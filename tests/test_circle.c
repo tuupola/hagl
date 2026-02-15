@@ -131,11 +131,60 @@ test_draw_circle_single_pixel(void) {
     PASS();
 }
 
+/*
+ * Circle with radius 1:
+ *
+ *        (100,99)
+ *          |
+ * (99,100)   (101,100)
+ *          |
+ *        (100,101)
+ *
+ * Produces a cross/diamond with 4 pixels. Center is empty.
+ */
+TEST
+test_draw_circle_radius_1(void) {
+    hagl_draw_circle(&backend, 100, 100, 1, 0xFFFF);
+
+    /* On outline: cardinal neighbors */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 100, 99));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 100, 101));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 99, 100));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 101, 100));
+
+    /* Inside: center is empty (outline only) */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 100, 100));
+
+    /* Outside: diagonal neighbors */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 99, 99));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 101, 99));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 99, 101));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 101, 101));
+
+    /* Total: 4 pixels */
+    ASSERT_EQ(4, count_pixels(&backend, 0xFFFF));
+
+    PASS();
+}
+
+TEST
+test_draw_circle_radius_1_regression(void) {
+    hagl_draw_circle(&backend, 100, 100, 1, 0xFFFF);
+
+    size_t size = backend.width * backend.height * (backend.depth / 8);
+    uint32_t crc = crc32(backend.buffer, size);
+
+    ASSERT_EQ(0x8A89E763, crc);
+    PASS();
+}
+
 SUITE(circle_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_circle);
     RUN_TEST(test_draw_circle_regression);
     RUN_TEST(test_draw_circle_single_pixel);
+    RUN_TEST(test_draw_circle_radius_1);
+    RUN_TEST(test_draw_circle_radius_1_regression);
 }
 
 GREATEST_MAIN_DEFS();
