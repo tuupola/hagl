@@ -125,10 +125,50 @@ test_clip_line_reject(void) {
     PASS();
 }
 
+TEST
+test_clip_line_clip_single_edge(void) {
+    int16_t x0, y0, x1, y1;
+
+    /* Left: horizontal line entering from left */
+    x0 = -10; y0 = 30; x1 = 30; y1 = 30;
+    ASSERT_EQ(true, hagl_clip_line(&x0, &y0, &x1, &y1, window));
+    ASSERT_EQ(10, x0);
+    ASSERT_EQ(30, y0);
+    ASSERT_EQ(30, x1);
+    ASSERT_EQ(30, y1);
+
+    /* Right: horizontal line exiting to right */
+    x0 = 30; y0 = 30; x1 = 70; y1 = 30;
+    ASSERT_EQ(true, hagl_clip_line(&x0, &y0, &x1, &y1, window));
+    ASSERT_EQ(30, x0);
+    ASSERT_EQ(30, y0);
+    ASSERT_EQ(50, x1);
+    ASSERT_EQ(30, y1);
+
+    /* Above: vertical line entering from above */
+    x0 = 30; y0 = -10; x1 = 30; y1 = 30;
+    ASSERT_EQ(true, hagl_clip_line(&x0, &y0, &x1, &y1, window));
+    ASSERT_EQ(30, x0);
+    ASSERT_EQ(10, y0);
+    ASSERT_EQ(30, x1);
+    ASSERT_EQ(30, y1);
+
+    /* Below: vertical line exiting below */
+    x0 = 30; y0 = 30; x1 = 30; y1 = 70;
+    ASSERT_EQ(true, hagl_clip_line(&x0, &y0, &x1, &y1, window));
+    ASSERT_EQ(30, x0);
+    ASSERT_EQ(30, y0);
+    ASSERT_EQ(30, x1);
+    ASSERT_EQ(50, y1);
+
+    PASS();
+}
+
 SUITE(clip_suite) {
     RUN_TEST(test_clip_line_inside);
     RUN_TEST(test_clip_line_boundary);
     RUN_TEST(test_clip_line_reject);
+    RUN_TEST(test_clip_line_clip_single_edge);
 }
 
 GREATEST_MAIN_DEFS();
