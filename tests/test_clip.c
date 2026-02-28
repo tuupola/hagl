@@ -60,8 +60,7 @@ static const hagl_window_t window = {10, 10, 50, 50};
  *
  * Coordinates returned unchanged.
  */
-TEST
-test_clip_line_inside(void) {
+TEST test_clip_line_inside(void) {
     int16_t x0 = 20, y0 = 20, x1 = 40, y1 = 40;
 
     bool result = hagl_clip_line(&x0, &y0, &x1, &y1, window);
@@ -87,8 +86,7 @@ test_clip_line_inside(void) {
  *
  * Boundary is inclusive, coordinates returned unchanged.
  */
-TEST
-test_clip_line_boundary(void) {
+TEST test_clip_line_boundary(void) {
     int16_t x0 = 10, y0 = 10, x1 = 50, y1 = 50;
 
     bool result = hagl_clip_line(&x0, &y0, &x1, &y1, window);
@@ -102,35 +100,48 @@ test_clip_line_boundary(void) {
     PASS();
 }
 
-TEST
-test_clip_line_outside(void) {
+TEST test_clip_line_outside(void) {
     int16_t x0, y0, x1, y1;
 
     /* Left */
-    x0 = -10; y0 = 30; x1 = -5; y1 = 30;
+    x0 = -10;
+    y0 = 30;
+    x1 = -5;
+    y1 = 30;
     ASSERT_EQ(false, hagl_clip_line(&x0, &y0, &x1, &y1, window));
 
     /* Right */
-    x0 = 60; y0 = 30; x1 = 70; y1 = 30;
+    x0 = 60;
+    y0 = 30;
+    x1 = 70;
+    y1 = 30;
     ASSERT_EQ(false, hagl_clip_line(&x0, &y0, &x1, &y1, window));
 
     /* Above */
-    x0 = 30; y0 = -10; x1 = 30; y1 = -5;
+    x0 = 30;
+    y0 = -10;
+    x1 = 30;
+    y1 = -5;
     ASSERT_EQ(false, hagl_clip_line(&x0, &y0, &x1, &y1, window));
 
     /* Below */
-    x0 = 30; y0 = 60; x1 = 30; y1 = 70;
+    x0 = 30;
+    y0 = 60;
+    x1 = 30;
+    y1 = 70;
     ASSERT_EQ(false, hagl_clip_line(&x0, &y0, &x1, &y1, window));
 
     PASS();
 }
 
-TEST
-test_clip_line_clip_single_edge(void) {
+TEST test_clip_line_clip_single_edge(void) {
     int16_t x0, y0, x1, y1;
 
     /* Left: horizontal line entering from left */
-    x0 = -10; y0 = 30; x1 = 30; y1 = 30;
+    x0 = -10;
+    y0 = 30;
+    x1 = 30;
+    y1 = 30;
     ASSERT_EQ(true, hagl_clip_line(&x0, &y0, &x1, &y1, window));
     ASSERT_EQ(10, x0);
     ASSERT_EQ(30, y0);
@@ -138,7 +149,10 @@ test_clip_line_clip_single_edge(void) {
     ASSERT_EQ(30, y1);
 
     /* Right: horizontal line exiting to right */
-    x0 = 30; y0 = 30; x1 = 70; y1 = 30;
+    x0 = 30;
+    y0 = 30;
+    x1 = 70;
+    y1 = 30;
     ASSERT_EQ(true, hagl_clip_line(&x0, &y0, &x1, &y1, window));
     ASSERT_EQ(30, x0);
     ASSERT_EQ(30, y0);
@@ -146,7 +160,10 @@ test_clip_line_clip_single_edge(void) {
     ASSERT_EQ(30, y1);
 
     /* Above: vertical line entering from above */
-    x0 = 30; y0 = -10; x1 = 30; y1 = 30;
+    x0 = 30;
+    y0 = -10;
+    x1 = 30;
+    y1 = 30;
     ASSERT_EQ(true, hagl_clip_line(&x0, &y0, &x1, &y1, window));
     ASSERT_EQ(30, x0);
     ASSERT_EQ(10, y0);
@@ -154,7 +171,10 @@ test_clip_line_clip_single_edge(void) {
     ASSERT_EQ(30, y1);
 
     /* Below: vertical line exiting below */
-    x0 = 30; y0 = 30; x1 = 30; y1 = 70;
+    x0 = 30;
+    y0 = 30;
+    x1 = 30;
+    y1 = 70;
     ASSERT_EQ(true, hagl_clip_line(&x0, &y0, &x1, &y1, window));
     ASSERT_EQ(30, x0);
     ASSERT_EQ(30, y0);
@@ -168,12 +188,14 @@ test_clip_line_clip_single_edge(void) {
  * Line crossing the entire clip window, both endpoints
  * outside on opposite sides. Both endpoints are clipped.
  */
-TEST
-test_clip_line_clip_both_edges(void) {
+TEST test_clip_line_clip_both_edges(void) {
     int16_t x0, y0, x1, y1;
 
     /* Horizontal: both ends clipped */
-    x0 = -10; y0 = 30; x1 = 70; y1 = 30;
+    x0 = -10;
+    y0 = 30;
+    x1 = 70;
+    y1 = 30;
     ASSERT_EQ(true, hagl_clip_line(&x0, &y0, &x1, &y1, window));
     ASSERT_EQ(10, x0);
     ASSERT_EQ(30, y0);
@@ -181,7 +203,10 @@ test_clip_line_clip_both_edges(void) {
     ASSERT_EQ(30, y1);
 
     /* Vertical: both ends clipped */
-    x0 = 30; y0 = -10; x1 = 30; y1 = 70;
+    x0 = 30;
+    y0 = -10;
+    x1 = 30;
+    y1 = 70;
     ASSERT_EQ(true, hagl_clip_line(&x0, &y0, &x1, &y1, window));
     ASSERT_EQ(30, x0);
     ASSERT_EQ(10, y0);
@@ -189,7 +214,10 @@ test_clip_line_clip_both_edges(void) {
     ASSERT_EQ(50, y1);
 
     /* Diagonal: both ends clipped */
-    x0 = 0; y0 = 0; x1 = 60; y1 = 60;
+    x0 = 0;
+    y0 = 0;
+    x1 = 60;
+    y1 = 60;
     ASSERT_EQ(true, hagl_clip_line(&x0, &y0, &x1, &y1, window));
     ASSERT_EQ(10, x0);
     ASSERT_EQ(10, y0);
@@ -209,8 +237,7 @@ SUITE(clip_suite) {
 
 GREATEST_MAIN_DEFS();
 
-int
-main(int argc, char **argv) {
+int main(int argc, char **argv) {
     GREATEST_MAIN_BEGIN();
     RUN_SUITE(clip_suite);
     GREATEST_MAIN_END();
