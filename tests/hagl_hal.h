@@ -23,7 +23,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 -cut-
-Minimal HAL for unit testing.
+Minimal HAL stub for unit testing. Provides the hagl_hal_color.h
+include required by the library sources but no backend functions.
 
 This file is part of the HAGL graphics library:
 https://github.com/tuupola/hagl
@@ -34,18 +35,6 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_HAL_H
 #define _HAGL_HAL_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include <stdint.h>
-#include <hagl/backend.h>
-
 #include "hagl_hal_color.h"
 
-void hagl_hal_init(hagl_backend_t *backend);
-
-#ifdef __cplusplus
-}
-#endif
 #endif /* _HAGL_HAL_H */

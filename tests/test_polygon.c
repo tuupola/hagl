@@ -35,16 +35,26 @@ SPDX-License-Identifier: MIT
 
 #include "greatest.h"
 #include "crc32.h"
-#include "hagl.h"
+#include "hagl/bitmap.h"
+#include "hagl/pixel.h"
+#include "hagl/clip.h"
+#include "hagl/polygon.h"
+#include "hagl/triangle.h"
+#include "hagl/rectangle.h"
 
-static hagl_backend_t backend;
+#define TEST_WIDTH  320
+#define TEST_HEIGHT 240
+#define TEST_DEPTH  16
+
+static hagl_bitmap_t bitmap;
+static uint8_t buffer[TEST_WIDTH * TEST_HEIGHT * (TEST_DEPTH / 8)];
 
 static uint32_t
-count_pixels(hagl_backend_t *backend, hagl_color_t color) {
+count_pixels(hagl_bitmap_t *bitmap, hagl_color_t color) {
     uint32_t count = 0;
-    for (int16_t y = 0; y < backend->height; y++) {
-        for (int16_t x = 0; x < backend->width; x++) {
-            if (hagl_get_pixel(backend, x, y) == color) {
+    for (int16_t y = 0; y < bitmap->height; y++) {
+        for (int16_t x = 0; x < bitmap->width; x++) {
+            if (hagl_get_pixel(bitmap, x, y) == color) {
                 count++;
             }
         }
@@ -54,10 +64,8 @@ count_pixels(hagl_backend_t *backend, hagl_color_t color) {
 
 static void
 setup_callback(void *data) {
-    memset(&backend, 0, sizeof(hagl_backend_t));
-    hagl_hal_init(&backend);
-    hagl_set_clip(&backend, 0, 0, backend.width - 1, backend.height - 1);
-    hagl_clear(&backend);
+    memset(buffer, 0, sizeof(buffer));
+    hagl_bitmap_init(&bitmap, TEST_WIDTH, TEST_HEIGHT, TEST_DEPTH, buffer);
 }
 
 /*
@@ -71,37 +79,37 @@ setup_callback(void *data) {
 TEST
 test_polygon_square(void) {
     int16_t vertices[] = {10, 10, 20, 10, 20, 20, 10, 20};
-    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 4, vertices, 0xFFFF);
 
     /* Inside: center of the square should be empty */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 15));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 15, 15));
 
     /* On edge: all four corners */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 10));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 20));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 20));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 10, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 20, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 20, 20));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 10, 20));
 
     /* On edge: edge midpoints */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 10));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 15));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 20));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 15));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 15, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 20, 15));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 15, 20));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 10, 15));
 
     /* Outside: 1 pixel beyond each edge */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 9, 15));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 21, 15));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 9));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 21));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 9, 15));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 21, 15));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 15, 9));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 15, 21));
 
     /* Outside: 1 pixel diagonally beyond each corner */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 9, 9));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 21, 9));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 21, 21));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 9, 21));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 9, 9));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 21, 9));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 21, 21));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 9, 21));
 
     /* Total outline: 4 edges of 11 pixels, minus 4 shared corners = 40 */
-    ASSERT_EQ(40, count_pixels(&backend, 0xFFFF));
+    ASSERT_EQ(40, count_pixels(&bitmap, 0xFFFF));
 
     PASS();
 }
@@ -109,10 +117,9 @@ test_polygon_square(void) {
 TEST
 test_polygon_square_regression(void) {
     int16_t vertices[] = {10, 10, 20, 10, 20, 20, 10, 20};
-    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 4, vertices, 0xFFFF);
 
-    size_t size = backend.width * backend.height * (backend.depth / 8);
-    uint32_t crc = crc32(backend.buffer, size);
+    uint32_t crc = crc32(bitmap.buffer, bitmap.size);
 
     ASSERT_EQ(0x92C59792, crc);
     PASS();
@@ -122,16 +129,15 @@ TEST
 test_polygon_square_match_rectangle(void) {
     /* Draw a square polygon outline. */
     int16_t vertices[] = {10, 10, 20, 10, 20, 20, 10, 20};
-    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 4, vertices, 0xFFFF);
 
-    size_t size = backend.width * backend.height * (backend.depth / 8);
-    uint32_t crc_polygon = crc32(backend.buffer, size);
+    uint32_t crc_polygon = crc32(bitmap.buffer, bitmap.size);
 
     /* Clear and draw the same area with draw rectangle. */
-    memset(backend.buffer, 0, size);
-    hagl_draw_rectangle_xyxy(&backend, 10, 10, 20, 20, 0xFFFF);
+    memset(bitmap.buffer, 0, bitmap.size);
+    hagl_draw_rectangle_xyxy(&bitmap, 10, 10, 20, 20, 0xFFFF);
 
-    uint32_t crc_rectangle = crc32(backend.buffer, size);
+    uint32_t crc_rectangle = crc32(bitmap.buffer, bitmap.size);
 
     ASSERT_EQ(crc_rectangle, crc_polygon);
     PASS();
@@ -141,17 +147,16 @@ TEST
 test_polygon_square_winding_order(void) {
     /* Clockwise */
     int16_t cw[] = {10, 10, 20, 10, 20, 20, 10, 20};
-    hagl_draw_polygon(&backend, 4, cw, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 4, cw, 0xFFFF);
 
-    size_t size = backend.width * backend.height * (backend.depth / 8);
-    uint32_t crc_cw = crc32(backend.buffer, size);
+    uint32_t crc_cw = crc32(bitmap.buffer, bitmap.size);
 
     /* Clear and draw counterclockwise */
-    memset(backend.buffer, 0, size);
+    memset(bitmap.buffer, 0, bitmap.size);
     int16_t ccw[] = {10, 10, 10, 20, 20, 20, 20, 10};
-    hagl_draw_polygon(&backend, 4, ccw, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 4, ccw, 0xFFFF);
 
-    uint32_t crc_ccw = crc32(backend.buffer, size);
+    uint32_t crc_ccw = crc32(bitmap.buffer, bitmap.size);
 
     ASSERT_EQ(crc_cw, crc_ccw);
     PASS();
@@ -170,28 +175,28 @@ test_polygon_square_winding_order(void) {
 TEST
 test_polygon_triangle(void) {
     int16_t vertices[] = {10, 10, 30, 10, 10, 30};
-    hagl_draw_polygon(&backend, 3, vertices, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 3, vertices, 0xFFFF);
 
     /* Inside: points well within the triangle should be empty */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 15));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 12, 20));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 15, 15));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 12, 20));
 
     /* On edge: all three vertices */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 30, 10));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 30));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 10, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 30, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 10, 30));
 
     /* On edge: edge midpoints of axis-aligned edges */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 10));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 20));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 20, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 10, 20));
 
     /* Outside: beyond the hypotenuse */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 25, 25));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 30, 30));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 25, 25));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 30, 30));
 
     /* Outside: beyond the axis-aligned edges */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 9, 20));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 20, 9));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 9, 20));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 20, 9));
 
     PASS();
 }
@@ -199,10 +204,9 @@ test_polygon_triangle(void) {
 TEST
 test_polygon_triangle_regression(void) {
     int16_t vertices[] = {10, 10, 30, 10, 10, 30};
-    hagl_draw_polygon(&backend, 3, vertices, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 3, vertices, 0xFFFF);
 
-    size_t size = backend.width * backend.height * (backend.depth / 8);
-    uint32_t crc = crc32(backend.buffer, size);
+    uint32_t crc = crc32(bitmap.buffer, bitmap.size);
 
     ASSERT_EQ(0xD5693D12, crc);
     PASS();
@@ -211,15 +215,14 @@ test_polygon_triangle_regression(void) {
 TEST
 test_polygon_triangle_match_draw_triangle(void) {
     int16_t vertices[] = {10, 10, 30, 10, 10, 30};
-    hagl_draw_polygon(&backend, 3, vertices, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 3, vertices, 0xFFFF);
 
-    size_t size = backend.width * backend.height * (backend.depth / 8);
-    uint32_t crc_polygon = crc32(backend.buffer, size);
+    uint32_t crc_polygon = crc32(bitmap.buffer, bitmap.size);
 
-    memset(backend.buffer, 0, size);
-    hagl_draw_triangle(&backend, 10, 10, 30, 10, 10, 30, 0xFFFF);
+    memset(bitmap.buffer, 0, bitmap.size);
+    hagl_draw_triangle(&bitmap, 10, 10, 30, 10, 10, 30, 0xFFFF);
 
-    uint32_t crc_triangle = crc32(backend.buffer, size);
+    uint32_t crc_triangle = crc32(bitmap.buffer, bitmap.size);
 
     ASSERT_EQ(crc_triangle, crc_polygon);
     PASS();
@@ -229,30 +232,28 @@ TEST
 test_polygon_triangle_winding_order(void) {
     /* Clockwise */
     int16_t cw[] = {10, 10, 30, 10, 10, 30};
-    hagl_draw_polygon(&backend, 3, cw, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 3, cw, 0xFFFF);
 
     /* Vertices should be drawn regardless of winding order */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 30, 10));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 30));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 10, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 30, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 10, 30));
 
     /* Interior should be empty */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 15));
-
-    size_t size = backend.width * backend.height * (backend.depth / 8);
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 15, 15));
 
     /* Clear and draw counterclockwise */
-    memset(backend.buffer, 0, size);
+    memset(bitmap.buffer, 0, bitmap.size);
     int16_t ccw[] = {10, 10, 10, 30, 30, 10};
-    hagl_draw_polygon(&backend, 3, ccw, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 3, ccw, 0xFFFF);
 
     /* Same vertices should be drawn */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 30, 10));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 30));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 10, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 30, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 10, 30));
 
     /* Interior should be empty */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 15));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 15, 15));
 
     PASS();
 }
@@ -270,38 +271,38 @@ test_polygon_triangle_winding_order(void) {
 TEST
 test_polygon_concave(void) {
     int16_t vertices[] = {10, 10, 30, 10, 30, 20, 20, 20, 20, 40, 10, 40};
-    hagl_draw_polygon(&backend, 6, vertices, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 6, vertices, 0xFFFF);
 
     /* On edge: all six vertices */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 30, 10));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 30, 20));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 20));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 40));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 40));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 10, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 30, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 30, 20));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 20, 20));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 20, 40));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 10, 40));
 
     /* On edge: top arm edge midpoint */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 20, 10));
 
     /* Inside: interior of top arm should be empty */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 25, 15));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 25, 15));
 
     /* Inside: interior of bottom arm should be empty */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 30));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 15, 30));
 
     /* Outside: inside bounding box but outside the L */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 25, 25));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 25, 30));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 25, 39));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 25, 25));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 25, 30));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 25, 39));
 
     /* Outside: beyond edges */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 9, 25));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 21, 30));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 9));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 41));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 9, 25));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 21, 30));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 15, 9));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 15, 41));
 
     /* Outline: 6 edges of 21 + 11 + 11 + 21 + 11 + 31 - 6 corners = 100 */
-    ASSERT_EQ(100, count_pixels(&backend, 0xFFFF));
+    ASSERT_EQ(100, count_pixels(&bitmap, 0xFFFF));
 
     PASS();
 }
@@ -309,10 +310,9 @@ test_polygon_concave(void) {
 TEST
 test_polygon_concave_regression(void) {
     int16_t vertices[] = {10, 10, 30, 10, 30, 20, 20, 20, 20, 40, 10, 40};
-    hagl_draw_polygon(&backend, 6, vertices, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 6, vertices, 0xFFFF);
 
-    size_t size = backend.width * backend.height * (backend.depth / 8);
-    uint32_t crc = crc32(backend.buffer, size);
+    uint32_t crc = crc32(bitmap.buffer, bitmap.size);
 
     ASSERT_EQ(0xEF99E5ED, crc);
     PASS();
@@ -334,28 +334,28 @@ test_polygon_concave_regression(void) {
 TEST
 test_polygon_bowtie(void) {
     int16_t vertices[] = {10, 10, 30, 10, 10, 30, 30, 30};
-    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 4, vertices, 0xFFFF);
 
     /* On edge: vertices */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 30, 10));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 30));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 30, 30));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 10, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 30, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 10, 30));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 30, 30));
 
     /* On edge: top edge midpoint */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 20, 10));
 
     /* On edge: bottom edge midpoint */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 30));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 20, 30));
 
     /* On edge: center crossing point */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 20));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 20, 20));
 
     /* Outside: beyond bounding box */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 9, 20));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 31, 20));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 20, 9));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 20, 31));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 9, 20));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 31, 20));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 20, 9));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 20, 31));
 
     PASS();
 }
@@ -363,10 +363,9 @@ test_polygon_bowtie(void) {
 TEST
 test_polygon_bowtie_regression(void) {
     int16_t vertices[] = {10, 10, 30, 10, 10, 30, 30, 30};
-    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 4, vertices, 0xFFFF);
 
-    size_t size = backend.width * backend.height * (backend.depth / 8);
-    uint32_t crc = crc32(backend.buffer, size);
+    uint32_t crc = crc32(bitmap.buffer, bitmap.size);
 
     ASSERT_EQ(0x864446C1, crc);
     PASS();
@@ -387,23 +386,23 @@ test_polygon_bowtie_regression(void) {
 TEST
 test_polygon_clip_top_left(void) {
     int16_t vertices[] = {-10, -10, 10, -10, 10, 10, -10, 10};
-    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 4, vertices, 0xFFFF);
 
     /* On edge: visible portion of right edge */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 0));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 5));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 10, 0));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 10, 5));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 10, 10));
 
     /* On edge: visible portion of bottom edge */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 0, 10));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 5, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 0, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 5, 10));
 
     /* Inside: interior should be empty */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 5, 5));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 5, 5));
 
     /* Outside: beyond the polygon inside display */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 11, 5));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 5, 11));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 11, 5));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 5, 11));
 
     PASS();
 }
@@ -411,10 +410,9 @@ test_polygon_clip_top_left(void) {
 TEST
 test_polygon_clip_top_left_regression(void) {
     int16_t vertices[] = {-10, -10, 10, -10, 10, 10, -10, 10};
-    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 4, vertices, 0xFFFF);
 
-    size_t size = backend.width * backend.height * (backend.depth / 8);
-    uint32_t crc = crc32(backend.buffer, size);
+    uint32_t crc = crc32(bitmap.buffer, bitmap.size);
 
     ASSERT_EQ(0x4F2BB196, crc);
     PASS();
@@ -435,23 +433,23 @@ test_polygon_clip_top_left_regression(void) {
 TEST
 test_polygon_clip_bottom_right(void) {
     int16_t vertices[] = {310, 230, 330, 230, 330, 250, 310, 250};
-    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 4, vertices, 0xFFFF);
 
     /* On edge: visible portion of top edge */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 310, 230));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 315, 230));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 319, 230));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 310, 230));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 315, 230));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 319, 230));
 
     /* On edge: visible portion of left edge */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 310, 235));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 310, 239));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 310, 235));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 310, 239));
 
     /* Inside: interior should be empty */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 315, 235));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 315, 235));
 
     /* Outside: beyond the polygon inside display */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 309, 235));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 315, 229));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 309, 235));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 315, 229));
 
     PASS();
 }
@@ -459,10 +457,9 @@ test_polygon_clip_bottom_right(void) {
 TEST
 test_polygon_clip_bottom_right_regression(void) {
     int16_t vertices[] = {310, 230, 330, 230, 330, 250, 310, 250};
-    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 4, vertices, 0xFFFF);
 
-    size_t size = backend.width * backend.height * (backend.depth / 8);
-    uint32_t crc = crc32(backend.buffer, size);
+    uint32_t crc = crc32(bitmap.buffer, bitmap.size);
 
     ASSERT_EQ(0x572BA9FB, crc);
     PASS();
@@ -481,9 +478,9 @@ test_polygon_clip_bottom_right_regression(void) {
 TEST
 test_polygon_clip_outside(void) {
     int16_t vertices[] = {-30, -30, -10, -30, -10, -10, -30, -10};
-    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 4, vertices, 0xFFFF);
 
-    ASSERT_EQ(0, count_pixels(&backend, 0xFFFF));
+    ASSERT_EQ(0, count_pixels(&bitmap, 0xFFFF));
     PASS();
 }
 
@@ -498,32 +495,32 @@ test_polygon_clip_outside(void) {
 TEST
 test_polygon_trapezoid(void) {
     int16_t vertices[] = {15, 10, 25, 10, 30, 30, 10, 30};
-    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 4, vertices, 0xFFFF);
 
     /* Inside: center should be empty */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 20, 20));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 20, 20));
 
     /* On edge: vertices */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 15, 10));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 25, 10));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 10, 30));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 30, 30));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 15, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 25, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 10, 30));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 30, 30));
 
     /* On edge: midpoints of horizontal edges */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 10));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 20, 30));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 20, 10));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 20, 30));
 
     /* Outside: above and below */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 20, 9));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 20, 31));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 20, 9));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 20, 31));
 
     /* Outside: beyond the narrow top edge */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 14, 10));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 26, 10));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 14, 10));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 26, 10));
 
     /* Outside: beyond the diagonal edges */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 9, 30));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 31, 30));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 9, 30));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 31, 30));
 
     PASS();
 }
@@ -531,10 +528,9 @@ test_polygon_trapezoid(void) {
 TEST
 test_polygon_trapezoid_regression(void) {
     int16_t vertices[] = {15, 10, 25, 10, 30, 30, 10, 30};
-    hagl_draw_polygon(&backend, 4, vertices, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 4, vertices, 0xFFFF);
 
-    size_t size = backend.width * backend.height * (backend.depth / 8);
-    uint32_t crc = crc32(backend.buffer, size);
+    uint32_t crc = crc32(bitmap.buffer, bitmap.size);
 
     ASSERT_EQ(0xECA239F3, crc);
     PASS();
@@ -543,30 +539,30 @@ test_polygon_trapezoid_regression(void) {
 TEST
 test_polygon_degenerate_zero_vertices(void) {
     int16_t vertices[] = {0, 0};
-    hagl_draw_polygon(&backend, 0, vertices, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 0, vertices, 0xFFFF);
 
     /* Should not crash, should not draw anything */
-    ASSERT_EQ(0, count_pixels(&backend, 0xFFFF));
+    ASSERT_EQ(0, count_pixels(&bitmap, 0xFFFF));
     PASS();
 }
 
 TEST
 test_polygon_degenerate_one_vertex(void) {
     int16_t vertices[] = {20, 20};
-    hagl_draw_polygon(&backend, 1, vertices, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 1, vertices, 0xFFFF);
 
     /* Should not crash, should not draw anything */
-    ASSERT_EQ(0, count_pixels(&backend, 0xFFFF));
+    ASSERT_EQ(0, count_pixels(&bitmap, 0xFFFF));
     PASS();
 }
 
 TEST
 test_polygon_degenerate_two_vertices(void) {
     int16_t vertices[] = {10, 10, 20, 20};
-    hagl_draw_polygon(&backend, 2, vertices, 0xFFFF);
+    hagl_draw_polygon(&bitmap, 2, vertices, 0xFFFF);
 
     /* Should not crash, should not draw anything */
-    ASSERT_EQ(0, count_pixels(&backend, 0xFFFF));
+    ASSERT_EQ(0, count_pixels(&bitmap, 0xFFFF));
     PASS();
 }
 

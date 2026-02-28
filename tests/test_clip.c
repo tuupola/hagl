@@ -34,7 +34,7 @@ SPDX-License-Identifier: MIT
 #include <stdbool.h>
 
 #include "greatest.h"
-#include "hagl.h"
+#include "hagl/clip.h"
 
 /*
  * All tests use the same clip window (10,10)-(50,50).
