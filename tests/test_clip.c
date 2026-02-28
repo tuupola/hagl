@@ -227,12 +227,51 @@ TEST test_clip_line_clip_both_edges(void) {
     PASS();
 }
 
+/*
+ * Zero length line ie one pixel: x0 == x1 and y0 == y1.
+ */
+TEST test_clip_line_point(void) {
+    int16_t x0, y0, x1, y1;
+
+    /* Inside */
+    x0 = 30;
+    y0 = 30;
+    x1 = 30;
+    y1 = 30;
+    ASSERT_EQ(true, hagl_clip_line(&x0, &y0, &x1, &y1, window));
+    ASSERT_EQ(30, x0);
+    ASSERT_EQ(30, y0);
+    ASSERT_EQ(30, x1);
+    ASSERT_EQ(30, y1);
+
+    /* Boundary */
+    x0 = 10;
+    y0 = 10;
+    x1 = 10;
+    y1 = 10;
+    ASSERT_EQ(true, hagl_clip_line(&x0, &y0, &x1, &y1, window));
+    ASSERT_EQ(10, x0);
+    ASSERT_EQ(10, y0);
+    ASSERT_EQ(10, x1);
+    ASSERT_EQ(10, y1);
+
+    /* Outside */
+    x0 = 5;
+    y0 = 5;
+    x1 = 5;
+    y1 = 5;
+    ASSERT_EQ(false, hagl_clip_line(&x0, &y0, &x1, &y1, window));
+
+    PASS();
+}
+
 SUITE(clip_suite) {
     RUN_TEST(test_clip_line_inside);
     RUN_TEST(test_clip_line_boundary);
     RUN_TEST(test_clip_line_outside);
     RUN_TEST(test_clip_line_clip_single_edge);
     RUN_TEST(test_clip_line_clip_both_edges);
+    RUN_TEST(test_clip_line_point);
 }
 
 GREATEST_MAIN_DEFS();
