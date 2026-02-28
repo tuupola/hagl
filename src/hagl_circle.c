@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2018-2023 Mika Tuupola
+Copyright (c) 2018-2026 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -83,10 +83,10 @@ hagl_fill_circle(void const *surface, int16_t x0, int16_t y0, int16_t r, hagl_co
     int16_t d = 3 - 2 * r;
 
     while (y >= x) {
-        hagl_draw_hline(surface, x0 - x, y0 + y, x * 2, color);
-        hagl_draw_hline(surface, x0 - x, y0 - y, x * 2, color);
-        hagl_draw_hline(surface, x0 - y, y0 + x, y * 2, color);
-        hagl_draw_hline(surface, x0 - y, y0 - x, y * 2, color);
+        hagl_draw_hline(surface, x0 - x, y0 + y, x * 2 + 1, color);
+        hagl_draw_hline(surface, x0 - x, y0 - y, x * 2 + 1, color);
+        hagl_draw_hline(surface, x0 - y, y0 + x, y * 2 + 1, color);
+        hagl_draw_hline(surface, x0 - y, y0 - x, y * 2 + 1, color);
 
         if (d <= 0) {
             d = d + 4 * x + 6;
