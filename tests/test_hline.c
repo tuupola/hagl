@@ -138,12 +138,38 @@ TEST test_draw_hline_xyw_zero_width(void) {
     PASS();
 }
 
+/*
+ * Full display width horizontal line:
+ *
+ * (0,100)-----------------------------(319,100)
+ */
+TEST test_draw_hline_xyw_full_width(void) {
+    hagl_draw_hline_xyw(&bitmap, 0, 100, 320, 0xFFFF);
+
+    /* On line: left and right edges of display */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 0, 100));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 319, 100));
+
+    /* On line: midpoint */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 160, 100));
+
+    /* Outside: above and below midpoint */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 160, 99));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 160, 101));
+
+    /* Total: 320 pixels */
+    ASSERT_EQ(320, count_pixels(&bitmap, 0xFFFF));
+
+    PASS();
+}
+
 SUITE(hline_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_hline_xyw);
     RUN_TEST(test_draw_hline_xyw_regression);
     RUN_TEST(test_draw_hline_xyw_single_pixel);
     RUN_TEST(test_draw_hline_xyw_zero_width);
+    RUN_TEST(test_draw_hline_xyw_full_width);
 }
 
 GREATEST_MAIN_DEFS();
