@@ -185,6 +185,28 @@ TEST test_draw_hline_xyx_match_xyw(void) {
     PASS();
 }
 
+/*
+ * Verify xyx handles reversed endpoints (x0 > x1):
+ *
+ * xyx reversed: hagl_draw_hline_xyx(&bitmap, 20, 50, 10, color)
+ * xyx normal:   hagl_draw_hline_xyx(&bitmap, 10, 50, 20, color)
+ */
+TEST test_draw_hline_xyx_reversed(void) {
+    /* Draw with reversed endpoints. */
+    hagl_draw_hline_xyx(&bitmap, 20, 50, 10, 0xFFFF);
+
+    uint32_t crc_reversed = crc32(bitmap.buffer, bitmap.size);
+
+    /* Clear and draw with normal order. */
+    memset(bitmap.buffer, 0, bitmap.size);
+    hagl_draw_hline_xyx(&bitmap, 10, 50, 20, 0xFFFF);
+
+    uint32_t crc_normal = crc32(bitmap.buffer, bitmap.size);
+
+    ASSERT_EQ(crc_normal, crc_reversed);
+    PASS();
+}
+
 SUITE(hline_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_hline_xyw);
@@ -193,6 +215,7 @@ SUITE(hline_suite) {
     RUN_TEST(test_draw_hline_xyw_zero_width);
     RUN_TEST(test_draw_hline_xyw_full_width);
     RUN_TEST(test_draw_hline_xyx_match_xyw);
+    RUN_TEST(test_draw_hline_xyx_reversed);
 }
 
 GREATEST_MAIN_DEFS();
