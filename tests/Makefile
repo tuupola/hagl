@@ -3,7 +3,6 @@ CFLAGS = -Wall -g -I. -I../include
 LDFLAGS = -lm
 
 SRCS = \
-    hagl_hal.c \
     ../src/hagl_polygon.c \
     ../src/hagl_bitmap.c \
     ../src/hagl_hline.c \
@@ -12,7 +11,6 @@ SRCS = \
     ../src/hagl_color.c \
     ../src/hagl_clip.c \
     ../src/hagl_line.c \
-    ../src/hagl.c \
     ../src/hagl_rectangle.c \
     ../src/hagl_triangle.c \
     ../src/hagl_circle.c \

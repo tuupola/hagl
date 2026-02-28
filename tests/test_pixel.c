@@ -35,16 +35,23 @@ SPDX-License-Identifier: MIT
 
 #include "greatest.h"
 #include "crc32.h"
-#include "hagl.h"
+#include "hagl/bitmap.h"
+#include "hagl/pixel.h"
+#include "hagl/clip.h"
 
-static hagl_backend_t backend;
+#define TEST_WIDTH  320
+#define TEST_HEIGHT 240
+#define TEST_DEPTH  16
+
+static hagl_bitmap_t bitmap;
+static uint8_t buffer[TEST_WIDTH * TEST_HEIGHT * (TEST_DEPTH / 8)];
 
 static uint32_t
-count_pixels(hagl_backend_t *backend, hagl_color_t color) {
+count_pixels(hagl_bitmap_t *bitmap, hagl_color_t color) {
     uint32_t count = 0;
-    for (int16_t y = 0; y < backend->height; y++) {
-        for (int16_t x = 0; x < backend->width; x++) {
-            if (hagl_get_pixel(backend, x, y) == color) {
+    for (int16_t y = 0; y < bitmap->height; y++) {
+        for (int16_t x = 0; x < bitmap->width; x++) {
+            if (hagl_get_pixel(bitmap, x, y) == color) {
                 count++;
             }
         }
@@ -54,10 +61,8 @@ count_pixels(hagl_backend_t *backend, hagl_color_t color) {
 
 static void
 setup_callback(void *data) {
-    memset(&backend, 0, sizeof(hagl_backend_t));
-    hagl_hal_init(&backend);
-    hagl_set_clip(&backend, 0, 0,  backend.width - 1,  backend.height - 1);
-    hagl_clear(&backend);
+    memset(buffer, 0, sizeof(buffer));
+    hagl_bitmap_init(&bitmap, TEST_WIDTH, TEST_HEIGHT, TEST_DEPTH, buffer);
 }
 
 /*
@@ -65,35 +70,34 @@ setup_callback(void *data) {
  */
 TEST
 test_put_pixel(void) {
-    hagl_put_pixel(&backend, 100, 120, 0xFFFF);
+    hagl_put_pixel(&bitmap, 100, 120, 0xFFFF);
 
     /* On pixel: the pixel itself */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 100, 120));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 100, 120));
 
     /* Outside: all four neighbors */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 99, 120));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 101, 120));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 100, 119));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 100, 121));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 99, 120));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 101, 120));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 100, 119));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 100, 121));
 
     /* Outside: diagonal neighbors */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 99, 119));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 101, 119));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 99, 121));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 101, 121));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 99, 119));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 101, 119));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 99, 121));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 101, 121));
 
     /* Total: exactly 1 pixel */
-    ASSERT_EQ(1, count_pixels(&backend, 0xFFFF));
+    ASSERT_EQ(1, count_pixels(&bitmap, 0xFFFF));
 
     PASS();
 }
 
 TEST
 test_put_pixel_regression(void) {
-    hagl_put_pixel(&backend, 100, 120, 0xFFFF);
+    hagl_put_pixel(&bitmap, 100, 120, 0xFFFF);
 
-    size_t size = backend.width * backend.height * (backend.depth / 8);
-    uint32_t crc = crc32(backend.buffer, size);
+    uint32_t crc = crc32(bitmap.buffer, bitmap.size);
 
     ASSERT_EQ(0xDE7EC0EF, crc);
     PASS();
@@ -104,22 +108,22 @@ test_put_pixel_regression(void) {
  */
 TEST
 test_put_pixel_color(void) {
-    hagl_put_pixel(&backend, 50, 75, 0x1234);
+    hagl_put_pixel(&bitmap, 50, 75, 0x1234);
 
     /* On pixel: correct color returned */
-    ASSERT_EQ(0x1234, hagl_get_pixel(&backend, 50, 75));
+    ASSERT_EQ(0x1234, hagl_get_pixel(&bitmap, 50, 75));
 
     /* Outside: neighbors are black */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 49, 75));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 51, 75));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 50, 74));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 50, 76));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 49, 75));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 51, 75));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 50, 74));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 50, 76));
 
     /* Total: exactly 1 pixel of color 0x1234 */
-    ASSERT_EQ(1, count_pixels(&backend, 0x1234));
+    ASSERT_EQ(1, count_pixels(&bitmap, 0x1234));
 
     /* Total: no white pixels */
-    ASSERT_EQ(0, count_pixels(&backend, 0xFFFF));
+    ASSERT_EQ(0, count_pixels(&bitmap, 0xFFFF));
 
     PASS();
 }
@@ -129,22 +133,22 @@ test_put_pixel_color(void) {
  */
 TEST
 test_put_pixel_overwrite(void) {
-    hagl_put_pixel(&backend, 80, 60, 0xAAAA);
+    hagl_put_pixel(&bitmap, 80, 60, 0xAAAA);
 
     /* On pixel: first color */
-    ASSERT_EQ(0xAAAA, hagl_get_pixel(&backend, 80, 60));
+    ASSERT_EQ(0xAAAA, hagl_get_pixel(&bitmap, 80, 60));
 
     /* Overwrite with a new color */
-    hagl_put_pixel(&backend, 80, 60, 0x5555);
+    hagl_put_pixel(&bitmap, 80, 60, 0x5555);
 
     /* On pixel: second color replaced the first */
-    ASSERT_EQ(0x5555, hagl_get_pixel(&backend, 80, 60));
+    ASSERT_EQ(0x5555, hagl_get_pixel(&bitmap, 80, 60));
 
     /* Total: no pixels of the old color remain */
-    ASSERT_EQ(0, count_pixels(&backend, 0xAAAA));
+    ASSERT_EQ(0, count_pixels(&bitmap, 0xAAAA));
 
     /* Total: exactly 1 pixel of the new color */
-    ASSERT_EQ(1, count_pixels(&backend, 0x5555));
+    ASSERT_EQ(1, count_pixels(&bitmap, 0x5555));
 
     PASS();
 }
@@ -159,35 +163,35 @@ test_put_pixel_overwrite(void) {
  */
 TEST
 test_put_pixel_corners(void) {
-    hagl_put_pixel(&backend, 0, 0, 0xFFFF);
-    hagl_put_pixel(&backend, 319, 0, 0xFFFF);
-    hagl_put_pixel(&backend, 0, 239, 0xFFFF);
-    hagl_put_pixel(&backend, 319, 239, 0xFFFF);
+    hagl_put_pixel(&bitmap, 0, 0, 0xFFFF);
+    hagl_put_pixel(&bitmap, 319, 0, 0xFFFF);
+    hagl_put_pixel(&bitmap, 0, 239, 0xFFFF);
+    hagl_put_pixel(&bitmap, 319, 239, 0xFFFF);
 
     /* All four corners are set */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 0, 0));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 319, 0));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 0, 239));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 319, 239));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 0, 0));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 319, 0));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 0, 239));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 319, 239));
 
     /* Neighbors of top-left */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 1, 0));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 0, 1));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 1, 0));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 0, 1));
 
     /* Neighbors of top-right */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 318, 0));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 319, 1));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 318, 0));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 319, 1));
 
     /* Neighbors of bottom-left */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 1, 239));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 0, 238));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 1, 239));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 0, 238));
 
     /* Neighbors of bottom-right */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 318, 239));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 319, 238));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 318, 239));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 319, 238));
 
     /* Total: exactly 4 pixels */
-    ASSERT_EQ(4, count_pixels(&backend, 0xFFFF));
+    ASSERT_EQ(4, count_pixels(&bitmap, 0xFFFF));
 
     PASS();
 }
@@ -198,23 +202,23 @@ test_put_pixel_corners(void) {
 TEST
 test_put_pixel_clip_outside(void) {
     /* Left of display */
-    hagl_put_pixel(&backend, -1, 100, 0xFFFF);
+    hagl_put_pixel(&bitmap, -1, 100, 0xFFFF);
 
     /* Above display */
-    hagl_put_pixel(&backend, 100, -1, 0xFFFF);
+    hagl_put_pixel(&bitmap, 100, -1, 0xFFFF);
 
     /* Right of display */
-    hagl_put_pixel(&backend, 320, 100, 0xFFFF);
+    hagl_put_pixel(&bitmap, 320, 100, 0xFFFF);
 
     /* Below display */
-    hagl_put_pixel(&backend, 100, 240, 0xFFFF);
+    hagl_put_pixel(&bitmap, 100, 240, 0xFFFF);
 
     /* Far outside in both directions */
-    hagl_put_pixel(&backend, -1000, -1000, 0xFFFF);
-    hagl_put_pixel(&backend, 1000, 1000, 0xFFFF);
+    hagl_put_pixel(&bitmap, -1000, -1000, 0xFFFF);
+    hagl_put_pixel(&bitmap, 1000, 1000, 0xFFFF);
 
     /* No pixels should have been drawn */
-    ASSERT_EQ(0, count_pixels(&backend, 0xFFFF));
+    ASSERT_EQ(0, count_pixels(&bitmap, 0xFFFF));
 
     PASS();
 }
@@ -225,28 +229,28 @@ test_put_pixel_clip_outside(void) {
  */
 TEST
 test_put_pixel_custom_clip_inside(void) {
-    hagl_set_clip(&backend, 50, 50, 100, 100);
+    hagl_set_clip(&bitmap, 50, 50, 100, 100);
 
     /* Interior point */
-    hagl_put_pixel(&backend, 75, 75, 0xFFFF);
+    hagl_put_pixel(&bitmap, 75, 75, 0xFFFF);
 
     /* All four corners of the clip window */
-    hagl_put_pixel(&backend, 50, 50, 0xFFFF);
-    hagl_put_pixel(&backend, 100, 50, 0xFFFF);
-    hagl_put_pixel(&backend, 50, 100, 0xFFFF);
-    hagl_put_pixel(&backend, 100, 100, 0xFFFF);
+    hagl_put_pixel(&bitmap, 50, 50, 0xFFFF);
+    hagl_put_pixel(&bitmap, 100, 50, 0xFFFF);
+    hagl_put_pixel(&bitmap, 50, 100, 0xFFFF);
+    hagl_put_pixel(&bitmap, 100, 100, 0xFFFF);
 
     /* On pixel: interior is set */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 75, 75));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 75, 75));
 
     /* On pixel: all four clip corners are set */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 50, 50));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 100, 50));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 50, 100));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 100, 100));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 50, 50));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 100, 50));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 50, 100));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 100, 100));
 
     /* Total: exactly 5 pixels */
-    ASSERT_EQ(5, count_pixels(&backend, 0xFFFF));
+    ASSERT_EQ(5, count_pixels(&bitmap, 0xFFFF));
 
     PASS();
 }
@@ -264,16 +268,16 @@ test_put_pixel_custom_clip_inside(void) {
  */
 TEST
 test_put_pixel_custom_clip_outside(void) {
-    hagl_set_clip(&backend, 50, 50, 100, 100);
+    hagl_set_clip(&bitmap, 50, 50, 100, 100);
 
     /* 1 pixel outside each edge of the clip window */
-    hagl_put_pixel(&backend, 49, 75, 0xFFFF);
-    hagl_put_pixel(&backend, 75, 49, 0xFFFF);
-    hagl_put_pixel(&backend, 101, 75, 0xFFFF);
-    hagl_put_pixel(&backend, 75, 101, 0xFFFF);
+    hagl_put_pixel(&bitmap, 49, 75, 0xFFFF);
+    hagl_put_pixel(&bitmap, 75, 49, 0xFFFF);
+    hagl_put_pixel(&bitmap, 101, 75, 0xFFFF);
+    hagl_put_pixel(&bitmap, 75, 101, 0xFFFF);
 
     /* No pixels should have been drawn */
-    ASSERT_EQ(0, count_pixels(&backend, 0xFFFF));
+    ASSERT_EQ(0, count_pixels(&bitmap, 0xFFFF));
 
     PASS();
 }
@@ -284,21 +288,21 @@ test_put_pixel_custom_clip_outside(void) {
 TEST
 test_get_pixel_clip_outside(void) {
     /* Place a pixel so the framebuffer is not empty */
-    hagl_put_pixel(&backend, 100, 120, 0xFFFF);
+    hagl_put_pixel(&bitmap, 100, 120, 0xFFFF);
 
     /* Negative coordinates */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, -1, 0));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 0, -1));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, -1, -1));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, -1, 0));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 0, -1));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, -1, -1));
 
     /* Beyond display bounds */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 320, 0));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 0, 240));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 320, 240));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 320, 0));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 0, 240));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 320, 240));
 
     /* Far outside */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, -1000, -1000));
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 1000, 1000));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, -1000, -1000));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 1000, 1000));
 
     PASS();
 }
@@ -310,14 +314,14 @@ test_get_pixel_clip_outside(void) {
 TEST
 test_get_pixel_custom_clip_outside(void) {
     /* Place a pixel with the default clip window */
-    hagl_put_pixel(&backend, 75, 75, 0xFFFF);
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&backend, 75, 75));
+    hagl_put_pixel(&bitmap, 75, 75, 0xFFFF);
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 75, 75));
 
     /* Shrink the clip window to exclude (75,75) */
-    hagl_set_clip(&backend, 0, 0, 49, 49);
+    hagl_set_clip(&bitmap, 0, 0, 49, 49);
 
     /* Pixel data exists but is outside the clip window */
-    ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 75, 75));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 75, 75));
 
     PASS();
 }
