@@ -283,12 +283,55 @@ TEST test_clip_line_point(void) {
     PASS();
 }
 
+/*
+ * Same geometry as test_clip_line_clip_both_edges but with endpoints swapped.
+ */
+TEST test_clip_line_clip_both_edges_reversed(void) {
+    int16_t x0, y0, x1, y1;
+
+    /* Horizontal: reversed */
+    x0 = 70;
+    y0 = 30;
+    x1 = -10;
+    y1 = 30;
+    ASSERT_EQ(true, hagl_clip_line(&x0, &y0, &x1, &y1, window));
+    ASSERT_EQ(50, x0);
+    ASSERT_EQ(30, y0);
+    ASSERT_EQ(10, x1);
+    ASSERT_EQ(30, y1);
+
+    /* Vertical: reversed */
+    x0 = 30;
+    y0 = 70;
+    x1 = 30;
+    y1 = -10;
+    ASSERT_EQ(true, hagl_clip_line(&x0, &y0, &x1, &y1, window));
+    ASSERT_EQ(30, x0);
+    ASSERT_EQ(50, y0);
+    ASSERT_EQ(30, x1);
+    ASSERT_EQ(10, y1);
+
+    /* Diagonal: reversed */
+    x0 = 60;
+    y0 = 60;
+    x1 = 0;
+    y1 = 0;
+    ASSERT_EQ(true, hagl_clip_line(&x0, &y0, &x1, &y1, window));
+    ASSERT_EQ(50, x0);
+    ASSERT_EQ(50, y0);
+    ASSERT_EQ(10, x1);
+    ASSERT_EQ(10, y1);
+
+    PASS();
+}
+
 SUITE(clip_suite) {
     RUN_TEST(test_clip_line_inside);
     RUN_TEST(test_clip_line_boundary);
     RUN_TEST(test_clip_line_outside);
     RUN_TEST(test_clip_line_clip_single_edge);
     RUN_TEST(test_clip_line_clip_both_edges);
+    RUN_TEST(test_clip_line_clip_both_edges_reversed);
     RUN_TEST(test_clip_line_point);
 }
 
