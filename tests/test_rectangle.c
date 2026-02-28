@@ -33,22 +33,21 @@ SPDX-License-Identifier: MIT
 
 #include <string.h>
 
-#include "greatest.h"
 #include "crc32.h"
+#include "greatest.h"
 #include "hagl/bitmap.h"
-#include "hagl/pixel.h"
 #include "hagl/clip.h"
+#include "hagl/pixel.h"
 #include "hagl/rectangle.h"
 
-#define TEST_WIDTH  320
+#define TEST_WIDTH 320
 #define TEST_HEIGHT 240
-#define TEST_DEPTH  16
+#define TEST_DEPTH 16
 
 static hagl_bitmap_t bitmap;
 static uint8_t buffer[TEST_WIDTH * TEST_HEIGHT * (TEST_DEPTH / 8)];
 
-static uint32_t
-count_pixels(hagl_bitmap_t *bitmap, hagl_color_t color) {
+static uint32_t count_pixels(hagl_bitmap_t *bitmap, hagl_color_t color) {
     uint32_t count = 0;
     for (int16_t y = 0; y < bitmap->height; y++) {
         for (int16_t x = 0; x < bitmap->width; x++) {
@@ -60,8 +59,7 @@ count_pixels(hagl_bitmap_t *bitmap, hagl_color_t color) {
     return count;
 }
 
-static void
-setup_callback(void *data) {
+static void setup_callback(void *data) {
     memset(buffer, 0, sizeof(buffer));
     hagl_bitmap_init(&bitmap, TEST_WIDTH, TEST_HEIGHT, TEST_DEPTH, buffer);
 }
@@ -74,8 +72,7 @@ setup_callback(void *data) {
  *   |           |
  * (10,20)-----(20,20)
  */
-TEST
-test_draw_rectangle_xyxy(void) {
+TEST test_draw_rectangle_xyxy(void) {
     hagl_draw_rectangle_xyxy(&bitmap, 10, 10, 20, 20, 0xFFFF);
 
     /* Inside: center of the rectangle is empty (outline only) */
@@ -114,8 +111,7 @@ test_draw_rectangle_xyxy(void) {
     PASS();
 }
 
-TEST
-test_draw_rectangle_xyxy_regression(void) {
+TEST test_draw_rectangle_xyxy_regression(void) {
     hagl_draw_rectangle_xyxy(&bitmap, 10, 10, 20, 20, 0xFFFF);
 
     uint32_t crc = crc32(bitmap.buffer, bitmap.size);
@@ -124,8 +120,7 @@ test_draw_rectangle_xyxy_regression(void) {
     PASS();
 }
 
-TEST
-test_draw_rectangle_xyxy_match_xywh(void) {
+TEST test_draw_rectangle_xyxy_match_xywh(void) {
     /* Draw with _xyxy. */
     hagl_draw_rectangle_xyxy(&bitmap, 10, 10, 20, 20, 0xFFFF);
 
@@ -141,8 +136,7 @@ test_draw_rectangle_xyxy_match_xywh(void) {
     PASS();
 }
 
-TEST
-test_draw_rectangle_xyxy_swapped(void) {
+TEST test_draw_rectangle_xyxy_swapped(void) {
     /* Draw with swapped coordinates (x0 > x1, y0 > y1). */
     hagl_draw_rectangle_xyxy(&bitmap, 20, 20, 10, 10, 0xFFFF);
 
@@ -163,8 +157,7 @@ test_draw_rectangle_xyxy_swapped(void) {
  *
  * (50,50)
  */
-TEST
-test_draw_rectangle_xyxy_single_pixel(void) {
+TEST test_draw_rectangle_xyxy_single_pixel(void) {
     hagl_draw_rectangle_xyxy(&bitmap, 50, 50, 50, 50, 0xFFFF);
 
     /* On outline: the pixel itself */
@@ -187,8 +180,7 @@ test_draw_rectangle_xyxy_single_pixel(void) {
  *
  * (10,50)-----(20,50)
  */
-TEST
-test_draw_rectangle_xyxy_horizontal_line(void) {
+TEST test_draw_rectangle_xyxy_horizontal_line(void) {
     hagl_draw_rectangle_xyxy(&bitmap, 10, 50, 20, 50, 0xFFFF);
 
     /* On outline: endpoints and midpoint */
@@ -210,8 +202,7 @@ test_draw_rectangle_xyxy_horizontal_line(void) {
     PASS();
 }
 
-TEST
-test_draw_rectangle_xyxy_horizontal_line_regression(void) {
+TEST test_draw_rectangle_xyxy_horizontal_line_regression(void) {
     hagl_draw_rectangle_xyxy(&bitmap, 10, 50, 20, 50, 0xFFFF);
 
     uint32_t crc = crc32(bitmap.buffer, bitmap.size);
@@ -228,8 +219,7 @@ test_draw_rectangle_xyxy_horizontal_line_regression(void) {
  *   |
  * (50,20)
  */
-TEST
-test_draw_rectangle_xyxy_vertical_line(void) {
+TEST test_draw_rectangle_xyxy_vertical_line(void) {
     hagl_draw_rectangle_xyxy(&bitmap, 50, 10, 50, 20, 0xFFFF);
 
     /* On outline: endpoints and midpoint */
@@ -251,8 +241,7 @@ test_draw_rectangle_xyxy_vertical_line(void) {
     PASS();
 }
 
-TEST
-test_draw_rectangle_xyxy_vertical_line_regression(void) {
+TEST test_draw_rectangle_xyxy_vertical_line_regression(void) {
     hagl_draw_rectangle_xyxy(&bitmap, 50, 10, 50, 20, 0xFFFF);
 
     uint32_t crc = crc32(bitmap.buffer, bitmap.size);
@@ -271,8 +260,7 @@ test_draw_rectangle_xyxy_vertical_line_regression(void) {
  *    |        |      |
  * (-10,10)----+---(10,10)
  */
-TEST
-test_draw_rectangle_xyxy_clip_top_left(void) {
+TEST test_draw_rectangle_xyxy_clip_top_left(void) {
     hagl_draw_rectangle_xyxy(&bitmap, -10, -10, 10, 10, 0xFFFF);
 
     /* On outline: visible corners */
@@ -300,8 +288,7 @@ test_draw_rectangle_xyxy_clip_top_left(void) {
     PASS();
 }
 
-TEST
-test_draw_rectangle_xyxy_clip_top_left_regression(void) {
+TEST test_draw_rectangle_xyxy_clip_top_left_regression(void) {
     hagl_draw_rectangle_xyxy(&bitmap, -10, -10, 10, 10, 0xFFFF);
 
     uint32_t crc = crc32(bitmap.buffer, bitmap.size);
@@ -320,8 +307,7 @@ test_draw_rectangle_xyxy_clip_top_left_regression(void) {
  *           |
  *        .(319,239)
  */
-TEST
-test_draw_rectangle_xyxy_clip_bottom_right(void) {
+TEST test_draw_rectangle_xyxy_clip_bottom_right(void) {
     hagl_draw_rectangle_xyxy(&bitmap, 310, 230, 330, 250, 0xFFFF);
 
     /* On outline: visible corners */
@@ -349,8 +335,7 @@ test_draw_rectangle_xyxy_clip_bottom_right(void) {
     PASS();
 }
 
-TEST
-test_draw_rectangle_xyxy_clip_bottom_right_regression(void) {
+TEST test_draw_rectangle_xyxy_clip_bottom_right_regression(void) {
     hagl_draw_rectangle_xyxy(&bitmap, 310, 230, 330, 250, 0xFFFF);
 
     uint32_t crc = crc32(bitmap.buffer, bitmap.size);
@@ -369,8 +354,7 @@ test_draw_rectangle_xyxy_clip_bottom_right_regression(void) {
  *
  *                     .(0,0) display starts here
  */
-TEST
-test_draw_rectangle_xyxy_clip_outside(void) {
+TEST test_draw_rectangle_xyxy_clip_outside(void) {
     hagl_draw_rectangle_xyxy(&bitmap, -30, -30, -10, -10, 0xFFFF);
 
     ASSERT_EQ(0, count_pixels(&bitmap, 0xFFFF));
@@ -380,8 +364,7 @@ test_draw_rectangle_xyxy_clip_outside(void) {
 /*
  * Rectangle outline clipped by a custom clip window:
  */
-TEST
-test_draw_rectangle_xyxy_custom_clip(void) {
+TEST test_draw_rectangle_xyxy_custom_clip(void) {
     hagl_set_clip(&bitmap, 50, 50, 100, 100);
     hagl_draw_rectangle_xyxy(&bitmap, 40, 40, 80, 80, 0xFFFF);
 
@@ -417,8 +400,7 @@ test_draw_rectangle_xyxy_custom_clip(void) {
     PASS();
 }
 
-TEST
-test_draw_rectangle_xyxy_custom_clip_regression(void) {
+TEST test_draw_rectangle_xyxy_custom_clip_regression(void) {
     hagl_set_clip(&bitmap, 50, 50, 100, 100);
     hagl_draw_rectangle_xyxy(&bitmap, 40, 40, 80, 80, 0xFFFF);
 
@@ -450,8 +432,7 @@ SUITE(rectangle_suite) {
 
 GREATEST_MAIN_DEFS();
 
-int
-main(int argc, char **argv) {
+int main(int argc, char **argv) {
     GREATEST_MAIN_BEGIN();
     RUN_SUITE(rectangle_suite);
     GREATEST_MAIN_END();

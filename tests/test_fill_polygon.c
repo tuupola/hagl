@@ -33,24 +33,23 @@ SPDX-License-Identifier: MIT
 
 #include <string.h>
 
-#include "greatest.h"
 #include "crc32.h"
+#include "greatest.h"
 #include "hagl/bitmap.h"
-#include "hagl/pixel.h"
 #include "hagl/clip.h"
+#include "hagl/pixel.h"
 #include "hagl/polygon.h"
-#include "hagl/triangle.h"
 #include "hagl/rectangle.h"
+#include "hagl/triangle.h"
 
-#define TEST_WIDTH  320
+#define TEST_WIDTH 320
 #define TEST_HEIGHT 240
-#define TEST_DEPTH  16
+#define TEST_DEPTH 16
 
 static hagl_bitmap_t bitmap;
 static uint8_t buffer[TEST_WIDTH * TEST_HEIGHT * (TEST_DEPTH / 8)];
 
-static uint32_t
-count_pixels(hagl_bitmap_t *bitmap, hagl_color_t color) {
+static uint32_t count_pixels(hagl_bitmap_t *bitmap, hagl_color_t color) {
     uint32_t count = 0;
     for (int16_t y = 0; y < bitmap->height; y++) {
         for (int16_t x = 0; x < bitmap->width; x++) {
@@ -62,8 +61,7 @@ count_pixels(hagl_bitmap_t *bitmap, hagl_color_t color) {
     return count;
 }
 
-static void
-setup_callback(void *data) {
+static void setup_callback(void *data) {
     memset(buffer, 0, sizeof(buffer));
     hagl_bitmap_init(&bitmap, TEST_WIDTH, TEST_HEIGHT, TEST_DEPTH, buffer);
 }
@@ -76,8 +74,7 @@ setup_callback(void *data) {
  *   |###########|
  * (10,20)-----(20,20)
  */
-TEST
-test_fill_polygon_square(void) {
+TEST test_fill_polygon_square(void) {
     int16_t vertices[] = {10, 10, 20, 10, 20, 20, 10, 20};
     hagl_fill_polygon(&bitmap, 4, vertices, 0xFFFF);
 
@@ -114,8 +111,7 @@ test_fill_polygon_square(void) {
     PASS();
 }
 
-TEST
-test_fill_polygon_square_regression(void) {
+TEST test_fill_polygon_square_regression(void) {
     int16_t vertices[] = {10, 10, 20, 10, 20, 20, 10, 20};
     hagl_fill_polygon(&bitmap, 4, vertices, 0xFFFF);
 
@@ -125,8 +121,7 @@ test_fill_polygon_square_regression(void) {
     PASS();
 }
 
-TEST
-test_fill_polygon_square_match_rectangle(void) {
+TEST test_fill_polygon_square_match_rectangle(void) {
     /* Draw a filled square polygon. */
     int16_t vertices[] = {10, 10, 20, 10, 20, 20, 10, 20};
     hagl_fill_polygon(&bitmap, 4, vertices, 0xFFFF);
@@ -143,8 +138,7 @@ test_fill_polygon_square_match_rectangle(void) {
     PASS();
 }
 
-TEST
-test_fill_polygon_square_winding_order(void) {
+TEST test_fill_polygon_square_winding_order(void) {
     /* Clockwise */
     int16_t cw[] = {10, 10, 20, 10, 20, 20, 10, 20};
     hagl_fill_polygon(&bitmap, 4, cw, 0xFFFF);
@@ -172,8 +166,7 @@ test_fill_polygon_square_winding_order(void) {
  *   |##/
  * (10,30)
  */
-TEST
-test_fill_polygon_triangle(void) {
+TEST test_fill_polygon_triangle(void) {
     int16_t vertices[] = {10, 10, 30, 10, 10, 30};
     hagl_fill_polygon(&bitmap, 3, vertices, 0xFFFF);
 
@@ -201,8 +194,7 @@ test_fill_polygon_triangle(void) {
     PASS();
 }
 
-TEST
-test_fill_polygon_triangle_regression(void) {
+TEST test_fill_polygon_triangle_regression(void) {
     int16_t vertices[] = {10, 10, 30, 10, 10, 30};
     hagl_fill_polygon(&bitmap, 3, vertices, 0xFFFF);
 
@@ -212,8 +204,7 @@ test_fill_polygon_triangle_regression(void) {
     PASS();
 }
 
-TEST
-test_fill_polygon_triangle_match_fill_triangle(void) {
+TEST test_fill_polygon_triangle_match_fill_triangle(void) {
     int16_t vertices[] = {10, 10, 30, 10, 10, 30};
     hagl_fill_polygon(&bitmap, 3, vertices, 0xFFFF);
 
@@ -228,8 +219,7 @@ test_fill_polygon_triangle_match_fill_triangle(void) {
     PASS();
 }
 
-TEST
-test_fill_polygon_triangle_winding_order(void) {
+TEST test_fill_polygon_triangle_winding_order(void) {
     /* Clockwise */
     int16_t cw[] = {10, 10, 30, 10, 10, 30};
     hagl_fill_polygon(&bitmap, 3, cw, 0xFFFF);
@@ -257,8 +247,7 @@ test_fill_polygon_triangle_winding_order(void) {
  *   |####|
  * (10,40)-(20,40)
  */
-TEST
-test_fill_polygon_concave(void) {
+TEST test_fill_polygon_concave(void) {
     int16_t vertices[] = {10, 10, 30, 10, 30, 20, 20, 20, 20, 40, 10, 40};
     hagl_fill_polygon(&bitmap, 6, vertices, 0xFFFF);
 
@@ -296,8 +285,7 @@ test_fill_polygon_concave(void) {
     PASS();
 }
 
-TEST
-test_fill_polygon_concave_regression(void) {
+TEST test_fill_polygon_concave_regression(void) {
     int16_t vertices[] = {10, 10, 30, 10, 30, 20, 20, 20, 20, 40, 10, 40};
     hagl_fill_polygon(&bitmap, 6, vertices, 0xFFFF);
 
@@ -320,8 +308,7 @@ test_fill_polygon_concave_regression(void) {
  *     /#########\
  * (10,30)-------(30,30)
  */
-TEST
-test_fill_polygon_bowtie(void) {
+TEST test_fill_polygon_bowtie(void) {
     int16_t vertices[] = {10, 10, 30, 10, 10, 30, 30, 30};
     hagl_fill_polygon(&bitmap, 4, vertices, 0xFFFF);
 
@@ -352,8 +339,7 @@ test_fill_polygon_bowtie(void) {
     PASS();
 }
 
-TEST
-test_fill_polygon_bowtie_regression(void) {
+TEST test_fill_polygon_bowtie_regression(void) {
     int16_t vertices[] = {10, 10, 30, 10, 10, 30, 30, 30};
     hagl_fill_polygon(&bitmap, 4, vertices, 0xFFFF);
 
@@ -375,8 +361,7 @@ test_fill_polygon_bowtie_regression(void) {
  *
  * Only the (0,0) to (10,10) portion is visible.
  */
-TEST
-test_fill_polygon_clip_top_left(void) {
+TEST test_fill_polygon_clip_top_left(void) {
     int16_t vertices[] = {-10, -10, 10, -10, 10, 10, -10, 10};
     hagl_fill_polygon(&bitmap, 4, vertices, 0xFFFF);
 
@@ -397,8 +382,7 @@ test_fill_polygon_clip_top_left(void) {
     PASS();
 }
 
-TEST
-test_fill_polygon_clip_top_left_regression(void) {
+TEST test_fill_polygon_clip_top_left_regression(void) {
     int16_t vertices[] = {-10, -10, 10, -10, 10, 10, -10, 10};
     hagl_fill_polygon(&bitmap, 4, vertices, 0xFFFF);
 
@@ -420,8 +404,7 @@ test_fill_polygon_clip_top_left_regression(void) {
  *
  * Only the (310,230) to (319,239) portion is visible.
  */
-TEST
-test_fill_polygon_clip_bottom_right(void) {
+TEST test_fill_polygon_clip_bottom_right(void) {
     int16_t vertices[] = {310, 230, 330, 230, 330, 250, 310, 250};
     hagl_fill_polygon(&bitmap, 4, vertices, 0xFFFF);
 
@@ -442,8 +425,7 @@ test_fill_polygon_clip_bottom_right(void) {
     PASS();
 }
 
-TEST
-test_fill_polygon_clip_bottom_right_regression(void) {
+TEST test_fill_polygon_clip_bottom_right_regression(void) {
     int16_t vertices[] = {310, 230, 330, 230, 330, 250, 310, 250};
     hagl_fill_polygon(&bitmap, 4, vertices, 0xFFFF);
 
@@ -463,8 +445,7 @@ test_fill_polygon_clip_bottom_right_regression(void) {
  *
  *                     .(0,0) display starts here
  */
-TEST
-test_fill_polygon_clip_outside(void) {
+TEST test_fill_polygon_clip_outside(void) {
     int16_t vertices[] = {-30, -30, -10, -30, -10, -10, -30, -10};
     hagl_fill_polygon(&bitmap, 4, vertices, 0xFFFF);
 
@@ -480,8 +461,7 @@ test_fill_polygon_clip_outside(void) {
  *   /##################\
  * (10,30)---------(30,30)
  */
-TEST
-test_fill_polygon_trapezoid(void) {
+TEST test_fill_polygon_trapezoid(void) {
     int16_t vertices[] = {15, 10, 25, 10, 30, 30, 10, 30};
     hagl_fill_polygon(&bitmap, 4, vertices, 0xFFFF);
 
@@ -517,8 +497,7 @@ test_fill_polygon_trapezoid(void) {
     PASS();
 }
 
-TEST
-test_fill_polygon_trapezoid_regression(void) {
+TEST test_fill_polygon_trapezoid_regression(void) {
     int16_t vertices[] = {15, 10, 25, 10, 30, 30, 10, 30};
     hagl_fill_polygon(&bitmap, 4, vertices, 0xFFFF);
 
@@ -528,8 +507,7 @@ test_fill_polygon_trapezoid_regression(void) {
     PASS();
 }
 
-TEST
-test_fill_polygon_degenerate_zero_vertices(void) {
+TEST test_fill_polygon_degenerate_zero_vertices(void) {
     int16_t vertices[] = {0, 0};
     hagl_fill_polygon(&bitmap, 0, vertices, 0xFFFF);
 
@@ -538,8 +516,7 @@ test_fill_polygon_degenerate_zero_vertices(void) {
     PASS();
 }
 
-TEST
-test_fill_polygon_degenerate_one_vertex(void) {
+TEST test_fill_polygon_degenerate_one_vertex(void) {
     int16_t vertices[] = {20, 20};
     hagl_fill_polygon(&bitmap, 1, vertices, 0xFFFF);
 
@@ -548,8 +525,7 @@ test_fill_polygon_degenerate_one_vertex(void) {
     PASS();
 }
 
-TEST
-test_fill_polygon_degenerate_two_vertices(void) {
+TEST test_fill_polygon_degenerate_two_vertices(void) {
     int16_t vertices[] = {10, 10, 20, 20};
     hagl_fill_polygon(&bitmap, 2, vertices, 0xFFFF);
 
@@ -586,8 +562,7 @@ SUITE(fill_polygon_suite) {
 
 GREATEST_MAIN_DEFS();
 
-int
-main(int argc, char **argv) {
+int main(int argc, char **argv) {
     GREATEST_MAIN_BEGIN();
     RUN_SUITE(fill_polygon_suite);
     GREATEST_MAIN_END();
