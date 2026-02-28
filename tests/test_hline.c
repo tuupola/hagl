@@ -104,8 +104,6 @@ TEST test_draw_hline_xyw_regression(void) {
 
 /*
  * Single pixel horizontal line:
- *
- * (50,50)
  */
 TEST test_draw_hline_xyw_single_pixel(void) {
     hagl_draw_hline_xyw(&bitmap, 50, 50, 1, 0xFFFF);
@@ -125,11 +123,27 @@ TEST test_draw_hline_xyw_single_pixel(void) {
     PASS();
 }
 
+/*
+ * Zero width horizontal line:
+ */
+TEST test_draw_hline_xyw_zero_width(void) {
+    hagl_draw_hline_xyw(&bitmap, 50, 50, 0, 0xFFFF);
+
+    /* Nothing should be drawn */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 50, 50));
+
+    /* Total: 0 pixels */
+    ASSERT_EQ(0, count_pixels(&bitmap, 0xFFFF));
+
+    PASS();
+}
+
 SUITE(hline_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_hline_xyw);
     RUN_TEST(test_draw_hline_xyw_regression);
     RUN_TEST(test_draw_hline_xyw_single_pixel);
+    RUN_TEST(test_draw_hline_xyw_zero_width);
 }
 
 GREATEST_MAIN_DEFS();
