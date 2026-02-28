@@ -131,6 +131,13 @@ TEST test_clip_line_outside(void) {
     y1 = 70;
     ASSERT_EQ(false, hagl_clip_line(&x0, &y0, &x1, &y1, window));
 
+    /* Diagonal: different regions, non-trivial reject. */
+    x0 = 5;
+    y0 = 11;
+    x1 = 11;
+    y1 = 5;
+    ASSERT_EQ(false, hagl_clip_line(&x0, &y0, &x1, &y1, window));
+
     PASS();
 }
 
