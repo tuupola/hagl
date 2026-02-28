@@ -34,11 +34,10 @@ SPDX-License-Identifier: MIT
 #ifndef _CRC32_H
 #define _CRC32_H
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
-static uint32_t
-crc32(const uint8_t *data, size_t length) {
+static uint32_t crc32(const uint8_t *data, size_t length) {
     uint32_t crc = 0xFFFFFFFF;
     for (size_t i = 0; i < length; i++) {
         crc ^= data[i];

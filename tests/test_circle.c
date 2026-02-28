@@ -33,22 +33,21 @@ SPDX-License-Identifier: MIT
 
 #include <string.h>
 
-#include "greatest.h"
 #include "crc32.h"
+#include "greatest.h"
 #include "hagl/bitmap.h"
-#include "hagl/pixel.h"
-#include "hagl/clip.h"
 #include "hagl/circle.h"
+#include "hagl/clip.h"
+#include "hagl/pixel.h"
 
-#define TEST_WIDTH  320
+#define TEST_WIDTH 320
 #define TEST_HEIGHT 240
-#define TEST_DEPTH  16
+#define TEST_DEPTH 16
 
 static hagl_bitmap_t bitmap;
 static uint8_t buffer[TEST_WIDTH * TEST_HEIGHT * (TEST_DEPTH / 8)];
 
-static uint32_t
-count_pixels(hagl_bitmap_t *bitmap, hagl_color_t color) {
+static uint32_t count_pixels(hagl_bitmap_t *bitmap, hagl_color_t color) {
     uint32_t count = 0;
     for (int16_t y = 0; y < bitmap->height; y++) {
         for (int16_t x = 0; x < bitmap->width; x++) {
@@ -60,8 +59,7 @@ count_pixels(hagl_bitmap_t *bitmap, hagl_color_t color) {
     return count;
 }
 
-static void
-setup_callback(void *data) {
+static void setup_callback(void *data) {
     memset(buffer, 0, sizeof(buffer));
     hagl_bitmap_init(&bitmap, TEST_WIDTH, TEST_HEIGHT, TEST_DEPTH, buffer);
 }
@@ -77,8 +75,7 @@ setup_callback(void *data) {
  *         \        /
  *          (100,110)
  */
-TEST
-test_draw_circle(void) {
+TEST test_draw_circle(void) {
     hagl_draw_circle(&bitmap, 100, 100, 10, 0xFFFF);
 
     /* On outline: cardinal points */
@@ -102,8 +99,7 @@ test_draw_circle(void) {
     PASS();
 }
 
-TEST
-test_draw_circle_regression(void) {
+TEST test_draw_circle_regression(void) {
     hagl_draw_circle(&bitmap, 100, 100, 10, 0xFFFF);
 
     uint32_t crc = crc32(bitmap.buffer, bitmap.size);
@@ -115,8 +111,7 @@ test_draw_circle_regression(void) {
 /*
  * Circle with radius 0:
  */
-TEST
-test_draw_circle_radius_0(void) {
+TEST test_draw_circle_radius_0(void) {
     hagl_draw_circle(&bitmap, 50, 50, 0, 0xFFFF);
 
     /* On outline: the center pixel */
@@ -145,8 +140,7 @@ test_draw_circle_radius_0(void) {
  *
  * Produces a cross/diamond with 4 pixels. Center is empty.
  */
-TEST
-test_draw_circle_radius_1(void) {
+TEST test_draw_circle_radius_1(void) {
     hagl_draw_circle(&bitmap, 100, 100, 1, 0xFFFF);
 
     /* On outline: cardinal neighbors */
@@ -170,8 +164,7 @@ test_draw_circle_radius_1(void) {
     PASS();
 }
 
-TEST
-test_draw_circle_radius_1_regression(void) {
+TEST test_draw_circle_radius_1_regression(void) {
     hagl_draw_circle(&bitmap, 100, 100, 1, 0xFFFF);
 
     uint32_t crc = crc32(bitmap.buffer, bitmap.size);
@@ -184,8 +177,7 @@ test_draw_circle_radius_1_regression(void) {
  * Circle clipped by top-left corner of display:
  * Center at (5,5), radius 10. Top and left arcs are clipped.
  */
-TEST
-test_draw_circle_clip_top_left(void) {
+TEST test_draw_circle_clip_top_left(void) {
     hagl_draw_circle(&bitmap, 5, 5, 10, 0xFFFF);
 
     /* On outline: visible cardinal points */
@@ -209,8 +201,7 @@ test_draw_circle_clip_top_left(void) {
     PASS();
 }
 
-TEST
-test_draw_circle_clip_top_left_regression(void) {
+TEST test_draw_circle_clip_top_left_regression(void) {
     hagl_draw_circle(&bitmap, 5, 5, 10, 0xFFFF);
 
     uint32_t crc = crc32(bitmap.buffer, bitmap.size);
@@ -229,8 +220,7 @@ test_draw_circle_clip_top_left_regression(void) {
  *      \         /
  *       (-50,-60)
  */
-TEST
-test_draw_circle_clip_outside(void) {
+TEST test_draw_circle_clip_outside(void) {
     hagl_draw_circle(&bitmap, -50, -50, 10, 0xFFFF);
 
     ASSERT_EQ(0, count_pixels(&bitmap, 0xFFFF));
@@ -241,8 +231,7 @@ test_draw_circle_clip_outside(void) {
  * Circle clipped by a custom clip window:
  * Center at (15,15), radius 10, clip (10,10)-(25,25).
  */
-TEST
-test_draw_circle_custom_clip(void) {
+TEST test_draw_circle_custom_clip(void) {
     hagl_set_clip(&bitmap, 10, 10, 25, 25);
     hagl_draw_circle(&bitmap, 15, 15, 10, 0xFFFF);
 
@@ -267,8 +256,7 @@ test_draw_circle_custom_clip(void) {
     PASS();
 }
 
-TEST
-test_draw_circle_custom_clip_regression(void) {
+TEST test_draw_circle_custom_clip_regression(void) {
     hagl_set_clip(&bitmap, 10, 10, 25, 25);
     hagl_draw_circle(&bitmap, 15, 15, 10, 0xFFFF);
 
@@ -289,8 +277,7 @@ test_draw_circle_custom_clip_regression(void) {
  *         \XXXXXXXX/
  *          (100,110)
  */
-TEST
-test_fill_circle(void) {
+TEST test_fill_circle(void) {
     hagl_fill_circle(&bitmap, 100, 100, 10, 0xFFFF);
 
     /* On fill: cardinal points */
@@ -313,8 +300,7 @@ test_fill_circle(void) {
     PASS();
 }
 
-TEST
-test_fill_circle_regression(void) {
+TEST test_fill_circle_regression(void) {
     hagl_fill_circle(&bitmap, 100, 100, 10, 0xFFFF);
 
     uint32_t crc = crc32(bitmap.buffer, bitmap.size);
@@ -326,8 +312,7 @@ test_fill_circle_regression(void) {
 /*
  * Filled circle with radius 0:
  */
-TEST
-test_fill_circle_radius_0(void) {
+TEST test_fill_circle_radius_0(void) {
     hagl_fill_circle(&bitmap, 50, 50, 0, 0xFFFF);
 
     /* On fill: the center pixel */
@@ -349,8 +334,7 @@ test_fill_circle_radius_0(void) {
  * Filled circle with radius 1:
  * Should produce a filled cross with 5 pixels.
  */
-TEST
-test_fill_circle_radius_1(void) {
+TEST test_fill_circle_radius_1(void) {
     hagl_fill_circle(&bitmap, 100, 100, 1, 0xFFFF);
 
     /* On fill: cardinal neighbors */
@@ -374,8 +358,7 @@ test_fill_circle_radius_1(void) {
     PASS();
 }
 
-TEST
-test_fill_circle_radius_1_regression(void) {
+TEST test_fill_circle_radius_1_regression(void) {
     hagl_fill_circle(&bitmap, 100, 100, 1, 0xFFFF);
 
     uint32_t crc = crc32(bitmap.buffer, bitmap.size);
@@ -389,8 +372,7 @@ test_fill_circle_radius_1_regression(void) {
  * Center at (5,5), radius 10. Top and left portions are clipped.
  * Same dimensions as test_draw_circle_clip_top_left.
  */
-TEST
-test_fill_circle_clip_top_left(void) {
+TEST test_fill_circle_clip_top_left(void) {
     hagl_fill_circle(&bitmap, 5, 5, 10, 0xFFFF);
 
     /* On fill: visible cardinal points */
@@ -410,8 +392,7 @@ test_fill_circle_clip_top_left(void) {
     PASS();
 }
 
-TEST
-test_fill_circle_clip_top_left_regression(void) {
+TEST test_fill_circle_clip_top_left_regression(void) {
     hagl_fill_circle(&bitmap, 5, 5, 10, 0xFFFF);
 
     uint32_t crc = crc32(bitmap.buffer, bitmap.size);
@@ -424,8 +405,7 @@ test_fill_circle_clip_top_left_regression(void) {
  * Filled circle entirely outside the display:
  * Center at (-50,-50), radius 10. No pixels visible.
  */
-TEST
-test_fill_circle_clip_outside(void) {
+TEST test_fill_circle_clip_outside(void) {
     hagl_fill_circle(&bitmap, -50, -50, 10, 0xFFFF);
 
     ASSERT_EQ(0, count_pixels(&bitmap, 0xFFFF));
@@ -436,8 +416,7 @@ test_fill_circle_clip_outside(void) {
  * Filled circle clipped by a custom clip window:
  * Center at (15,15), radius 10, clip (10,10)-(25,25).
  */
-TEST
-test_fill_circle_custom_clip(void) {
+TEST test_fill_circle_custom_clip(void) {
     hagl_set_clip(&bitmap, 10, 10, 25, 25);
     hagl_fill_circle(&bitmap, 15, 15, 10, 0xFFFF);
 
@@ -468,8 +447,7 @@ test_fill_circle_custom_clip(void) {
     PASS();
 }
 
-TEST
-test_fill_circle_custom_clip_regression(void) {
+TEST test_fill_circle_custom_clip_regression(void) {
     hagl_set_clip(&bitmap, 10, 10, 25, 25);
     hagl_fill_circle(&bitmap, 15, 15, 10, 0xFFFF);
 
@@ -505,8 +483,7 @@ SUITE(circle_suite) {
 
 GREATEST_MAIN_DEFS();
 
-int
-main(int argc, char **argv) {
+int main(int argc, char **argv) {
     GREATEST_MAIN_BEGIN();
     RUN_SUITE(circle_suite);
     GREATEST_MAIN_END();

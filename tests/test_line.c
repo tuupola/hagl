@@ -33,22 +33,21 @@ SPDX-License-Identifier: MIT
 
 #include <string.h>
 
-#include "greatest.h"
 #include "crc32.h"
+#include "greatest.h"
 #include "hagl/bitmap.h"
-#include "hagl/pixel.h"
 #include "hagl/clip.h"
 #include "hagl/line.h"
+#include "hagl/pixel.h"
 
-#define TEST_WIDTH  320
+#define TEST_WIDTH 320
 #define TEST_HEIGHT 240
-#define TEST_DEPTH  16
+#define TEST_DEPTH 16
 
 static hagl_bitmap_t bitmap;
 static uint8_t buffer[TEST_WIDTH * TEST_HEIGHT * (TEST_DEPTH / 8)];
 
-static uint32_t
-count_pixels(hagl_bitmap_t *bitmap, hagl_color_t color) {
+static uint32_t count_pixels(hagl_bitmap_t *bitmap, hagl_color_t color) {
     uint32_t count = 0;
     for (int16_t y = 0; y < bitmap->height; y++) {
         for (int16_t x = 0; x < bitmap->width; x++) {
@@ -60,8 +59,7 @@ count_pixels(hagl_bitmap_t *bitmap, hagl_color_t color) {
     return count;
 }
 
-static void
-setup_callback(void *data) {
+static void setup_callback(void *data) {
     memset(buffer, 0, sizeof(buffer));
     hagl_bitmap_init(&bitmap, TEST_WIDTH, TEST_HEIGHT, TEST_DEPTH, buffer);
 }
@@ -71,8 +69,7 @@ setup_callback(void *data) {
  *
  * (10,50)-----(20,50)
  */
-TEST
-test_draw_line_horizontal(void) {
+TEST test_draw_line_horizontal(void) {
     hagl_draw_line(&bitmap, 10, 50, 20, 50, 0xFFFF);
 
     /* On line: endpoints */
@@ -96,8 +93,7 @@ test_draw_line_horizontal(void) {
     PASS();
 }
 
-TEST
-test_draw_line_horizontal_regression(void) {
+TEST test_draw_line_horizontal_regression(void) {
     hagl_draw_line(&bitmap, 10, 50, 20, 50, 0xFFFF);
 
     uint32_t crc = crc32(bitmap.buffer, bitmap.size);
@@ -114,8 +110,7 @@ test_draw_line_horizontal_regression(void) {
  *   |
  * (50,20)
  */
-TEST
-test_draw_line_vertical(void) {
+TEST test_draw_line_vertical(void) {
     hagl_draw_line(&bitmap, 50, 10, 50, 20, 0xFFFF);
 
     /* On line: endpoints */
@@ -139,8 +134,7 @@ test_draw_line_vertical(void) {
     PASS();
 }
 
-TEST
-test_draw_line_vertical_regression(void) {
+TEST test_draw_line_vertical_regression(void) {
     hagl_draw_line(&bitmap, 50, 10, 50, 20, 0xFFFF);
 
     uint32_t crc = crc32(bitmap.buffer, bitmap.size);
@@ -160,8 +154,7 @@ test_draw_line_vertical_regression(void) {
  * Bresenham produces a staircase pattern with 21 pixels:
  * (10,10) (10,11) (11,11) (11,12) ... (19,20) (20,20)
  */
-TEST
-test_draw_line_diagonal(void) {
+TEST test_draw_line_diagonal(void) {
     hagl_draw_line(&bitmap, 10, 10, 20, 20, 0xFFFF);
 
     /* On line: endpoints */
@@ -189,8 +182,7 @@ test_draw_line_diagonal(void) {
     PASS();
 }
 
-TEST
-test_draw_line_diagonal_regression(void) {
+TEST test_draw_line_diagonal_regression(void) {
     hagl_draw_line(&bitmap, 10, 10, 20, 20, 0xFFFF);
 
     uint32_t crc = crc32(bitmap.buffer, bitmap.size);
@@ -204,8 +196,7 @@ test_draw_line_diagonal_regression(void) {
  *
  * (50,50)
  */
-TEST
-test_draw_line_single_pixel(void) {
+TEST test_draw_line_single_pixel(void) {
     hagl_draw_line(&bitmap, 50, 50, 50, 50, 0xFFFF);
 
     /* On line: the pixel itself */
@@ -226,8 +217,7 @@ test_draw_line_single_pixel(void) {
 /*
  * Line clipped by top-left corner of display:
  */
-TEST
-test_draw_line_clip_top_left(void) {
+TEST test_draw_line_clip_top_left(void) {
     hagl_draw_line(&bitmap, -10, -10, 10, 10, 0xFFFF);
 
     /* On line: clipped start at origin */
@@ -252,8 +242,7 @@ test_draw_line_clip_top_left(void) {
     PASS();
 }
 
-TEST
-test_draw_line_clip_top_left_regression(void) {
+TEST test_draw_line_clip_top_left_regression(void) {
     hagl_draw_line(&bitmap, -10, -10, 10, 10, 0xFFFF);
 
     uint32_t crc = crc32(bitmap.buffer, bitmap.size);
@@ -271,8 +260,7 @@ test_draw_line_clip_top_left_regression(void) {
  *      (-10,-10)
  *                  .(0,0) display starts here
  */
-TEST
-test_draw_line_clip_outside(void) {
+TEST test_draw_line_clip_outside(void) {
     hagl_draw_line(&bitmap, -30, -30, -10, -10, 0xFFFF);
 
     ASSERT_EQ(0, count_pixels(&bitmap, 0xFFFF));
@@ -291,8 +279,7 @@ test_draw_line_clip_outside(void) {
  *                         \
  *                          (110,110)
  */
-TEST
-test_draw_line_custom_clip(void) {
+TEST test_draw_line_custom_clip(void) {
     hagl_set_clip(&bitmap, 50, 50, 100, 100);
     hagl_draw_line(&bitmap, 40, 40, 110, 110, 0xFFFF);
 
@@ -317,8 +304,7 @@ test_draw_line_custom_clip(void) {
     PASS();
 }
 
-TEST
-test_draw_line_custom_clip_regression(void) {
+TEST test_draw_line_custom_clip_regression(void) {
     hagl_set_clip(&bitmap, 50, 50, 100, 100);
     hagl_draw_line(&bitmap, 40, 40, 110, 110, 0xFFFF);
 
@@ -346,8 +332,7 @@ SUITE(line_suite) {
 
 GREATEST_MAIN_DEFS();
 
-int
-main(int argc, char **argv) {
+int main(int argc, char **argv) {
     GREATEST_MAIN_BEGIN();
     RUN_SUITE(line_suite);
     GREATEST_MAIN_END();

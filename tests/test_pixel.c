@@ -33,21 +33,20 @@ SPDX-License-Identifier: MIT
 
 #include <string.h>
 
-#include "greatest.h"
 #include "crc32.h"
+#include "greatest.h"
 #include "hagl/bitmap.h"
-#include "hagl/pixel.h"
 #include "hagl/clip.h"
+#include "hagl/pixel.h"
 
-#define TEST_WIDTH  320
+#define TEST_WIDTH 320
 #define TEST_HEIGHT 240
-#define TEST_DEPTH  16
+#define TEST_DEPTH 16
 
 static hagl_bitmap_t bitmap;
 static uint8_t buffer[TEST_WIDTH * TEST_HEIGHT * (TEST_DEPTH / 8)];
 
-static uint32_t
-count_pixels(hagl_bitmap_t *bitmap, hagl_color_t color) {
+static uint32_t count_pixels(hagl_bitmap_t *bitmap, hagl_color_t color) {
     uint32_t count = 0;
     for (int16_t y = 0; y < bitmap->height; y++) {
         for (int16_t x = 0; x < bitmap->width; x++) {
@@ -59,8 +58,7 @@ count_pixels(hagl_bitmap_t *bitmap, hagl_color_t color) {
     return count;
 }
 
-static void
-setup_callback(void *data) {
+static void setup_callback(void *data) {
     memset(buffer, 0, sizeof(buffer));
     hagl_bitmap_init(&bitmap, TEST_WIDTH, TEST_HEIGHT, TEST_DEPTH, buffer);
 }
@@ -68,8 +66,7 @@ setup_callback(void *data) {
 /*
  * Single pixel at (100, 120):
  */
-TEST
-test_put_pixel(void) {
+TEST test_put_pixel(void) {
     hagl_put_pixel(&bitmap, 100, 120, 0xFFFF);
 
     /* On pixel: the pixel itself */
@@ -93,8 +90,7 @@ test_put_pixel(void) {
     PASS();
 }
 
-TEST
-test_put_pixel_regression(void) {
+TEST test_put_pixel_regression(void) {
     hagl_put_pixel(&bitmap, 100, 120, 0xFFFF);
 
     uint32_t crc = crc32(bitmap.buffer, bitmap.size);
@@ -106,8 +102,7 @@ test_put_pixel_regression(void) {
 /*
  * Single pixel with a specific color (0x1234):
  */
-TEST
-test_put_pixel_color(void) {
+TEST test_put_pixel_color(void) {
     hagl_put_pixel(&bitmap, 50, 75, 0x1234);
 
     /* On pixel: correct color returned */
@@ -131,8 +126,7 @@ test_put_pixel_color(void) {
 /*
  * Overwrite pixel with a new color:
  */
-TEST
-test_put_pixel_overwrite(void) {
+TEST test_put_pixel_overwrite(void) {
     hagl_put_pixel(&bitmap, 80, 60, 0xAAAA);
 
     /* On pixel: first color */
@@ -161,8 +155,7 @@ test_put_pixel_overwrite(void) {
  *   |                    |
  * (0,239)------------(319,239)
  */
-TEST
-test_put_pixel_corners(void) {
+TEST test_put_pixel_corners(void) {
     hagl_put_pixel(&bitmap, 0, 0, 0xFFFF);
     hagl_put_pixel(&bitmap, 319, 0, 0xFFFF);
     hagl_put_pixel(&bitmap, 0, 239, 0xFFFF);
@@ -199,8 +192,7 @@ test_put_pixel_corners(void) {
 /*
  * Pixels placed outside the display bounds should be discarded.
  */
-TEST
-test_put_pixel_clip_outside(void) {
+TEST test_put_pixel_clip_outside(void) {
     /* Left of display */
     hagl_put_pixel(&bitmap, -1, 100, 0xFFFF);
 
@@ -227,8 +219,7 @@ test_put_pixel_clip_outside(void) {
  * Pixels inside a custom clip window are drawn. The clip
  * window boundary is inclusive.
  */
-TEST
-test_put_pixel_custom_clip_inside(void) {
+TEST test_put_pixel_custom_clip_inside(void) {
     hagl_set_clip(&bitmap, 50, 50, 100, 100);
 
     /* Interior point */
@@ -266,8 +257,7 @@ test_put_pixel_custom_clip_inside(void) {
  *                                .
  *                             (75,101)
  */
-TEST
-test_put_pixel_custom_clip_outside(void) {
+TEST test_put_pixel_custom_clip_outside(void) {
     hagl_set_clip(&bitmap, 50, 50, 100, 100);
 
     /* 1 pixel outside each edge of the clip window */
@@ -285,8 +275,7 @@ test_put_pixel_custom_clip_outside(void) {
 /*
  * Reading pixels outside the display bounds returns black.
  */
-TEST
-test_get_pixel_clip_outside(void) {
+TEST test_get_pixel_clip_outside(void) {
     /* Place a pixel so the framebuffer is not empty */
     hagl_put_pixel(&bitmap, 100, 120, 0xFFFF);
 
@@ -311,8 +300,7 @@ test_get_pixel_clip_outside(void) {
  * Reading a pixel that exists in the buffer but is outside
  * the current clip window returns black.
  */
-TEST
-test_get_pixel_custom_clip_outside(void) {
+TEST test_get_pixel_custom_clip_outside(void) {
     /* Place a pixel with the default clip window */
     hagl_put_pixel(&bitmap, 75, 75, 0xFFFF);
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 75, 75));
@@ -342,8 +330,7 @@ SUITE(pixel_suite) {
 
 GREATEST_MAIN_DEFS();
 
-int
-main(int argc, char **argv) {
+int main(int argc, char **argv) {
     GREATEST_MAIN_BEGIN();
     RUN_SUITE(pixel_suite);
     GREATEST_MAIN_END();
