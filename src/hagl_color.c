@@ -42,7 +42,7 @@ hagl_color(void const *_surface, uint8_t r, uint8_t g, uint8_t b)
     const hagl_surface_t *surface = _surface;
 
     if (surface->color) {
-        return surface->color(&surface, r, g, b);
+        return surface->color((void *)_surface, r, g, b);
     }
     return rgb565(r, g, b);
 }
