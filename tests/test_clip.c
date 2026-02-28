@@ -80,9 +80,9 @@ test_clip_line_inside(void) {
  *
  * (10,10)-----------(50,10)
  *    \                 |
- *     \                |
- *      \               |
- *       \              |
+ *    |\                |
+ *    | \               |
+ *    |  \              |
  * (10,50)-----------(50,50)
  *
  * Boundary is inclusive, coordinates returned unchanged.
@@ -103,7 +103,7 @@ test_clip_line_boundary(void) {
 }
 
 TEST
-test_clip_line_reject(void) {
+test_clip_line_outside(void) {
     int16_t x0, y0, x1, y1;
 
     /* Left */
@@ -202,7 +202,7 @@ test_clip_line_clip_both_edges(void) {
 SUITE(clip_suite) {
     RUN_TEST(test_clip_line_inside);
     RUN_TEST(test_clip_line_boundary);
-    RUN_TEST(test_clip_line_reject);
+    RUN_TEST(test_clip_line_outside);
     RUN_TEST(test_clip_line_clip_single_edge);
     RUN_TEST(test_clip_line_clip_both_edges);
 }
