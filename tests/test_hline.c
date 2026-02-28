@@ -163,6 +163,28 @@ TEST test_draw_hline_xyw_full_width(void) {
     PASS();
 }
 
+/*
+ * Verify xyx produces the same result as xyw:
+ *
+ * xyx: hagl_draw_hline_xyx(&bitmap, 10, 50, 20, color)
+ * xyw: hagl_draw_hline_xyw(&bitmap, 10, 50, 11, color)
+ */
+TEST test_draw_hline_xyx_match_xyw(void) {
+    /* Draw with _xyx. */
+    hagl_draw_hline_xyx(&bitmap, 10, 50, 20, 0xFFFF);
+
+    uint32_t crc_xyx = crc32(bitmap.buffer, bitmap.size);
+
+    /* Clear and draw the same area with _xyw. */
+    memset(bitmap.buffer, 0, bitmap.size);
+    hagl_draw_hline_xyw(&bitmap, 10, 50, 11, 0xFFFF);
+
+    uint32_t crc_xyw = crc32(bitmap.buffer, bitmap.size);
+
+    ASSERT_EQ(crc_xyw, crc_xyx);
+    PASS();
+}
+
 SUITE(hline_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_hline_xyw);
@@ -170,6 +192,7 @@ SUITE(hline_suite) {
     RUN_TEST(test_draw_hline_xyw_single_pixel);
     RUN_TEST(test_draw_hline_xyw_zero_width);
     RUN_TEST(test_draw_hline_xyw_full_width);
+    RUN_TEST(test_draw_hline_xyx_match_xyw);
 }
 
 GREATEST_MAIN_DEFS();
