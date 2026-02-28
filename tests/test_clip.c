@@ -231,6 +231,17 @@ TEST test_clip_line_clip_both_edges(void) {
     ASSERT_EQ(50, x1);
     ASSERT_EQ(50, y1);
 
+    /* Diagonal: clipped by two adjacent edges (left and bottom) */
+    x0 = 0;
+    y0 = 30;
+    x1 = 30;
+    y1 = 0;
+    ASSERT_EQ(true, hagl_clip_line(&x0, &y0, &x1, &y1, window));
+    ASSERT_EQ(10, x0);
+    ASSERT_EQ(20, y0);
+    ASSERT_EQ(20, x1);
+    ASSERT_EQ(10, y1);
+
     PASS();
 }
 
