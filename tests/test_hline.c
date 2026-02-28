@@ -102,10 +102,34 @@ TEST test_draw_hline_xyw_regression(void) {
     PASS();
 }
 
+/*
+ * Single pixel horizontal line:
+ *
+ * (50,50)
+ */
+TEST test_draw_hline_xyw_single_pixel(void) {
+    hagl_draw_hline_xyw(&bitmap, 50, 50, 1, 0xFFFF);
+
+    /* On line: the pixel itself */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 50, 50));
+
+    /* Outside: all four neighbors */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 49, 50));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 51, 50));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 50, 49));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 50, 51));
+
+    /* Total: 1 pixel */
+    ASSERT_EQ(1, count_pixels(&bitmap, 0xFFFF));
+
+    PASS();
+}
+
 SUITE(hline_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_hline_xyw);
     RUN_TEST(test_draw_hline_xyw_regression);
+    RUN_TEST(test_draw_hline_xyw_single_pixel);
 }
 
 GREATEST_MAIN_DEFS();
