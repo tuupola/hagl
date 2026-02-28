@@ -64,7 +64,7 @@ hagl_blit_xy(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source
             }
         } else {
             /* Inside of bounds, can use HAL provided blit. */
-            surface->blit(&surface, x0, y0, source);
+            surface->blit((void *)_surface, x0, y0, source);
         }
     } else {
         hagl_color_t color;
@@ -85,7 +85,7 @@ hagl_blit_xywh(void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint1
     const hagl_surface_t *surface = _surface;
 
     if (surface->scale_blit) {
-        surface->scale_blit(&surface, x0, y0, w, h, source);
+        surface->scale_blit((void *)_surface, x0, y0, w, h, source);
     } else {
         hagl_color_t color;
         hagl_color_t *ptr = (hagl_color_t *) source->buffer;
