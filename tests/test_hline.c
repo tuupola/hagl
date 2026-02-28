@@ -207,6 +207,129 @@ TEST test_draw_hline_xyx_reversed(void) {
     PASS();
 }
 
+/*
+ * Line overflowing right edge of display:
+ * Only 10 pixels visible: (310,50) to (319,50)
+ */
+TEST test_draw_hline_xyw_clip_right(void) {
+    hagl_draw_hline_xyw(&bitmap, 310, 50, 20, 0xFFFF);
+
+    /* On line: left endpoint */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 310, 50));
+
+    /* On line: right edge of display */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 319, 50));
+
+    /* Outside: left of start */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 309, 50));
+
+    /* Total: 10 pixels */
+    ASSERT_EQ(10, count_pixels(&bitmap, 0xFFFF));
+
+    PASS();
+}
+
+TEST test_draw_hline_xyw_clip_right_regression(void) {
+    hagl_draw_hline_xyw(&bitmap, 310, 50, 20, 0xFFFF);
+
+    uint32_t crc = crc32(bitmap.buffer, bitmap.size);
+
+    ASSERT_EQ(0xFF6B2971, crc);
+    PASS();
+}
+
+/*
+ * Line starting off left edge of display:
+ * Only 15 pixels visible: (0,50) to (14,50)
+ */
+TEST test_draw_hline_xyw_clip_left(void) {
+    hagl_draw_hline_xyw(&bitmap, -5, 50, 20, 0xFFFF);
+
+    /* On line: left edge of display */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 0, 50));
+
+    /* On line: right endpoint */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 14, 50));
+
+    /* Outside: right of end */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 15, 50));
+
+    /* Total: 15 pixels */
+    ASSERT_EQ(15, count_pixels(&bitmap, 0xFFFF));
+
+    PASS();
+}
+
+TEST test_draw_hline_xyw_clip_left_regression(void) {
+    hagl_draw_hline_xyw(&bitmap, -5, 50, 20, 0xFFFF);
+
+    uint32_t crc = crc32(bitmap.buffer, bitmap.size);
+
+    ASSERT_EQ(0x1A5ED74E, crc);
+    PASS();
+}
+
+/*
+ * Lines entirely outside the display. Four sub-cases covering
+ * all early-return conditions in hagl_hline.c:
+ *
+ * 1. y below display (y < 0)
+ * 2. y above display (y > 239)
+ * 3. x right of display (x0 > 319)
+ * 4. entirely left of display (x0 + width < 0)
+ */
+TEST test_draw_hline_xyw_outside(void) {
+    /* y below display */
+    hagl_draw_hline_xyw(&bitmap, 10, -1, 20, 0xFFFF);
+    ASSERT_EQ(0, count_pixels(&bitmap, 0xFFFF));
+
+    /* y above display */
+    hagl_draw_hline_xyw(&bitmap, 10, 240, 20, 0xFFFF);
+    ASSERT_EQ(0, count_pixels(&bitmap, 0xFFFF));
+
+    /* x right of display */
+    hagl_draw_hline_xyw(&bitmap, 320, 50, 20, 0xFFFF);
+    ASSERT_EQ(0, count_pixels(&bitmap, 0xFFFF));
+
+    /* entirely left of display */
+    hagl_draw_hline_xyw(&bitmap, -30, 50, 20, 0xFFFF);
+    ASSERT_EQ(0, count_pixels(&bitmap, 0xFFFF));
+
+    PASS();
+}
+
+/*
+ * Line clipped by a custom clip window on both sides:
+ * Only 51 pixels visible: (50,75) to (100,75)
+ */
+TEST test_draw_hline_xyw_custom_clip(void) {
+    hagl_set_clip(&bitmap, 50, 50, 100, 100);
+    hagl_draw_hline_xyw(&bitmap, 40, 75, 80, 0xFFFF);
+
+    /* On line: clip window edges */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 50, 75));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 100, 75));
+
+    /* Outside: just beyond clip window */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 49, 75));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 101, 75));
+
+    /* Total: 51 pixels */
+    ASSERT_EQ(51, count_pixels(&bitmap, 0xFFFF));
+
+    PASS();
+}
+
+TEST test_draw_hline_xyw_custom_clip_regression(void) {
+    hagl_set_clip(&bitmap, 50, 50, 100, 100);
+    hagl_draw_hline_xyw(&bitmap, 40, 75, 80, 0xFFFF);
+
+    uint32_t crc = crc32(bitmap.buffer, bitmap.size);
+
+    ASSERT_EQ(0xBF25A347, crc);
+    PASS();
+}
+
 SUITE(hline_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_hline_xyw);
@@ -216,6 +339,13 @@ SUITE(hline_suite) {
     RUN_TEST(test_draw_hline_xyw_full_width);
     RUN_TEST(test_draw_hline_xyx_match_xyw);
     RUN_TEST(test_draw_hline_xyx_reversed);
+    RUN_TEST(test_draw_hline_xyw_clip_right);
+    RUN_TEST(test_draw_hline_xyw_clip_right_regression);
+    RUN_TEST(test_draw_hline_xyw_clip_left);
+    RUN_TEST(test_draw_hline_xyw_clip_left_regression);
+    RUN_TEST(test_draw_hline_xyw_outside);
+    RUN_TEST(test_draw_hline_xyw_custom_clip);
+    RUN_TEST(test_draw_hline_xyw_custom_clip_regression);
 }
 
 GREATEST_MAIN_DEFS();
