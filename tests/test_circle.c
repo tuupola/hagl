@@ -282,14 +282,10 @@ test_draw_circle_custom_clip_regression(void) {
  *          (100,90)
  *         /XXXXXXXX\
  *        /XXXXXXXXXX\
- * (90,100)XXXXXXXXXXXX(109,100)
+ * (90,100)XXXXXXXXXXX(110,100)
  *        \XXXXXXXXXX/
  *         \XXXXXXXX/
  *          (100,110)
- *
- * TODO: hline width is y*2 so the rightmost pixel on each
- * row is 1 short of the outline. The widest row covers
- * x=90..109 (20 pixels) instead of x=90..110 (21 pixels).
  */
 TEST
 test_fill_circle(void) {
@@ -309,8 +305,8 @@ test_fill_circle(void) {
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 89, 100));
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 111, 100));
 
-    /* Total: 328 pixels */
-    ASSERT_EQ(328, count_pixels(&backend, 0xFFFF));
+    /* Total: 349 pixels */
+    ASSERT_EQ(349, count_pixels(&backend, 0xFFFF));
 
     PASS();
 }
@@ -322,7 +318,7 @@ test_fill_circle_regression(void) {
     size_t size = backend.width * backend.height * (backend.depth / 8);
     uint32_t crc = crc32(backend.buffer, size);
 
-    ASSERT_EQ(0x7BCF5A7A, crc);
+    ASSERT_EQ(0x2393BAC9, crc);
     PASS();
 }
 
@@ -350,13 +346,6 @@ test_fill_circle_radius_0(void) {
 
 /*
  * Filled circle with radius 1:
- *
- *        (100,99)
- *          |
- * (99,100) (100,100) (101,100)
- *          |
- *        (100,101)
- *
  * Should produce a filled cross with 5 pixels.
  */
 TEST
@@ -384,7 +373,6 @@ test_fill_circle_radius_1(void) {
     PASS();
 }
 
-/* TODO: Update CRC after hagl_fill_circle radius 0/1 fix is applied. */
 TEST
 test_fill_circle_radius_1_regression(void) {
     hagl_fill_circle(&backend, 100, 100, 1, 0xFFFF);
@@ -392,8 +380,7 @@ test_fill_circle_radius_1_regression(void) {
     size_t size = backend.width * backend.height * (backend.depth / 8);
     uint32_t crc = crc32(backend.buffer, size);
 
-    /* TODO: Placeholder, waiting for hagl_fill_circle fix. */
-    ASSERT_EQ(0x00000000, crc);
+    ASSERT_EQ(0x1CBAC61F, crc);
     PASS();
 }
 
@@ -401,10 +388,6 @@ test_fill_circle_radius_1_regression(void) {
  * Filled circle clipped by top-left corner of display:
  * Center at (5,5), radius 10. Top and left portions are clipped.
  * Same dimensions as test_draw_circle_clip_top_left.
- *
- * TODO: hline width is y*2 so the rightmost pixel on each
- * row is 1 short of the outline. Right cardinal (15,5) is
- * not filled.
  */
 TEST
 test_fill_circle_clip_top_left(void) {
@@ -421,8 +404,8 @@ test_fill_circle_clip_top_left(void) {
     /* Outside: beyond bottom cardinal */
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 5, 16));
 
-    /* Total: 213 pixels */
-    ASSERT_EQ(213, count_pixels(&backend, 0xFFFF));
+    /* Total: 229 pixels */
+    ASSERT_EQ(229, count_pixels(&backend, 0xFFFF));
 
     PASS();
 }
@@ -434,7 +417,7 @@ test_fill_circle_clip_top_left_regression(void) {
     size_t size = backend.width * backend.height * (backend.depth / 8);
     uint32_t crc = crc32(backend.buffer, size);
 
-    ASSERT_EQ(0x4A6D611B, crc);
+    ASSERT_EQ(0x9A7F09C6, crc);
     PASS();
 }
 
@@ -480,8 +463,8 @@ test_fill_circle_custom_clip(void) {
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 9, 15));
     ASSERT_EQ(0x0000, hagl_get_pixel(&backend, 15, 9));
 
-    /* Total: 240 pixels */
-    ASSERT_EQ(240, count_pixels(&backend, 0xFFFF));
+    /* Total: 242 pixels */
+    ASSERT_EQ(242, count_pixels(&backend, 0xFFFF));
 
     PASS();
 }
@@ -494,7 +477,7 @@ test_fill_circle_custom_clip_regression(void) {
     size_t size = backend.width * backend.height * (backend.depth / 8);
     uint32_t crc = crc32(backend.buffer, size);
 
-    ASSERT_EQ(0x7AE96857, crc);
+    ASSERT_EQ(0xD2A7217B, crc);
     PASS();
 }
 
