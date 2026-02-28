@@ -79,10 +79,10 @@ test_clip_line_inside(void) {
  * Both endpoints on the clip window boundary:
  *
  * (10,10)-----------(50,10)
- *    \                 |
  *    |\                |
- *    | \               |
- *    |  \              |
+ *    |     \           |
+ *    |           \     |
+ *    |                \|
  * (10,50)-----------(50,50)
  *
  * Boundary is inclusive, coordinates returned unchanged.
