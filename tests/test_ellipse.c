@@ -130,11 +130,47 @@ TEST test_draw_ellipse_a0_b0(void) {
     PASS();
 }
 
+/*
+ * Ellipse with a=1, b=1 (same as circle r=1):
+ *
+ *        (100,99)
+ *          |
+ * (99,100)   (101,100)
+ *          |
+ *        (100,101)
+ *
+ * Produces a cross with 4 pixels. Center is empty.
+ */
+TEST test_draw_ellipse_a1_b1(void) {
+    hagl_draw_ellipse(&bitmap, 100, 100, 1, 1, 0xFFFF);
+
+    /* On outline: cardinal neighbors */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 100, 99));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 100, 101));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 99, 100));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 101, 100));
+
+    /* Inside: center is empty */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 100, 100));
+
+    /* Outside: diagonal neighbors */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 99, 99));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 101, 99));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 99, 101));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 101, 101));
+
+    /* Total: 4 pixels */
+    ASSERT_EQ(4, count_pixels(&bitmap, 0xFFFF));
+
+    PASS();
+}
+
 SUITE(ellipse_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_ellipse);
     RUN_TEST(test_draw_ellipse_regression);
     RUN_TEST(test_draw_ellipse_a0_b0);
+    RUN_TEST(test_draw_ellipse_a1_b1);
 }
 
 GREATEST_MAIN_DEFS();
