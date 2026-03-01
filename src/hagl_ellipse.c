@@ -155,11 +155,11 @@ hagl_fill_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_
             break;
         }
 
-        hagl_draw_hline(surface, x0 - wx, y0 - wy, wx * 2, color);
-        hagl_draw_hline(surface, x0 - wx, y0 + wy, wx * 2, color);
+        hagl_draw_hline(surface, x0 - wx, y0 - wy, wx * 2 + 1, color);
+        hagl_draw_hline(surface, x0 - wx, y0 + wy, wx * 2 + 1, color);
     }
 
-    hagl_draw_hline(surface, x0 - a, y0, a * 2, color);
+    hagl_draw_hline(surface, x0 - a, y0, a * 2 + 1, color);
 
     wx = a;
     wy = 0;
@@ -184,7 +184,7 @@ hagl_fill_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_
             break;
         }
 
-        hagl_draw_hline(surface, x0 - wx, y0 - wy, wx * 2, color);
-        hagl_draw_hline(surface, x0 - wx, y0 + wy, wx * 2, color);
+        hagl_draw_hline(surface, x0 - wx, y0 - wy, wx * 2 + 1, color);
+        hagl_draw_hline(surface, x0 - wx, y0 + wy, wx * 2 + 1, color);
     }
 }
