@@ -132,13 +132,6 @@ TEST test_draw_ellipse_a0_b0(void) {
 
 /*
  * Ellipse with a=1, b=1 (same as circle r=1):
- *
- *        (100,99)
- *          |
- * (99,100)   (101,100)
- *          |
- *        (100,101)
- *
  * Produces a cross with 4 pixels. Center is empty.
  */
 TEST test_draw_ellipse_a1_b1(void) {
@@ -167,7 +160,6 @@ TEST test_draw_ellipse_a1_b1(void) {
 
 /*
  * Ellipse with equal radii must match circle:
- *
  * hagl_draw_ellipse(100, 100, 10, 10) == hagl_draw_circle(100, 100, 10)
  */
 TEST test_draw_ellipse_matches_circle(void) {
