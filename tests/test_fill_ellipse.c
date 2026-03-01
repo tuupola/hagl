@@ -66,14 +66,6 @@ static void setup_callback(void *data) {
 
 /*
  * Filled ellipse with center (100,100), a=20 (horizontal), b=10 (vertical):
- *
- *            (100,90)
- *           /XXXXXXXX\
- *          /XXXXXXXXXX\
- * (80,100)XXXXXXXXXXXXX(120,100)
- *          \XXXXXXXXXX/
- *           \XXXXXXXX/
- *            (100,110)
  */
 TEST test_fill_ellipse(void) {
     hagl_fill_ellipse(&bitmap, 100, 100, 20, 10, 0xFFFF);
@@ -132,12 +124,6 @@ TEST test_fill_ellipse_a0_b0(void) {
 /*
  * Filled ellipse with a=1, b=1 (same as fill circle r=1):
  * Should produce a filled cross with 5 pixels.
- *
- *        (100,99)
- *          |
- * (99,100) X (101,100)
- *          |
- *        (100,101)
  */
 TEST test_fill_ellipse_a1_b1(void) {
     hagl_fill_ellipse(&bitmap, 100, 100, 1, 1, 0xFFFF);
@@ -176,12 +162,6 @@ TEST test_fill_ellipse_a1_b1_regression(void) {
  * Filled ellipse clipped by top-left corner of display:
  * Center at (5,5), a=20 (horizontal), b=10 (vertical).
  * Top and left portions are clipped.
- *
- *            (5,-5)
- *           /XXXXXX\
- * (-15,5)  XXXXXXXXXX  (25,5)
- *           \XXXXXX/
- *            (5,15)
  */
 TEST test_fill_ellipse_clip_top_left(void) {
     hagl_fill_ellipse(&bitmap, 5, 5, 20, 10, 0xFFFF);
@@ -226,13 +206,6 @@ TEST test_fill_ellipse_clip_outside(void) {
 /*
  * Filled ellipse clipped by a custom clip window:
  * Center (100,85), a=60, b=40, clip (50,50)-(150,120).
- *
- *              (100,45) clipped
- *             /XXXXXXXX\
- *  (40,85)   |XXXXXXXXXX|   (160,85) clipped
- *  clipped   |XXXXXXXXXX|
- *             \XXXXXXXX/
- *              (100,125) clipped
  */
 TEST test_fill_ellipse_custom_clip(void) {
     hagl_set_clip(&bitmap, 50, 50, 150, 120);
