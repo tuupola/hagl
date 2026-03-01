@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2018-2023 Mika Tuupola
+Copyright (c) 2018-2026 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -44,6 +44,12 @@ hagl_draw_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_
     int32_t t;
     int32_t asq = a * a;
     int32_t bsq = b * b;
+
+    /* Zero radius ellipse should output a single pixel */
+    if (0 == a && 0 == b) {
+        hagl_put_pixel(surface, x0, y0, color);
+        return;
+    }
 
     hagl_put_pixel(surface, x0, y0 + b, color);
     hagl_put_pixel(surface, x0, y0 - b, color);
@@ -117,6 +123,12 @@ hagl_fill_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_
     int32_t t;
     int32_t asq = a * a;
     int32_t bsq = b * b;
+
+    /* Zero radius ellipse should output a single pixel */
+    if (0 == a && 0 == b) {
+        hagl_put_pixel(surface, x0, y0, color);
+        return;
+    }
 
     hagl_put_pixel(surface, x0, y0 + b, color);
     hagl_put_pixel(surface, x0, y0 - b, color);
