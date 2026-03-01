@@ -165,12 +165,34 @@ TEST test_draw_ellipse_a1_b1(void) {
     PASS();
 }
 
+/*
+ * Ellipse with equal radii must match circle:
+ *
+ * hagl_draw_ellipse(100, 100, 10, 10) == hagl_draw_circle(100, 100, 10)
+ */
+TEST test_draw_ellipse_matches_circle(void) {
+    /* Draw with ellipse. */
+    hagl_draw_ellipse(&bitmap, 100, 100, 10, 10, 0xFFFF);
+
+    uint32_t crc_ellipse = crc32(bitmap.buffer, bitmap.size);
+
+    /* Clear and draw the same shape with circle. */
+    memset(bitmap.buffer, 0, bitmap.size);
+    hagl_draw_circle(&bitmap, 100, 100, 10, 0xFFFF);
+
+    uint32_t crc_circle = crc32(bitmap.buffer, bitmap.size);
+
+    ASSERT_EQ(crc_circle, crc_ellipse);
+    PASS();
+}
+
 SUITE(ellipse_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_ellipse);
     RUN_TEST(test_draw_ellipse_regression);
     RUN_TEST(test_draw_ellipse_a0_b0);
     RUN_TEST(test_draw_ellipse_a1_b1);
+    RUN_TEST(test_draw_ellipse_matches_circle);
 }
 
 GREATEST_MAIN_DEFS();
