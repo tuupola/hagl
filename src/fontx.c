@@ -36,15 +36,13 @@ SPDX-License-Identifier: MIT
 
 */
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <string.h>
 
 #include "fontx.h"
 
-uint8_t
-fontx_meta(fontx_meta_t *meta, const uint8_t *font)
-{
+uint8_t fontx_meta(fontx_meta_t *meta, const uint8_t *font) {
 
     memcpy(meta->name, &font[FONTX_NAME], 8);
     meta->width = font[FONTX_WIDTH];
@@ -54,10 +52,7 @@ fontx_meta(fontx_meta_t *meta, const uint8_t *font)
     return 0;
 }
 
-
-uint8_t
-fontx_glyph(fontx_glyph_t *glyph, wchar_t code, const uint8_t *font)
-{
+uint8_t fontx_glyph(fontx_glyph_t *glyph, wchar_t code, const uint8_t *font) {
     uint32_t nc, bc, sb, eb;
     uint8_t status;
     const uint8_t *block_table;
@@ -91,13 +86,13 @@ fontx_glyph(fontx_glyph_t *glyph, wchar_t code, const uint8_t *font)
             if (code >= sb && code <= eb) {
                 /* Number of codes from top of the block_table. */
                 nc += code - sb;
-                // *INDENT-OFF*
+                // clang-format off
                 glyph->buffer = &font[
                     FONTX_BLOCK_TABLE_START +
                     4 * font[FONTX_BLOCK_TABLE_SIZE] +
                     nc * glyph->size
                 ];
-                // *INDENT-ON*
+                // clang-format on
                 return FONTX_OK;
             }
             /* Number of codes in the previous block_tables. */

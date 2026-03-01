@@ -35,41 +35,41 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_H
 #define _HAGL_H
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
-#include "hagl/pixel.h"
-#include "hagl/surface.h"
 #include "hagl/backend.h"
-#include "hagl_hal.h"
 #include "hagl/bitmap.h"
-#include "hagl/clip.h"
-#include "hagl/line.h"
-#include "hagl/hline.h"
-#include "hagl/vline.h"
-#include "hagl/rectangle.h"
-#include "hagl/circle.h"
-#include "hagl/ellipse.h"
-#include "hagl/polygon.h"
-#include "hagl/triangle.h"
-#include "hagl/image.h"
 #include "hagl/blit.h"
 #include "hagl/char.h"
+#include "hagl/circle.h"
+#include "hagl/clip.h"
+#include "hagl/ellipse.h"
+#include "hagl/hline.h"
+#include "hagl/image.h"
+#include "hagl/line.h"
+#include "hagl/pixel.h"
+#include "hagl/polygon.h"
+#include "hagl/rectangle.h"
+#include "hagl/surface.h"
+#include "hagl/triangle.h"
+#include "hagl/vline.h"
+#include "hagl_hal.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-#define ABS(x)  ((x) > 0 ? (x) : -(x))
+#define ABS(x) ((x) > 0 ? (x) : -(x))
 
 /* If you want to use bigger fonts than 6x9 you need to define this. */
 #ifndef HAGL_CHAR_BUFFER_SIZE
-#define HAGL_CHAR_BUFFER_SIZE    (6 * 9 * 2)
+#define HAGL_CHAR_BUFFER_SIZE (6 * 9 * 2)
 #endif
 
-#define HAGL_OK                  (0)
-#define HAGL_ERR_GENERAL         (1)
-#define HAGL_ERR_FILE_IO         (2)
+#define HAGL_OK (0)
+#define HAGL_ERR_GENERAL (1)
+#define HAGL_ERR_FILE_IO (2)
 
 hagl_backend_t *hagl_init(void);
 size_t hagl_flush(hagl_backend_t *backend);

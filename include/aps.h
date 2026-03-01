@@ -35,8 +35,8 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_APS_H
 #define _HAGL_APS_H
 
-#include <time.h>
 #include <stdint.h>
+#include <time.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -52,9 +52,7 @@ typedef struct {
 /**
  * Initialize the given anything per second counter instance
  */
-static inline void
-aps_init(aps_instance_t *aps)
-{
+static inline void aps_init(aps_instance_t *aps) {
     aps->start = clock() - 1;
     aps->value = 0;
     aps->current = 0.0;
@@ -73,17 +71,14 @@ aps_init(aps_instance_t *aps)
  *
  * @return current aps
  */
-static inline float
-aps_update(aps_instance_t *aps, uint32_t add)
-{
-
+static inline float aps_update(aps_instance_t *aps, uint32_t add) {
 
     float measured = 0.0;
-    clock_t ticks = clock() - aps->start;;
+    clock_t ticks = clock() - aps->start;
 
     aps->value += add;
 
-    measured = aps->value / (float) ticks * CLOCKS_PER_SEC;
+    measured = aps->value / (float)ticks * CLOCKS_PER_SEC;
     aps->current = (measured * aps->smoothing) + (aps->current * (1.0 - aps->smoothing));
 
     return aps->current;
@@ -92,14 +87,11 @@ aps_update(aps_instance_t *aps, uint32_t add)
 /**
  * Reset the given anything per second counter instance
  */
-static inline void
-aps_reset(aps_instance_t *aps)
-{
+static inline void aps_reset(aps_instance_t *aps) {
     aps->start = clock() - 1;
     aps->value = 0;
     aps->current = 0;
 }
-
 
 #ifdef __cplusplus
 }

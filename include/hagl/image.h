@@ -42,7 +42,7 @@ SPDX-License-Identifier: MIT
 extern "C" {
 #endif /* __cplusplus */
 
-#define HAGL_ERR_TJPGD           (100)
+#define HAGL_ERR_TJPGD (100)
 
 /**
  * Load an image
@@ -58,8 +58,7 @@ extern "C" {
  * @param y1
  * @param color
  */
-uint32_t
-hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char *filename);
+uint32_t hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char *filename);
 
 #ifdef __cplusplus
 }

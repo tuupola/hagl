@@ -56,8 +56,9 @@ extern "C" {
  * @param y1
  * @param color
  */
-void
-hagl_draw_line(void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, hagl_color_t color);
+void hagl_draw_line(
+    void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, hagl_color_t color
+);
 
 #ifdef __cplusplus
 }

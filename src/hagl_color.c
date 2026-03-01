@@ -36,9 +36,7 @@ SPDX-License-Identifier: MIT
 #include "hagl/surface.h"
 #include "rgb565.h"
 
-hagl_color_t
-hagl_color(void const *_surface, uint8_t r, uint8_t g, uint8_t b)
-{
+hagl_color_t hagl_color(void const *_surface, uint8_t r, uint8_t g, uint8_t b) {
     const hagl_surface_t *surface = _surface;
 
     if (surface->color) {

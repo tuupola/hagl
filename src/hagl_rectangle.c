@@ -34,17 +34,18 @@ SPDX-License-Identifier: MIT
 
 #include <stdint.h>
 
-#include "hagl/surface.h"
-#include "hagl/hline.h"
-#include "hagl/vline.h"
-#include "hagl/pixel.h"
 #include "hagl/color.h"
+#include "hagl/hline.h"
+#include "hagl/pixel.h"
+#include "hagl/surface.h"
+#include "hagl/vline.h"
 
-#define MIN(a,b) (((a)<(b))?(a):(b))
-#define MAX(a,b) (((a)>(b))?(a):(b))
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
-void
-hagl_draw_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, hagl_color_t color) {
+void hagl_draw_rectangle_xyxy(
+    void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, hagl_color_t color
+) {
     const hagl_surface_t *surface = _surface;
     uint16_t width, height;
 
@@ -63,7 +64,7 @@ hagl_draw_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, int16_t x
     }
 
     /* x1 or y1 is before the edge, nothing to do. */
-    if ((x1 < surface->clip.x0) || (y1 < surface->clip.y0))  {
+    if ((x1 < surface->clip.x0) || (y1 < surface->clip.y0)) {
         return;
     }
 
@@ -81,8 +82,9 @@ hagl_draw_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, int16_t x
     hagl_draw_vline(surface, x1, y0, height, color);
 }
 
-void
-hagl_fill_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, hagl_color_t color) {
+void hagl_fill_rectangle_xyxy(
+    void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, hagl_color_t color
+) {
     const hagl_surface_t *surface = _surface;
     uint16_t width, height;
 
@@ -101,7 +103,7 @@ hagl_fill_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, int16_t x
     }
 
     /* x1 or y1 is before the edge, nothing to do. */
-    if ((x1 < surface->clip.x0) || (y1 < surface->clip.y0))  {
+    if ((x1 < surface->clip.x0) || (y1 < surface->clip.y0)) {
         return;
     }
 
@@ -128,8 +130,10 @@ hagl_fill_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, int16_t x
     }
 }
 
-void
-hagl_draw_rounded_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, hagl_color_t color) {
+void hagl_draw_rounded_rectangle_xyxy(
+    void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r,
+    hagl_color_t color
+) {
     const hagl_surface_t *surface = _surface;
 
     uint16_t width, height;
@@ -150,7 +154,7 @@ hagl_draw_rounded_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, i
     }
 
     /* x1 or y1 is before the edge, nothing to do. */
-    if ((x1 < surface->clip.x0) || (y1 < surface->clip.y0))  {
+    if ((x1 < surface->clip.x0) || (y1 < surface->clip.y0)) {
         return;
     }
 
@@ -201,8 +205,10 @@ hagl_draw_rounded_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, i
     }
 }
 
-void
-hagl_fill_rounded_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r, hagl_color_t color) {
+void hagl_fill_rounded_rectangle_xyxy(
+    void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t r,
+    hagl_color_t color
+) {
     const hagl_surface_t *surface = _surface;
 
     uint16_t width, height;
@@ -223,7 +229,7 @@ hagl_fill_rounded_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, i
     }
 
     /* x1 or y1 is before the edge, nothing to do. */
-    if ((x1 < surface->clip.x0) || (y1 < surface->clip.y0))  {
+    if ((x1 < surface->clip.x0) || (y1 < surface->clip.y0)) {
         return;
     }
 
@@ -255,26 +261,26 @@ hagl_fill_rounded_rectangle_xyxy(void const *_surface, int16_t x0, int16_t y0, i
         ry0 = y0 + r - x;
         rx0 = x0 + r - y;
         rx1 = x1 - r + y;
-        width = rx1 -  rx0;
+        width = rx1 - rx0;
         hagl_draw_hline(surface, rx0, ry0, width, color);
 
         ry0 = y0 + r - y;
         rx0 = x0 + r - x;
         rx1 = x1 - r + x;
-        width = rx1 -  rx0;
+        width = rx1 - rx0;
         hagl_draw_hline(surface, rx0, ry0, width, color);
 
         /* Bottom */
         ry0 = y1 - r + y;
         rx0 = x0 + r - x;
         rx1 = x1 - r + x;
-        width = rx1 -  rx0;
+        width = rx1 - rx0;
         hagl_draw_hline(surface, rx0, ry0, width, color);
 
         ry0 = y1 - r + x;
         rx0 = x0 + r - y;
         rx1 = x1 - r + y;
-        width = rx1 -  rx0;
+        width = rx1 - rx0;
         hagl_draw_hline(surface, rx0, ry0, width, color);
     }
 

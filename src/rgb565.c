@@ -36,9 +36,7 @@ SPDX-License-Identifier: MIT
 
 #include "rgb565.h"
 
-uint16_t
-rgb565(uint8_t r, uint8_t g, uint8_t b)
-{
+uint16_t rgb565(uint8_t r, uint8_t g, uint8_t b) {
     uint16_t rgb;
 
     rgb = ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xF8) >> 3);
@@ -47,9 +45,7 @@ rgb565(uint8_t r, uint8_t g, uint8_t b)
     return rgb;
 }
 
-rgb_t
-rgb565_to_rgb888(uint16_t *input)
-{
+rgb_t rgb565_to_rgb888(uint16_t *input) {
     rgb_t rgb;
 
     uint8_t r5 = (*input & 0xf800) >> 8; // 1111100000000000

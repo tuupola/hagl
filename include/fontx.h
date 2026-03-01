@@ -38,24 +38,24 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_FONTX_H
 #define _HAGL_FONTX_H
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-#define FONTX_OK                   (0)
-#define FONTX_ERR_GLYPH_NOT_FOUND  (1)
-#define FONTX_NAME                 (6)
-#define FONTX_WIDTH               (14)
-#define FONTX_HEIGHT              (15)
-#define FONTX_TYPE                (16)
-#define FONTX_TYPE_SBCS            (0)
-#define FONTX_TYPE_DBCS            (1)
-#define FONTX_GLYPH_DATA_START    (17)
-#define FONTX_BLOCK_TABLE_SIZE    (17)
-#define FONTX_BLOCK_TABLE_START   (18)
+#define FONTX_OK (0)
+#define FONTX_ERR_GLYPH_NOT_FOUND (1)
+#define FONTX_NAME (6)
+#define FONTX_WIDTH (14)
+#define FONTX_HEIGHT (15)
+#define FONTX_TYPE (16)
+#define FONTX_TYPE_SBCS (0)
+#define FONTX_TYPE_DBCS (1)
+#define FONTX_GLYPH_DATA_START (17)
+#define FONTX_BLOCK_TABLE_SIZE (17)
+#define FONTX_BLOCK_TABLE_START (18)
 
 /* Pitch is bytes per row. Size is size in bytes. */
 typedef struct {
