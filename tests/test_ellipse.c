@@ -186,6 +186,91 @@ TEST test_draw_ellipse_matches_circle(void) {
     PASS();
 }
 
+/*
+ * Ellipse clipped by top-left corner of display:
+ * Center at (5,5), a=20 (horizontal), b=10 (vertical).
+ * Top and left arcs are clipped.
+ */
+TEST test_draw_ellipse_clip_top_left(void) {
+    hagl_draw_ellipse(&bitmap, 5, 5, 20, 10, 0xFFFF);
+
+    /* On outline: visible cardinal points */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 5, 15));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 25, 5));
+
+    /* Clipped: top and left cardinals are off-screen */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 5, 0));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 0, 5));
+
+    /* Inside: center is empty */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 5, 5));
+
+    /* Total: 33 visible pixels */
+    ASSERT_EQ(33, count_pixels(&bitmap, 0xFFFF));
+
+    PASS();
+}
+
+TEST test_draw_ellipse_clip_top_left_regression(void) {
+    hagl_draw_ellipse(&bitmap, 5, 5, 20, 10, 0xFFFF);
+
+    uint32_t crc = crc32(bitmap.buffer, bitmap.size);
+
+    ASSERT_EQ(0x3A1D3CAE, crc);
+    PASS();
+}
+
+/*
+ * Ellipse entirely outside the display:
+ * Center at (-50,-50), a=10, b=10. No pixels visible.
+ */
+TEST test_draw_ellipse_clip_outside(void) {
+    hagl_draw_ellipse(&bitmap, -50, -50, 10, 10, 0xFFFF);
+
+    ASSERT_EQ(0, count_pixels(&bitmap, 0xFFFF));
+    PASS();
+}
+
+/*
+ * Ellipse clipped by a custom clip window:
+ * Center (100,85), a=60, b=40, clip (50,50)-(150,120).
+ * All four cardinal points are outside the clip window.
+ */
+TEST test_draw_ellipse_custom_clip(void) {
+    hagl_set_clip(&bitmap, 50, 50, 150, 120);
+    hagl_draw_ellipse(&bitmap, 100, 85, 60, 40, 0xFFFF);
+
+    /* On outline: visible pixels at clip edges */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 50, 63));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 150, 63));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 70, 50));
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 130, 120));
+
+    /* Inside: center is empty */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 100, 85));
+
+    /* Outside: just beyond clip window */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 49, 85));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 151, 85));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 100, 49));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 100, 121));
+
+    /* Total: 92 visible pixels */
+    ASSERT_EQ(92, count_pixels(&bitmap, 0xFFFF));
+
+    PASS();
+}
+
+TEST test_draw_ellipse_custom_clip_regression(void) {
+    hagl_set_clip(&bitmap, 50, 50, 150, 120);
+    hagl_draw_ellipse(&bitmap, 100, 85, 60, 40, 0xFFFF);
+
+    uint32_t crc = crc32(bitmap.buffer, bitmap.size);
+
+    ASSERT_EQ(0xB7B6BD23, crc);
+    PASS();
+}
+
 SUITE(ellipse_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_ellipse);
@@ -193,6 +278,11 @@ SUITE(ellipse_suite) {
     RUN_TEST(test_draw_ellipse_a0_b0);
     RUN_TEST(test_draw_ellipse_a1_b1);
     RUN_TEST(test_draw_ellipse_matches_circle);
+    RUN_TEST(test_draw_ellipse_clip_top_left);
+    RUN_TEST(test_draw_ellipse_clip_top_left_regression);
+    RUN_TEST(test_draw_ellipse_clip_outside);
+    RUN_TEST(test_draw_ellipse_custom_clip);
+    RUN_TEST(test_draw_ellipse_custom_clip_regression);
 }
 
 GREATEST_MAIN_DEFS();
