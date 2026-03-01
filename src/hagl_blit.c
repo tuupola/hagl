@@ -45,7 +45,8 @@ void hagl_blit_xy(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *s
     if (surface->blit) {
         /* Check if bitmap is inside clip windows bounds */
         if ((x0 < surface->clip.x0) || (y0 < surface->clip.y0) ||
-            (x0 + source->width > surface->clip.x1) || (y0 + source->height > surface->clip.y1)) {
+            (x0 + source->width > surface->clip.x1) ||
+            (y0 + source->height > surface->clip.y1)) {
             /* Out of bounds, use local putpixel fallback. */
             hagl_color_t color;
             hagl_color_t *ptr = (hagl_color_t *)source->buffer;
@@ -74,7 +75,8 @@ void hagl_blit_xy(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *s
 };
 
 void hagl_blit_xywh(
-    void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *source
+    void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h,
+    hagl_bitmap_t *source
 ) {
     const hagl_surface_t *surface = _surface;
 

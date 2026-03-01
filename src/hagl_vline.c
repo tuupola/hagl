@@ -45,7 +45,8 @@ void hagl_draw_vline_xyh(
         int16_t height = h;
 
         /* x0 or y0 is over the edge, nothing to do. */
-        if ((x0 > surface->clip.x1) || (x0 < surface->clip.x0) || (y0 > surface->clip.y1)) {
+        if ((x0 > surface->clip.x1) || (x0 < surface->clip.x0) ||
+            (y0 > surface->clip.y1)) {
             return;
         }
 

@@ -45,7 +45,8 @@ void hagl_draw_hline_xyw(
         int16_t width = w;
 
         /* x0 or y0 is over the edge, nothing to do. */
-        if ((x0 > surface->clip.x1) || (y0 > surface->clip.y1) || (y0 < surface->clip.y0)) {
+        if ((x0 > surface->clip.x1) || (y0 > surface->clip.y1) ||
+            (y0 < surface->clip.y0)) {
             return;
         }
 

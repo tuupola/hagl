@@ -97,7 +97,9 @@ uint8_t hagl_put_char(
         buffer = calloc(HAGL_CHAR_BUFFER_SIZE, sizeof(uint8_t));
     }
 
-    hagl_bitmap_init(&bitmap, glyph.width, glyph.height, surface->depth, (uint8_t *)buffer);
+    hagl_bitmap_init(
+        &bitmap, glyph.width, glyph.height, surface->depth, (uint8_t *)buffer
+    );
 
     hagl_color_t *ptr = (hagl_color_t *)bitmap.buffer;
 

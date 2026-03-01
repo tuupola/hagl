@@ -73,12 +73,16 @@ static uint16_t tjpgd_data_writer(JDEC *decoder, void *bitmap, JRECT *rectangle)
         .buffer = (uint8_t *)bitmap
     };
 
-    hagl_blit(device->surface, rectangle->left + device->x0, rectangle->top + device->y0, &block);
+    hagl_blit(
+        device->surface, rectangle->left + device->x0, rectangle->top + device->y0, &block
+    );
 
     return 1;
 }
 
-uint32_t hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char *filename) {
+uint32_t hagl_load_image(
+    void const *surface, int16_t x0, int16_t y0, const char *filename
+) {
     uint8_t work[3100];
     JDEC decoder;
     JRESULT result;

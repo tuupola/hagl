@@ -63,7 +63,9 @@ static uint8_t code(int16_t x0, int16_t y0, hagl_window_t window) {
     return code;
 }
 
-bool hagl_clip_line(int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, hagl_window_t window) {
+bool hagl_clip_line(
+    int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, hagl_window_t window
+) {
     uint8_t code0 = code(*x0, *y0, window);
     uint8_t code1 = code(*x1, *y1, window);
 

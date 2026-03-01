@@ -44,7 +44,8 @@ SPDX-License-Identifier: MIT
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 void hagl_draw_rectangle_xyxy(
-    void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, hagl_color_t color
+    void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1,
+    hagl_color_t color
 ) {
     const hagl_surface_t *surface = _surface;
     uint16_t width, height;
@@ -83,7 +84,8 @@ void hagl_draw_rectangle_xyxy(
 }
 
 void hagl_fill_rectangle_xyxy(
-    void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1, hagl_color_t color
+    void const *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1,
+    hagl_color_t color
 ) {
     const hagl_surface_t *surface = _surface;
     uint16_t width, height;

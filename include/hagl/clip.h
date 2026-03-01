@@ -44,7 +44,9 @@ SPDX-License-Identifier: MIT
 extern "C" {
 #endif /* __cplusplus */
 
-bool hagl_clip_line(int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, hagl_window_t window);
+bool hagl_clip_line(
+    int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, hagl_window_t window
+);
 
 /**
  * Set the clip window

@@ -59,7 +59,9 @@ typedef struct {
         void *self, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, hagl_bitmap_t *src
     );
     void (*hline)(void *self, int16_t x0, int16_t y0, uint16_t width, hagl_color_t color);
-    void (*vline)(void *self, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color);
+    void (*vline)(
+        void *self, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color
+    );
 
     /* Specific to backend. */
     size_t (*flush)(void *self);

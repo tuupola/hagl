@@ -58,7 +58,9 @@ extern "C" {
  * @param y1
  * @param color
  */
-uint32_t hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char *filename);
+uint32_t hagl_load_image(
+    void const *surface, int16_t x0, int16_t y0, const char *filename
+);
 
 #ifdef __cplusplus
 }
