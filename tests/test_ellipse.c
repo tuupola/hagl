@@ -109,10 +109,32 @@ TEST test_draw_ellipse_regression(void) {
     PASS();
 }
 
+/*
+ * Ellipse with a=0, b=0:
+ */
+TEST test_draw_ellipse_a0_b0(void) {
+    hagl_draw_ellipse(&bitmap, 50, 50, 0, 0, 0xFFFF);
+
+    /* On outline: the center pixel */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 50, 50));
+
+    /* Outside: immediate neighbors are empty */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 49, 50));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 51, 50));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 50, 49));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 50, 51));
+
+    /* Total: 1 pixel */
+    ASSERT_EQ(1, count_pixels(&bitmap, 0xFFFF));
+
+    PASS();
+}
+
 SUITE(ellipse_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_draw_ellipse);
     RUN_TEST(test_draw_ellipse_regression);
+    RUN_TEST(test_draw_ellipse_a0_b0);
 }
 
 GREATEST_MAIN_DEFS();
