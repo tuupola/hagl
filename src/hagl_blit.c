@@ -72,7 +72,7 @@ void hagl_blit_xy(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *s
             }
         }
     }
-};
+}
 
 void hagl_blit_xywh(
     void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h,
@@ -101,4 +101,4 @@ void hagl_blit_xywh(
             }
         }
     }
-};
+}
