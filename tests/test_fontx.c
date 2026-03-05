@@ -37,6 +37,7 @@ SPDX-License-Identifier: MIT
 #include "greatest.h"
 
 #include "font5x7.h"
+#include "font5x8.h"
 #include "font6x9.h"
 #include "fontx.h"
 
@@ -56,6 +57,12 @@ TEST test_meta_dimensions(void) {
     ASSERT_EQ(7, meta.height);
     ASSERT_EQ(FONTX_TYPE_DBCS, meta.type);
 
+    status = fontx_meta(&meta, font5x8);
+    ASSERT_EQ(0, status);
+    ASSERT_EQ(5, meta.width);
+    ASSERT_EQ(8, meta.height);
+    ASSERT_EQ(FONTX_TYPE_DBCS, meta.type);
+
     PASS();
 }
 
@@ -66,6 +73,9 @@ TEST test_meta_name(void) {
     ASSERT_EQ(0, memcmp(meta.name, "MISC    ", 8));
 
     fontx_meta(&meta, font5x7);
+    ASSERT_EQ(0, memcmp(meta.name, "MISC    ", 8));
+
+    fontx_meta(&meta, font5x8);
     ASSERT_EQ(0, memcmp(meta.name, "MISC    ", 8));
 
     PASS();
@@ -82,6 +92,11 @@ TEST test_meta_name(void) {
  * font5x7 first two blocks:
  *   Block 0: 0x0020 - 0x007E (95 chars)
  *   Block 1: 0x00A0 - 0x021F (384 chars)
+ *
+ * font5x8 first two blocks:
+ *   Block 0: 0x0020 - 0x007E (95 chars)
+ *   Block 1: 0x00A0 - 0x017F (224 chars)
+ *   Gap at 0x007F - 0x009F
  */
 
 TEST test_dbcs_glyph_dimensions(void) {
@@ -101,6 +116,13 @@ TEST test_dbcs_glyph_dimensions(void) {
     ASSERT_EQ(7, glyph.height);
     ASSERT_EQ(1, glyph.pitch);
     ASSERT_EQ(7, glyph.size);
+
+    status = fontx_glyph(&glyph, 0x41, font5x8);
+    ASSERT_EQ(FONTX_OK, status);
+    ASSERT_EQ(5, glyph.width);
+    ASSERT_EQ(8, glyph.height);
+    ASSERT_EQ(1, glyph.pitch);
+    ASSERT_EQ(8, glyph.size);
 
     PASS();
 }
@@ -153,6 +175,7 @@ TEST test_dbcs_glyph_content(void) {
     uint8_t status;
     const uint8_t expected_6x9[] = {0x00, 0x20, 0x50, 0x88, 0xf8, 0x88, 0x88, 0x00, 0x00};
     const uint8_t expected_5x7[] = {0x60, 0x90, 0x90, 0xf0, 0x90, 0x90, 0x00};
+    const uint8_t expected_5x8[] = {0x00, 0x60, 0x90, 0x90, 0xf0, 0x90, 0x90, 0x00};
 
     status = fontx_glyph(&glyph, 0x41, font6x9);
     ASSERT_EQ(FONTX_OK, status);
@@ -161,6 +184,10 @@ TEST test_dbcs_glyph_content(void) {
     status = fontx_glyph(&glyph, 0x41, font5x7);
     ASSERT_EQ(FONTX_OK, status);
     ASSERT_EQ(0, memcmp(glyph.buffer, expected_5x7, glyph.size));
+
+    status = fontx_glyph(&glyph, 0x41, font5x8);
+    ASSERT_EQ(FONTX_OK, status);
+    ASSERT_EQ(0, memcmp(glyph.buffer, expected_5x8, glyph.size));
 
     PASS();
 }
@@ -193,11 +220,26 @@ TEST test_dbcs_glyph_before_first_block(void) {
 TEST test_dbcs_glyph_buffer_not_copied(void) {
     fontx_glyph_t glyph;
     uint8_t status;
-    const uint8_t *font_start = font6x9;
-    const uint8_t *font_end = font6x9 + sizeof(font6x9);
+    const uint8_t *font_start;
+    const uint8_t *font_end;
 
+    font_start = font6x9;
+    font_end = font6x9 + sizeof(font6x9);
     status = fontx_glyph(&glyph, 0x41, font6x9);
+    ASSERT_EQ(FONTX_OK, status);
+    ASSERT(glyph.buffer >= font_start);
+    ASSERT(glyph.buffer + glyph.size <= font_end);
 
+    font_start = font5x7;
+    font_end = font5x7 + sizeof(font5x7);
+    status = fontx_glyph(&glyph, 0x41, font5x7);
+    ASSERT_EQ(FONTX_OK, status);
+    ASSERT(glyph.buffer >= font_start);
+    ASSERT(glyph.buffer + glyph.size <= font_end);
+
+    font_start = font5x8;
+    font_end = font5x8 + sizeof(font5x8);
+    status = fontx_glyph(&glyph, 0x41, font5x8);
     ASSERT_EQ(FONTX_OK, status);
     ASSERT(glyph.buffer >= font_start);
     ASSERT(glyph.buffer + glyph.size <= font_end);
