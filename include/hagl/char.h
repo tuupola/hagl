@@ -33,8 +33,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_CHAR_H
-#define _HAGL_CHAR_H
+#ifndef HAGL_CHAR_H
+#define HAGL_CHAR_H
 
 #include <stdint.h>
 
@@ -108,4 +108,4 @@ uint8_t hagl_get_glyph(
 }
 #endif /* __cplusplus */
 
-#endif /* _HAGL_CHAR_H */
+#endif /* HAGL_CHAR_H */

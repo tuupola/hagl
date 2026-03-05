@@ -32,8 +32,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_FPS_H
-#define _HAGL_FPS_H
+#ifndef HAGL_FPS_H
+#define HAGL_FPS_H
 
 #include <stdint.h>
 #include <time.h>

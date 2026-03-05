@@ -33,8 +33,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_CIRCLE_H
-#define _HAGL_CIRCLE_H
+#ifndef HAGL_CIRCLE_H
+#define HAGL_CIRCLE_H
 
 #include <stdint.h>
 
@@ -76,4 +76,4 @@ void hagl_fill_circle(
 }
 #endif /* __cplusplus */
 
-#endif /* _HAGL_CIRCLE_H */
+#endif /* HAGL_CIRCLE_H */

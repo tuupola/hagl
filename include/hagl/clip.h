@@ -32,8 +32,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_CLIP_H
-#define _HAGL_CLIP_H
+#ifndef HAGL_CLIP_H
+#define HAGL_CLIP_H
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -66,4 +66,4 @@ void hagl_set_clip(void *surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_
 }
 #endif /* __cplusplus */
 
-#endif /* _HAGL_CLIP_H */
+#endif /* HAGL_CLIP_H */

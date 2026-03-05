@@ -33,8 +33,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_ELLIPSE_H
-#define _HAGL_ELLIPSE_H
+#ifndef HAGL_ELLIPSE_H
+#define HAGL_ELLIPSE_H
 
 #include <stdint.h>
 
@@ -80,4 +80,4 @@ void hagl_fill_ellipse(
 }
 #endif /* __cplusplus */
 
-#endif /* _HAGL_ELLIPSE_H */
+#endif /* HAGL_ELLIPSE_H */

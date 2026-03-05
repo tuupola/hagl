@@ -33,8 +33,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_LINE_H
-#define _HAGL_LINE_H
+#ifndef HAGL_LINE_H
+#define HAGL_LINE_H
 
 #include <stdint.h>
 
@@ -65,4 +65,4 @@ void hagl_draw_line(
 }
 #endif /* __cplusplus */
 
-#endif /* _HAGL_LINE_H */
+#endif /* HAGL_LINE_H */

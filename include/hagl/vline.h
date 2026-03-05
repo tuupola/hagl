@@ -32,8 +32,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_VLINE_H
-#define _HAGL_VLINE_H
+#ifndef HAGL_VLINE_H
+#define HAGL_VLINE_H
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -98,4 +98,4 @@ static inline void hagl_draw_vline(
 }
 #endif /* __cplusplus */
 
-#endif /* _HAGL_VLINE_H */
+#endif /* HAGL_VLINE_H */

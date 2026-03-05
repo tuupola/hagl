@@ -32,8 +32,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_RGB332_H
-#define _HAGL_RGB332_H
+#ifndef HAGL_RGB332_H
+#define HAGL_RGB332_H
 
 #include <stdint.h>
 
@@ -52,4 +52,4 @@ static inline uint8_t rgb332(uint8_t r, uint8_t g, uint8_t b) {
 }
 #endif /* __cplusplus */
 
-#endif /* _HAGL_RGB332_H */
+#endif /* HAGL_RGB332_H */
