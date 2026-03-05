@@ -72,13 +72,17 @@ void hagl_blit_xy(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *s
             }
         }
     }
-};
+}
 
 void hagl_blit_xywh(
     void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h,
     hagl_bitmap_t *source
 ) {
     const hagl_surface_t *surface = _surface;
+
+    if (0 == w || 0 == h) {
+        return;
+    }
 
     if (surface->scale_blit) {
         surface->scale_blit((void *)_surface, x0, y0, w, h, source);
@@ -97,4 +101,4 @@ void hagl_blit_xywh(
             }
         }
     }
-};
+}

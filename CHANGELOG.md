@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file, in reverse 
 - Wrong image guard in `image.h`  ([#113](https://github.com/tuupola/hagl/pull/113)).
 - Filled polygon rendered incorrectly with negative x coordinates ([#122](https://github.com/tuupola/hagl/pull/122)).
 - Polygon and rectangle output did not match ([#123](https://github.com/tuupola/hagl/pull/123), [#124](https://github.com/tuupola/hagl/pull/124)).
-- Horizontal and vertical line parameters are now sorted ([#125](https://github.com/tuupola/hagl/pull/125)).
+- Horizontal and vertical line parameters are now sorted ([#125](https://github.com/tuupola/hagl/pull/125), [#121](https://github.com/tuupola/hagl/issues/121)).
 - Filled circle with radius of one did not produce correct output ([#145](https://github.com/tuupola/hagl/pull/145), [#144](https://github.com/tuupola/hagl/issues/144)).
 - Circle with zero radius did not produce a single pixel ([#146](https://github.com/tuupola/hagl/pull/146), [#140](https://github.com/tuupola/hagl/issues/140)).
 - Surface callbacks received pointer-to-pointer instead of pointer-to-struct ([#147](https://github.com/tuupola/hagl/pull/147)).
