@@ -35,8 +35,8 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_CLIP_H
 #define _HAGL_CLIP_H
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #include "hagl/window.h"
 
@@ -44,7 +44,9 @@ SPDX-License-Identifier: MIT
 extern "C" {
 #endif /* __cplusplus */
 
-bool hagl_clip_line(int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, hagl_window_t window);
+bool hagl_clip_line(
+    int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, hagl_window_t window
+);
 
 /**
  * Set the clip window
@@ -58,8 +60,7 @@ bool hagl_clip_line(int16_t *x0, int16_t *y0, int16_t *x1, int16_t *y1, hagl_win
  * @param x1
  * @param y1
  */
-void
-hagl_set_clip(void *surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+void hagl_set_clip(void *surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 
 #ifdef __cplusplus
 }

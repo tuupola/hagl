@@ -60,8 +60,10 @@ extern "C" {
  * @param font  pointer to a FONTX font
  * @return width of the drawn character
  */
-uint8_t
-hagl_put_char(void const *surface, wchar_t code, int16_t x0, int16_t y0, hagl_color_t color, const unsigned char *font);
+uint8_t hagl_put_char(
+    void const *surface, wchar_t code, int16_t x0, int16_t y0, hagl_color_t color,
+    const unsigned char *font
+);
 
 /**
  * Draw a string
@@ -79,8 +81,10 @@ hagl_put_char(void const *surface, wchar_t code, int16_t x0, int16_t y0, hagl_co
  * @param font pointer to a FONTX font
  * @return width of the drawn string
  */
-uint16_t
-hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int16_t y0, hagl_color_t color, const unsigned char *font);
+uint16_t hagl_put_text(
+    void const *surface, const wchar_t *str, int16_t x0, int16_t y0, hagl_color_t color,
+    const unsigned char *font
+);
 
 /**
  * Extract a glyph into a bitmap
@@ -95,9 +99,10 @@ hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int16_t y0, h
  * @param font Pointer to a FONTX font
  * @return Width of the drawn string
  */
-uint8_t
-hagl_get_glyph(void const *surface, wchar_t code, hagl_color_t color, hagl_bitmap_t *bitmap, const uint8_t *font);
-
+uint8_t hagl_get_glyph(
+    void const *surface, wchar_t code, hagl_color_t color, hagl_bitmap_t *bitmap,
+    const uint8_t *font
+);
 
 #ifdef __cplusplus
 }

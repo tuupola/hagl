@@ -39,7 +39,7 @@ SPDX-License-Identifier: MIT
 #define TJPGD_NEEDS_BYTESWAP
 #endif /* CONFIG_HAGL_TJPGD_NEEDS_BYTESWAP */
 
-# else
+#else
 
 /* If you don't use menuconfig change the settings here. */
 #define TJPGD_NEEDS_BYTESWAP

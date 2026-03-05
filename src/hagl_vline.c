@@ -32,20 +32,21 @@ SPDX-License-Identifier: MIT
 
 */
 
+#include "hagl/color.h"
 #include "hagl/line.h"
 #include "hagl/surface.h"
-#include "hagl/color.h"
 
-void
-hagl_draw_vline_xyh(void const *_surface, int16_t x0, int16_t y0, uint16_t h, hagl_color_t color)
-{
+void hagl_draw_vline_xyh(
+    void const *_surface, int16_t x0, int16_t y0, uint16_t h, hagl_color_t color
+) {
     const hagl_surface_t *surface = _surface;
 
     if (surface->vline) {
         int16_t height = h;
 
         /* x0 or y0 is over the edge, nothing to do. */
-        if ((x0 > surface->clip.x1) || (x0 < surface->clip.x0) || (y0 > surface->clip.y1))  {
+        if ((x0 > surface->clip.x1) || (x0 < surface->clip.x0) ||
+            (y0 > surface->clip.y1)) {
             return;
         }
 
@@ -56,12 +57,12 @@ hagl_draw_vline_xyh(void const *_surface, int16_t x0, int16_t y0, uint16_t h, ha
         }
 
         /* Everything outside clip window, nothing to do. */
-        if (height <= 0)  {
+        if (height <= 0) {
             return;
         }
 
         /* Cut anything going over right edge. */
-        if (((y0 + height) > surface->clip.y1))  {
+        if (((y0 + height) > surface->clip.y1)) {
             height = height - (y0 + height - 1 - surface->clip.y1);
         }
 

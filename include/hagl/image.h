@@ -42,7 +42,7 @@ SPDX-License-Identifier: MIT
 extern "C" {
 #endif /* __cplusplus */
 
-#define HAGL_ERR_TJPGD           (100)
+#define HAGL_ERR_TJPGD (100)
 
 /**
  * Load an image

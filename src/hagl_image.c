@@ -35,9 +35,9 @@ SPDX-License-Identifier: MIT
 #include <stdint.h>
 #include <stdio.h>
 
+#include "hagl.h"
 #include "hagl/image.h"
 #include "hagl/surface.h"
-#include "hagl.h"
 #include "tjpgd.h"
 
 typedef struct {
@@ -47,9 +47,7 @@ typedef struct {
     const hagl_surface_t *surface;
 } tjpgd_iodev_t;
 
-static uint16_t
-tjpgd_data_reader(JDEC *decoder, uint8_t *buffer, uint16_t size)
-{
+static uint16_t tjpgd_data_reader(JDEC *decoder, uint8_t *buffer, uint16_t size) {
     tjpgd_iodev_t *device = (tjpgd_iodev_t *)decoder->device;
 
     if (buffer) {
@@ -61,9 +59,7 @@ tjpgd_data_reader(JDEC *decoder, uint8_t *buffer, uint16_t size)
     }
 }
 
-static uint16_t
-tjpgd_data_writer(JDEC *decoder, void *bitmap, JRECT *rectangle)
-{
+static uint16_t tjpgd_data_writer(JDEC *decoder, void *bitmap, JRECT *rectangle) {
     tjpgd_iodev_t *device = (tjpgd_iodev_t *)decoder->device;
     uint8_t width = (rectangle->right - rectangle->left) + 1;
     uint8_t height = (rectangle->bottom - rectangle->top) + 1;
@@ -73,18 +69,19 @@ tjpgd_data_writer(JDEC *decoder, void *bitmap, JRECT *rectangle)
         .height = height,
         .depth = device->surface->depth,
         .pitch = width * (device->surface->depth / 8),
-        .size =  width * (device->surface->depth / 8) * height,
+        .size = width * (device->surface->depth / 8) * height,
         .buffer = (uint8_t *)bitmap
     };
 
-    hagl_blit(device->surface, rectangle->left + device->x0, rectangle->top + device->y0, &block);
+    hagl_blit(
+        device->surface, rectangle->left + device->x0, rectangle->top + device->y0, &block
+    );
 
     return 1;
 }
 
 uint32_t
-hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char *filename)
-{
+hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char *filename) {
     uint8_t work[3100];
     JDEC decoder;
     JRESULT result;

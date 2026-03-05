@@ -36,16 +36,17 @@ SPDX-License-Identifier: MIT
 #include "hagl/line.h"
 #include "hagl/surface.h"
 
-void
-hagl_draw_hline_xyw(void const *_surface, int16_t x0, int16_t y0, uint16_t w, hagl_color_t color)
-{
+void hagl_draw_hline_xyw(
+    void const *_surface, int16_t x0, int16_t y0, uint16_t w, hagl_color_t color
+) {
     const hagl_surface_t *surface = _surface;
 
     if (surface->hline) {
         int16_t width = w;
 
         /* x0 or y0 is over the edge, nothing to do. */
-        if ((x0 > surface->clip.x1) || (y0 > surface->clip.y1) || (y0 < surface->clip.y0))  {
+        if ((x0 > surface->clip.x1) || (y0 > surface->clip.y1) ||
+            (y0 < surface->clip.y0)) {
             return;
         }
 
@@ -56,7 +57,7 @@ hagl_draw_hline_xyw(void const *_surface, int16_t x0, int16_t y0, uint16_t w, ha
         }
 
         /* Everything outside clip window, nothing to do. */
-        if (width <= 0)  {
+        if (width <= 0) {
             return;
         }
 

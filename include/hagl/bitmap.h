@@ -36,8 +36,8 @@ SPDX-License-Identifier: MIT
 
 #include <stdint.h>
 
-#include "hagl/window.h"
 #include "hagl/color.h"
+#include "hagl/window.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -58,17 +58,22 @@ typedef struct {
     hagl_color_t (*get_pixel)(void *self, int16_t x0, int16_t y0);
     hagl_color_t (*color)(void *self, uint8_t r, uint8_t g, uint8_t b);
     void (*blit)(void *self, int16_t x0, int16_t y0, void *src);
-    void (*scale_blit)(void *self, int16_t x0, int16_t y0, uint16_t w, uint16_t h, void *src);
+    void (*scale_blit)(
+        void *self, int16_t x0, int16_t y0, uint16_t w, uint16_t h, void *src
+    );
     void (*hline)(void *self, int16_t x0, int16_t y0, uint16_t width, hagl_color_t color);
-    void (*vline)(void *self, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color);
+    void (*vline)(
+        void *self, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color
+    );
 
     uint16_t pitch;
     uint32_t size;
     uint8_t *buffer;
 } hagl_bitmap_t;
 
-void
-hagl_bitmap_init(hagl_bitmap_t *bitmap, int16_t width, uint16_t height, uint8_t depth, void *buffer);
+void hagl_bitmap_init(
+    hagl_bitmap_t *bitmap, int16_t width, uint16_t height, uint8_t depth, void *buffer
+);
 
 #ifdef __cplusplus
 }

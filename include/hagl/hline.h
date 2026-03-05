@@ -57,8 +57,9 @@ extern "C" {
  * @param color
  */
 
-void
-hagl_draw_hline_xyw(void const *surface, int16_t x0, int16_t y0, uint16_t width, hagl_color_t color);
+void hagl_draw_hline_xyw(
+    void const *surface, int16_t x0, int16_t y0, uint16_t width, hagl_color_t color
+);
 
 /**
  * Draw a horizontal line
@@ -72,9 +73,9 @@ hagl_draw_hline_xyw(void const *surface, int16_t x0, int16_t y0, uint16_t width,
  * @param color
  */
 
-static inline void
-hagl_draw_hline_xyx(void const *surface, int16_t x0, int16_t y0, int16_t x1, hagl_color_t color)
-{
+static inline void hagl_draw_hline_xyx(
+    void const *surface, int16_t x0, int16_t y0, int16_t x1, hagl_color_t color
+) {
     int16_t min_x = (x0 < x1) ? x0 : x1;
     hagl_draw_hline_xyw(surface, min_x, y0, abs(x1 - x0) + 1, color);
 }
@@ -91,9 +92,9 @@ hagl_draw_hline_xyx(void const *surface, int16_t x0, int16_t y0, int16_t x1, hag
  * @param color
  */
 
-static inline void
-hagl_draw_hline(void const *surface, int16_t x0, int16_t y0, uint16_t width, hagl_color_t color)
-{
+static inline void hagl_draw_hline(
+    void const *surface, int16_t x0, int16_t y0, uint16_t width, hagl_color_t color
+) {
     hagl_draw_hline_xyw(surface, x0, y0, width, color);
 }
 

@@ -40,9 +40,7 @@ SPDX-License-Identifier: BSD-2-Clause
 
 #include "hsl.h"
 
-rgb_t
-hsl_to_rgb888(hsl_t *hsl)
-{
+rgb_t hsl_to_rgb888(hsl_t *hsl) {
     rgb_t rgb;
     float r, g, b, h, s, l;
     float temp1, temp2, tempr, tempg, tempb;
@@ -52,7 +50,7 @@ hsl_to_rgb888(hsl_t *hsl)
     l = hsl->l / 256.0;
 
     /* Saturation 0 means shade of grey. */
-    if(s == 0) {
+    if (s == 0) {
         r = g = b = l;
     } else {
         if (l < 0.5) {

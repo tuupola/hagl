@@ -35,8 +35,8 @@ SPDX-License-Identifier: MIT
 #ifndef _HAGL_FPS_H
 #define _HAGL_FPS_H
 
-#include <time.h>
 #include <stdint.h>
+#include <time.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -52,9 +52,7 @@ typedef struct {
 /**
  * Initialize the given FPS counter instance
  */
-static inline void
-fps_init(fps_instance_t *fps)
-{
+static inline void fps_init(fps_instance_t *fps) {
     fps->start = clock() - 1;
     fps->frames = 0;
     fps->current = 0.0;
@@ -73,15 +71,14 @@ fps_init(fps_instance_t *fps)
  *
  * @return current fps
  */
-static inline float
-fps_update(fps_instance_t *fps)
-{
+static inline float fps_update(fps_instance_t *fps) {
     float measured = 0.0;
-    clock_t ticks = clock() - fps->start;;
+    clock_t ticks = clock() - fps->start;
+    ;
 
     fps->frames++;
 
-    measured = fps->frames / (float) ticks * CLOCKS_PER_SEC;
+    measured = fps->frames / (float)ticks * CLOCKS_PER_SEC;
     fps->current = (measured * fps->smoothing) + (fps->current * (1.0 - fps->smoothing));
 
     return fps->current;
@@ -90,9 +87,7 @@ fps_update(fps_instance_t *fps)
 /**
  * Reset the given FPS counter instance
  */
-static inline void
-fps_reset(fps_instance_t *fps)
-{
+static inline void fps_reset(fps_instance_t *fps) {
     fps->start = clock() - 1;
     fps->frames = 0;
     fps->current = 0;
