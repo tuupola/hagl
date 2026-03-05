@@ -80,6 +80,10 @@ void hagl_blit_xywh(
 ) {
     const hagl_surface_t *surface = _surface;
 
+    if (0 == w || 0 == h) {
+        return;
+    }
+
     if (surface->scale_blit) {
         surface->scale_blit((void *)_surface, x0, y0, w, h, source);
     } else {
