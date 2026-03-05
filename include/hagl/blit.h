@@ -67,9 +67,8 @@ void hagl_blit_xy(void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *so
  * @param y0
  * @param source pointer to a bitmap
  */
-static void inline hagl_blit(
-    void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *source
-) {
+static inline void
+hagl_blit(void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *source) {
     hagl_blit_xy(surface, x0, y0, source);
 }
 
@@ -102,7 +101,7 @@ void hagl_blit_xywh(
  * @param y1
  * @param source pointer to a bitmap
  */
-static void inline hagl_blit_xyxy(
+static inline void hagl_blit_xyxy(
     void const *surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
     hagl_bitmap_t *source
 ) {
