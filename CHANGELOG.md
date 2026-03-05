@@ -5,8 +5,19 @@ All notable changes to this project will be documented in this file, in reverse 
 ## [0.8.0](https://github.com/tuupola/hagl/compare/0.7.0...master) - unreleased
 
 ### Fixed
+- Wrong image guard in `image.h`  ([#113](https://github.com/tuupola/hagl/pull/113)).
+- Filled polygon rendered incorrectly with negative x coordinates ([#122](https://github.com/tuupola/hagl/pull/122)).
 - Polygon and rectangle output did not match ([#123](https://github.com/tuupola/hagl/pull/123), [#124](https://github.com/tuupola/hagl/pull/124)).
 - Horizontal and vertical line parameters are now sorted ([#125](https://github.com/tuupola/hagl/pull/125)).
+- Filled circle with radius of one did not produce correct output ([#145](https://github.com/tuupola/hagl/pull/145), [#144](https://github.com/tuupola/hagl/issues/144)).
+- Circle with zero radius did not produce a single pixel ([#146](https://github.com/tuupola/hagl/pull/146), [#140](https://github.com/tuupola/hagl/issues/140)).
+- Surface callbacks received pointer-to-pointer instead of pointer-to-struct ([#147](https://github.com/tuupola/hagl/pull/147)).
+- Infinite loop when drawing ellipse with zero radius ([#154](https://github.com/tuupola/hagl/pull/154), [#152](https://github.com/tuupola/hagl/issues/152)).
+- Filled ellipse was not symmetrical ([#157](https://github.com/tuupola/hagl/pull/157), [#155](https://github.com/tuupola/hagl/issues/155)).
+
+### Changed
+- Polygon functions now require at least three vertices ([#132](https://github.com/tuupola/hagl/pull/132)).
+- Remove underscore prefix from include guards ([#159](https://github.com/tuupola/hagl/pull/159)).
 
 ## [0.7.0](https://github.com/tuupola/hagl/compare/0.6.0...0.7.0) - 2023-03-19
 
