@@ -3,7 +3,7 @@
 
 MIT License
 
-Copyright (c) 2018-2023 Mika Tuupola
+Copyright (c) 2018-2026 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -106,7 +106,11 @@ static void inline hagl_blit_xyxy(
     void const *surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
     hagl_bitmap_t *source
 ) {
-    hagl_blit_xywh(surface, x0, y0, abs(x1 - x0) + 1, abs(y1 - y0) + 1, source);
+    uint16_t min_x = (x0 < x1) ? x0 : x1;
+    uint16_t min_y = (y0 < y1) ? y0 : y1;
+    uint16_t max_x = (x0 > x1) ? x0 : x1;
+    uint16_t max_y = (y0 > y1) ? y0 : y1;
+    hagl_blit_xywh(surface, min_x, min_y, max_x - min_x + 1, max_y - min_y + 1, source);
 };
 
 #ifdef __cplusplus
