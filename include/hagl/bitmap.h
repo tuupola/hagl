@@ -31,8 +31,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _BITMAP_H
-#define _BITMAP_H
+#ifndef HAGL_BITMAP_H
+#define HAGL_BITMAP_H
 
 #include <stdint.h>
 
@@ -79,4 +79,4 @@ void hagl_bitmap_init(
 }
 #endif /* __cplusplus */
 
-#endif /* _BITMAP_H */
+#endif /* HAGL_BITMAP_H */

@@ -32,8 +32,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_SURFACE_H
-#define _HAGL_SURFACE_H
+#ifndef HAGL_SURFACE_H
+#define HAGL_SURFACE_H
 
 #include "hagl/bitmap.h"
 #include "hagl/color.h"
@@ -65,4 +65,4 @@ typedef struct {
 }
 #endif /* __cplusplus */
 
-#endif /* _HAGL_SURFACE_H */
+#endif /* HAGL_SURFACE_H */

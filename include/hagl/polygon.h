@@ -33,8 +33,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_POLYGON_H
-#define _HAGL_POLYGON_H
+#ifndef HAGL_POLYGON_H
+#define HAGL_POLYGON_H
 
 #include <stdint.h>
 
@@ -86,4 +86,4 @@ void hagl_fill_polygon(
 }
 #endif /* __cplusplus */
 
-#endif /* _HAGL_POLYGON_H */
+#endif /* HAGL_POLYGON_H */

@@ -32,8 +32,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_TRIANGLE_H
-#define _HAGL_TRIANGLE_H
+#ifndef HAGL_TRIANGLE_H
+#define HAGL_TRIANGLE_H
 
 #include <stdint.h>
 
@@ -87,4 +87,4 @@ void hagl_fill_triangle(
 }
 #endif /* __cplusplus */
 
-#endif /* _HAGL_TRIANGLE_H */
+#endif /* HAGL_TRIANGLE_H */

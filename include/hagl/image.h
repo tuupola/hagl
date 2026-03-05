@@ -33,8 +33,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_IMAGE_H
-#define _HAGL_IMAGE_H
+#ifndef HAGL_IMAGE_H
+#define HAGL_IMAGE_H
 
 #include <stdint.h>
 
@@ -65,4 +65,4 @@ hagl_load_image(void const *surface, int16_t x0, int16_t y0, const char *filenam
 }
 #endif /* __cplusplus */
 
-#endif /* _HAGL_IMAGE_H */
+#endif /* HAGL_IMAGE_H */

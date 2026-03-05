@@ -35,8 +35,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_FONTX_H
-#define _HAGL_FONTX_H
+#ifndef HAGL_FONTX_H
+#define HAGL_FONTX_H
 
 #include <stddef.h>
 #include <stdint.h>
@@ -80,4 +80,4 @@ uint8_t fontx_glyph(fontx_glyph_t *glyph, wchar_t code, const uint8_t *font);
 }
 #endif /* __cplusplus */
 
-#endif /* _HAGL_FONTX_H */
+#endif /* HAGL_FONTX_H */

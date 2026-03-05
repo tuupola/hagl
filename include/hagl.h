@@ -32,8 +32,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_H
-#define _HAGL_H
+#ifndef HAGL_H
+#define HAGL_H
 
 #include <stddef.h>
 #include <stdint.h>
@@ -81,4 +81,4 @@ void hagl_clear(void *surface);
 }
 #endif /* __cplusplus */
 
-#endif /* _HAGL_H */
+#endif /* HAGL_H */

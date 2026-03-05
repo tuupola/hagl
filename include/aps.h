@@ -32,8 +32,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_APS_H
-#define _HAGL_APS_H
+#ifndef HAGL_APS_H
+#define HAGL_APS_H
 
 #include <stdint.h>
 #include <time.h>
@@ -97,4 +97,4 @@ static inline void aps_reset(aps_instance_t *aps) {
 }
 #endif /* __cplusplus */
 
-#endif /* _HAGL_APS_H */
+#endif /* HAGL_APS_H */

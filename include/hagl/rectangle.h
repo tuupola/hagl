@@ -33,8 +33,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_RECTANGLE_H
-#define _HAGL_RECTANGLE_H
+#ifndef HAGL_RECTANGLE_H
+#define HAGL_RECTANGLE_H
 
 #include <stdint.h>
 
@@ -278,4 +278,4 @@ static void inline hagl_fill_rounded_rectangle_xywh(
 }
 #endif /* __cplusplus */
 
-#endif /* _HAGL_RECTANGLE_H */
+#endif /* HAGL_RECTANGLE_H */

@@ -31,11 +31,11 @@ https://github.com/tuupola/hagl
 SPDX-License-Identifier: MIT
 */
 
-#ifndef _HAGL_HAL_COLOR_H
-#define _HAGL_HAL_COLOR_H
+#ifndef HAGL_HAL_COLOR_H
+#define HAGL_HAL_COLOR_H
 
 #include <stdint.h>
 
 typedef uint16_t hagl_color_t;
 
-#endif /* _HAGL_HAL_COLOR_H */
+#endif /* HAGL_HAL_COLOR_H */

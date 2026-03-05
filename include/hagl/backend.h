@@ -32,8 +32,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_BACKEND_H
-#define _HAGL_BACKEND_H
+#ifndef HAGL_BACKEND_H
+#define HAGL_BACKEND_H
 
 #include <stddef.h>
 
@@ -74,4 +74,4 @@ typedef struct {
 }
 #endif /* __cplusplus */
 
-#endif /* _HAGL_BACKEND_H */
+#endif /* HAGL_BACKEND_H */

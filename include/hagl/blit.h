@@ -33,8 +33,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_BLIT_H
-#define _HAGL_BLIT_H
+#ifndef HAGL_BLIT_H
+#define HAGL_BLIT_H
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -113,4 +113,4 @@ static void inline hagl_blit_xyxy(
 }
 #endif /* __cplusplus */
 
-#endif /* _HAGL_BLIT_H */
+#endif /* HAGL_BLIT_H */

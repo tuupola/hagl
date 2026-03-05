@@ -32,8 +32,8 @@ SPDX-License-Identifier: MIT
 
 */
 
-#ifndef _HAGL_WINDOW_H
-#define _HAGL_WINDOW_H
+#ifndef HAGL_WINDOW_H
+#define HAGL_WINDOW_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -50,4 +50,4 @@ typedef struct {
 }
 #endif /* __cplusplus */
 
-#endif /* _HAGL_WINDOW_H */
+#endif /* HAGL_WINDOW_H */
