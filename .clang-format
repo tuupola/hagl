@@ -2,7 +2,6 @@
 Language: Cpp
 
 ColumnLimit: 90
-PenaltyReturnTypeOnItsOwnLine: 10000
 
 # Indentation
 IndentWidth: 4

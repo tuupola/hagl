@@ -149,9 +149,8 @@ static void blit(void *_dst, int16_t x0, int16_t y0, void *_src) {
  * http://www.davdata.nl/math/bmresize.html
  */
 
-static void scale_blit(
-    void *_dst, int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth, void *_src
-) {
+static void
+scale_blit(void *_dst, int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth, void *_src) {
     hagl_bitmap_t *dst = _dst;
     hagl_bitmap_t *src = _src;
 
