@@ -246,6 +246,24 @@ TEST test_dbcs_glyph_before_first_block(void) {
     PASS();
 }
 
+/* Code 0x2900 falls in the gap between the last real data block (0x28FF) */
+/* and the trailing 0xFFFF sentinel blocks in all three DBCS fonts. */
+TEST test_dbcs_glyph_after_last_block(void) {
+    fontx_glyph_t glyph;
+    uint8_t status;
+
+    status = fontx_glyph(&glyph, 0x2900, font6x9);
+    ASSERT_EQ(FONTX_ERR_GLYPH_NOT_FOUND, status);
+
+    status = fontx_glyph(&glyph, 0x2900, font5x7);
+    ASSERT_EQ(FONTX_ERR_GLYPH_NOT_FOUND, status);
+
+    status = fontx_glyph(&glyph, 0x2900, font5x8);
+    ASSERT_EQ(FONTX_ERR_GLYPH_NOT_FOUND, status);
+
+    PASS();
+}
+
 /* Glyph buffer should point directly into the font array ie. zero copy. */
 TEST test_dbcs_glyph_buffer_not_copied(void) {
     fontx_glyph_t glyph;
@@ -411,6 +429,7 @@ SUITE(fontx_suite) {
     RUN_TEST(test_dbcs_glyph_content);
     RUN_TEST(test_dbcs_glyph_gap_not_found);
     RUN_TEST(test_dbcs_glyph_before_first_block);
+    RUN_TEST(test_dbcs_glyph_after_last_block);
     RUN_TEST(test_dbcs_glyph_buffer_not_copied);
     RUN_TEST(test_sbcs_glyph_dimensions);
     RUN_TEST(test_sbcs_glyph_content);
