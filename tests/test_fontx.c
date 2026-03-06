@@ -388,6 +388,29 @@ TEST test_sbcs_glyph_out_of_range(void) {
     PASS();
 }
 
+/* Look up Cyrillic A (0x0410) which is deep in the block table. */
+TEST test_dbcs_glyph_late_block(void) {
+    fontx_glyph_t glyph;
+    uint8_t status;
+
+    status = fontx_glyph(&glyph, 0x0410, font6x9);
+    ASSERT_EQ(FONTX_OK, status);
+    ASSERT_EQ(6, glyph.width);
+    ASSERT_EQ(9, glyph.height);
+
+    status = fontx_glyph(&glyph, 0x0410, font5x7);
+    ASSERT_EQ(FONTX_OK, status);
+    ASSERT_EQ(5, glyph.width);
+    ASSERT_EQ(7, glyph.height);
+
+    status = fontx_glyph(&glyph, 0x0410, font5x8);
+    ASSERT_EQ(FONTX_OK, status);
+    ASSERT_EQ(5, glyph.width);
+    ASSERT_EQ(8, glyph.height);
+
+    PASS();
+}
+
 /* SBCS and DBCS versions of the same font must produce identical */
 /* glyph bitmaps for characters in the shared ASCII range. */
 TEST test_sbcs_dbcs_content_match(void) {
@@ -461,6 +484,7 @@ SUITE(fontx_suite) {
     RUN_TEST(test_dbcs_glyph_gap_not_found);
     RUN_TEST(test_dbcs_glyph_before_first_block);
     RUN_TEST(test_dbcs_glyph_after_last_block);
+    RUN_TEST(test_dbcs_glyph_late_block);
     RUN_TEST(test_dbcs_glyph_buffer_not_copied);
     RUN_TEST(test_sbcs_glyph_dimensions);
     RUN_TEST(test_sbcs_glyph_content);
