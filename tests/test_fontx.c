@@ -388,6 +388,37 @@ TEST test_sbcs_glyph_out_of_range(void) {
     PASS();
 }
 
+/* SBCS and DBCS versions of the same font must produce identical */
+/* glyph bitmaps for characters in the shared ASCII range. */
+TEST test_sbcs_dbcs_content_match(void) {
+    fontx_glyph_t sbcs_glyph;
+    fontx_glyph_t dbcs_glyph;
+    uint8_t status;
+
+    status = fontx_glyph(&dbcs_glyph, 0x41, font6x9);
+    ASSERT_EQ(FONTX_OK, status);
+    status = fontx_glyph(&sbcs_glyph, 0x41, font6x9_ISO8859_1);
+    ASSERT_EQ(FONTX_OK, status);
+    ASSERT_EQ(dbcs_glyph.size, sbcs_glyph.size);
+    ASSERT_EQ(0, memcmp(dbcs_glyph.buffer, sbcs_glyph.buffer, dbcs_glyph.size));
+
+    status = fontx_glyph(&dbcs_glyph, 0x41, font5x7);
+    ASSERT_EQ(FONTX_OK, status);
+    status = fontx_glyph(&sbcs_glyph, 0x41, font5x7_ISO8859_1);
+    ASSERT_EQ(FONTX_OK, status);
+    ASSERT_EQ(dbcs_glyph.size, sbcs_glyph.size);
+    ASSERT_EQ(0, memcmp(dbcs_glyph.buffer, sbcs_glyph.buffer, dbcs_glyph.size));
+
+    status = fontx_glyph(&dbcs_glyph, 0x41, font5x8);
+    ASSERT_EQ(FONTX_OK, status);
+    status = fontx_glyph(&sbcs_glyph, 0x41, font5x8_ISO8859_1);
+    ASSERT_EQ(FONTX_OK, status);
+    ASSERT_EQ(dbcs_glyph.size, sbcs_glyph.size);
+    ASSERT_EQ(0, memcmp(dbcs_glyph.buffer, sbcs_glyph.buffer, dbcs_glyph.size));
+
+    PASS();
+}
+
 /* Glyph buffer should point directly into the SBCS font array. */
 TEST test_sbcs_glyph_buffer_not_copied(void) {
     fontx_glyph_t glyph;
@@ -435,6 +466,7 @@ SUITE(fontx_suite) {
     RUN_TEST(test_sbcs_glyph_content);
     RUN_TEST(test_sbcs_glyph_first_and_last);
     RUN_TEST(test_sbcs_glyph_out_of_range);
+    RUN_TEST(test_sbcs_dbcs_content_match);
     RUN_TEST(test_sbcs_glyph_buffer_not_copied);
 }
 
