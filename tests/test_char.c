@@ -289,6 +289,39 @@ TEST test_put_text_string_width(void) {
     PASS();
 }
 
+/* LF resets x to 0 and advances y by font height. Second 'A' */
+/* should be drawn at (0, 9) instead of continuing on the same line. */
+TEST test_put_text_lf(void) {
+    hagl_put_text(&surface, L"A\nA", 0, 0, 0xF800, font6x9);
+
+    /* First 'A' at (0, 0): foreground pixel at (2, 1). */
+    ASSERT_EQ(0xF800, hagl_get_pixel(&surface, 2, 1));
+
+    /* Second 'A' at (0, 9): foreground pixel at (2, 10). */
+    ASSERT_EQ(0xF800, hagl_get_pixel(&surface, 2, 10));
+
+    /* No pixel at (6, 0) where second 'A' would be without LF. */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&surface, 8, 1));
+
+    PASS();
+}
+
+/* CR resets x to 0 and advances y by font height, same as LF. */
+TEST test_put_text_cr(void) {
+    hagl_put_text(&surface, L"A\rA", 0, 0, 0xF800, font6x9);
+
+    /* First 'A' at (0, 0): foreground pixel at (2, 1). */
+    ASSERT_EQ(0xF800, hagl_get_pixel(&surface, 2, 1));
+
+    /* Second 'A' at (0, 9): foreground pixel at (2, 10). */
+    ASSERT_EQ(0xF800, hagl_get_pixel(&surface, 2, 10));
+
+    /* No pixel at (6, 0) where second 'A' would be without CR. */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&surface, 8, 1));
+
+    PASS();
+}
+
 SUITE(char_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_get_glyph_bitmap_dimensions);
@@ -300,6 +333,8 @@ SUITE(char_suite) {
     RUN_TEST(test_put_char_pixel_count);
     RUN_TEST(test_put_text_single_char);
     RUN_TEST(test_put_text_string_width);
+    RUN_TEST(test_put_text_lf);
+    RUN_TEST(test_put_text_cr);
 }
 
 GREATEST_MAIN_DEFS();
