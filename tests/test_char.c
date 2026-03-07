@@ -177,11 +177,27 @@ TEST test_get_glyph_invalid_code(void) {
     PASS();
 }
 
+TEST test_put_char_returns_width(void) {
+    uint8_t width;
+
+    width = hagl_put_char(&surface, 0x41, 0, 0, 0xF800, font6x9);
+    ASSERT_EQ(6, width);
+
+    width = hagl_put_char(&surface, 0x41, 0, 0, 0xF800, font5x7);
+    ASSERT_EQ(5, width);
+
+    width = hagl_put_char(&surface, 0x41, 0, 0, 0xF800, font5x8);
+    ASSERT_EQ(5, width);
+
+    PASS();
+}
+
 SUITE(char_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_get_glyph_bitmap_dimensions);
     RUN_TEST(test_get_glyph_content);
     RUN_TEST(test_get_glyph_invalid_code);
+    RUN_TEST(test_put_char_returns_width);
 }
 
 GREATEST_MAIN_DEFS();
