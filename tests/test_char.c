@@ -111,7 +111,7 @@ TEST test_get_glyph_bitmap_dimensions(void) {
 }
 
 /*
- * Verify rasterized 'A' (0x41) from font5x7 with color 0xF800.
+ * Verify rasterized A (0x41) with color 0xF800.
  *
  * 0x60  .xx..
  * 0x90  x..x.
@@ -218,7 +218,7 @@ TEST test_put_char_invalid_returns_zero(void) {
 }
 
 /*
- * Draw 'A' (0x41) from font5x7 at (10, 10) on the framebuffer.
+ * Draw A from at (10, 10) on the framebuffer.
  * Verify foreground, background, and outside pixels.
  *
  * 0x60  .xx..
@@ -259,12 +259,32 @@ TEST test_put_char_pixels(void) {
     PASS();
 }
 
-/* Draw 'A' from font5x7 at (0, 0) and count foreground pixels. */
+/* Draw A at (0, 0) and count foreground pixels. */
 TEST test_put_char_pixel_count(void) {
     hagl_put_char(&surface, 0x41, 0, 0, 0xF800, font5x7);
 
     /* 0x60=2, 0x90=2, 0x90=2, 0xf0=4, 0x90=2, 0x90=2, 0x00=0 → 14 */
     ASSERT_EQ(14, count_pixels(&surface, 0xF800));
+
+    PASS();
+}
+
+/* Single character string returns 1 * font width. */
+TEST test_put_text_single_char(void) {
+    uint16_t width;
+
+    width = hagl_put_text(&surface, L"A", 0, 0, 0xF800, font6x9);
+    ASSERT_EQ(6, width);
+
+    PASS();
+}
+
+/* Two character string returns 2 * font width. */
+TEST test_put_text_string_width(void) {
+    uint16_t width;
+
+    width = hagl_put_text(&surface, L"AB", 0, 0, 0xF800, font6x9);
+    ASSERT_EQ(12, width);
 
     PASS();
 }
@@ -278,6 +298,8 @@ SUITE(char_suite) {
     RUN_TEST(test_put_char_invalid_returns_zero);
     RUN_TEST(test_put_char_pixels);
     RUN_TEST(test_put_char_pixel_count);
+    RUN_TEST(test_put_text_single_char);
+    RUN_TEST(test_put_text_string_width);
 }
 
 GREATEST_MAIN_DEFS();
