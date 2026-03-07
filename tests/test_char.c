@@ -39,6 +39,7 @@ SPDX-License-Identifier: MIT
 #include "fontx.h"
 #include "hagl/bitmap.h"
 #include "hagl/char.h"
+#include "hagl/pixel.h"
 
 #include "font5x7.h"
 #include "font5x8.h"
@@ -49,6 +50,20 @@ SPDX-License-Identifier: MIT
 #define TEST_DEPTH 16
 
 #define GLYPH_BUFFER_SIZE (6 * 9 * (TEST_DEPTH / 8))
+
+static uint32_t count_pixels(hagl_bitmap_t *bmp, hagl_color_t color) {
+    uint32_t count = 0;
+    int16_t x, y;
+
+    for (y = 0; y < bmp->height; y++) {
+        for (x = 0; x < bmp->width; x++) {
+            if (hagl_get_pixel(bmp, x, y) == color) {
+                count++;
+            }
+        }
+    }
+    return count;
+}
 
 static hagl_bitmap_t surface;
 static uint8_t surface_buffer[TEST_WIDTH * TEST_HEIGHT * (TEST_DEPTH / 8)];
@@ -202,6 +217,58 @@ TEST test_put_char_invalid_returns_zero(void) {
     PASS();
 }
 
+/*
+ * Draw 'A' (0x41) from font5x7 at (10, 10) on the framebuffer.
+ * Verify foreground, background, and outside pixels.
+ *
+ * 0x60  .xx..
+ * 0x90  x..x.
+ * 0x90  x..x.
+ * 0xf0  xxxx.
+ * 0x90  x..x.
+ * 0x90  x..x.
+ * 0x00  .....
+ */
+TEST test_put_char_pixels(void) {
+    hagl_put_char(&surface, 0x41, 10, 10, 0xF800, font5x7);
+
+    /* Row 0: 0x60  .xx.. */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&surface, 10, 10));
+    ASSERT_EQ(0xF800, hagl_get_pixel(&surface, 11, 10));
+    ASSERT_EQ(0xF800, hagl_get_pixel(&surface, 12, 10));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&surface, 13, 10));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&surface, 14, 10));
+
+    /* Row 3: 0xf0  xxxx. */
+    ASSERT_EQ(0xF800, hagl_get_pixel(&surface, 10, 13));
+    ASSERT_EQ(0xF800, hagl_get_pixel(&surface, 11, 13));
+    ASSERT_EQ(0xF800, hagl_get_pixel(&surface, 12, 13));
+    ASSERT_EQ(0xF800, hagl_get_pixel(&surface, 13, 13));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&surface, 14, 13));
+
+    /* Row 6: 0x00  ..... */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&surface, 10, 16));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&surface, 14, 16));
+
+    /* One pixel outside each edge of the glyph rect. */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&surface, 9, 10));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&surface, 15, 10));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&surface, 10, 9));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&surface, 10, 17));
+
+    PASS();
+}
+
+/* Draw 'A' from font5x7 at (0, 0) and count foreground pixels. */
+TEST test_put_char_pixel_count(void) {
+    hagl_put_char(&surface, 0x41, 0, 0, 0xF800, font5x7);
+
+    /* 0x60=2, 0x90=2, 0x90=2, 0xf0=4, 0x90=2, 0x90=2, 0x00=0 → 14 */
+    ASSERT_EQ(14, count_pixels(&surface, 0xF800));
+
+    PASS();
+}
+
 SUITE(char_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_get_glyph_bitmap_dimensions);
@@ -209,6 +276,8 @@ SUITE(char_suite) {
     RUN_TEST(test_get_glyph_invalid_code);
     RUN_TEST(test_put_char_returns_width);
     RUN_TEST(test_put_char_invalid_returns_zero);
+    RUN_TEST(test_put_char_pixels);
+    RUN_TEST(test_put_char_pixel_count);
 }
 
 GREATEST_MAIN_DEFS();
