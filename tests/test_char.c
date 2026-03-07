@@ -192,12 +192,23 @@ TEST test_put_char_returns_width(void) {
     PASS();
 }
 
+/* Code 0x7F is invalid in font5x7, hagl_put_char should return 0. */
+TEST test_put_char_invalid_returns_zero(void) {
+    uint8_t width;
+
+    width = hagl_put_char(&surface, 0x7F, 0, 0, 0xF800, font5x7);
+    ASSERT_EQ(0, width);
+
+    PASS();
+}
+
 SUITE(char_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_get_glyph_bitmap_dimensions);
     RUN_TEST(test_get_glyph_content);
     RUN_TEST(test_get_glyph_invalid_code);
     RUN_TEST(test_put_char_returns_width);
+    RUN_TEST(test_put_char_invalid_returns_zero);
 }
 
 GREATEST_MAIN_DEFS();
