@@ -94,9 +94,82 @@ TEST test_get_glyph_bitmap_dimensions(void) {
     PASS();
 }
 
+/*
+ * Verify rasterized 'A' (0x41) from font5x7 with color 0xF800.
+ *
+ * 0x60  .xx..
+ * 0x90  x..x.
+ * 0x90  x..x.
+ * 0xf0  xxxx.
+ * 0x90  x..x.
+ * 0x90  x..x.
+ * 0x00  .....
+ */
+TEST test_get_glyph_content(void) {
+    uint8_t status;
+    hagl_color_t *pixels;
+
+    status = hagl_get_glyph(&surface, 0x41, 0xF800, &bitmap, font5x7);
+    ASSERT_EQ(0, status);
+
+    pixels = (hagl_color_t *)bitmap.buffer;
+
+    /* 0x60  .xx.. */
+    ASSERT_EQ(0x0000, pixels[0 * 5 + 0]);
+    ASSERT_EQ(0xF800, pixels[0 * 5 + 1]);
+    ASSERT_EQ(0xF800, pixels[0 * 5 + 2]);
+    ASSERT_EQ(0x0000, pixels[0 * 5 + 3]);
+    ASSERT_EQ(0x0000, pixels[0 * 5 + 4]);
+
+    /* 0x90  x..x. */
+    ASSERT_EQ(0xF800, pixels[1 * 5 + 0]);
+    ASSERT_EQ(0x0000, pixels[1 * 5 + 1]);
+    ASSERT_EQ(0x0000, pixels[1 * 5 + 2]);
+    ASSERT_EQ(0xF800, pixels[1 * 5 + 3]);
+    ASSERT_EQ(0x0000, pixels[1 * 5 + 4]);
+
+    /* 0x90  x..x. */
+    ASSERT_EQ(0xF800, pixels[2 * 5 + 0]);
+    ASSERT_EQ(0x0000, pixels[2 * 5 + 1]);
+    ASSERT_EQ(0x0000, pixels[2 * 5 + 2]);
+    ASSERT_EQ(0xF800, pixels[2 * 5 + 3]);
+    ASSERT_EQ(0x0000, pixels[2 * 5 + 4]);
+
+    /* 0xf0  xxxx. */
+    ASSERT_EQ(0xF800, pixels[3 * 5 + 0]);
+    ASSERT_EQ(0xF800, pixels[3 * 5 + 1]);
+    ASSERT_EQ(0xF800, pixels[3 * 5 + 2]);
+    ASSERT_EQ(0xF800, pixels[3 * 5 + 3]);
+    ASSERT_EQ(0x0000, pixels[3 * 5 + 4]);
+
+    /* 0x90  x..x. */
+    ASSERT_EQ(0xF800, pixels[4 * 5 + 0]);
+    ASSERT_EQ(0x0000, pixels[4 * 5 + 1]);
+    ASSERT_EQ(0x0000, pixels[4 * 5 + 2]);
+    ASSERT_EQ(0xF800, pixels[4 * 5 + 3]);
+    ASSERT_EQ(0x0000, pixels[4 * 5 + 4]);
+
+    /* 0x90  x..x. */
+    ASSERT_EQ(0xF800, pixels[5 * 5 + 0]);
+    ASSERT_EQ(0x0000, pixels[5 * 5 + 1]);
+    ASSERT_EQ(0x0000, pixels[5 * 5 + 2]);
+    ASSERT_EQ(0xF800, pixels[5 * 5 + 3]);
+    ASSERT_EQ(0x0000, pixels[5 * 5 + 4]);
+
+    /* 0x00  ..... */
+    ASSERT_EQ(0x0000, pixels[6 * 5 + 0]);
+    ASSERT_EQ(0x0000, pixels[6 * 5 + 1]);
+    ASSERT_EQ(0x0000, pixels[6 * 5 + 2]);
+    ASSERT_EQ(0x0000, pixels[6 * 5 + 3]);
+    ASSERT_EQ(0x0000, pixels[6 * 5 + 4]);
+
+    PASS();
+}
+
 SUITE(char_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_get_glyph_bitmap_dimensions);
+    RUN_TEST(test_get_glyph_content);
 }
 
 GREATEST_MAIN_DEFS();
