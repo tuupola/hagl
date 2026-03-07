@@ -36,6 +36,7 @@ SPDX-License-Identifier: MIT
 
 #include "greatest.h"
 
+#include "fontx.h"
 #include "hagl/bitmap.h"
 #include "hagl/char.h"
 
@@ -166,10 +167,21 @@ TEST test_get_glyph_content(void) {
     PASS();
 }
 
+/* Code 0x7F falls in the gap between block 0 and block 1 in font5x7. */
+TEST test_get_glyph_invalid_code(void) {
+    uint8_t status;
+
+    status = hagl_get_glyph(&surface, 0x7F, 0xF800, &bitmap, font5x7);
+    ASSERT_EQ(FONTX_ERR_GLYPH_NOT_FOUND, status);
+
+    PASS();
+}
+
 SUITE(char_suite) {
     SET_SETUP(setup_callback, NULL);
     RUN_TEST(test_get_glyph_bitmap_dimensions);
     RUN_TEST(test_get_glyph_content);
+    RUN_TEST(test_get_glyph_invalid_code);
 }
 
 GREATEST_MAIN_DEFS();
