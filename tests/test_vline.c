@@ -328,6 +328,32 @@ TEST test_draw_vline_xyh_custom_clip_regression(void) {
     PASS();
 }
 
+/*
+ * Line clipped by top edge of custom clip window only:
+ * Only y=50..59 visible.
+ */
+TEST test_draw_vline_xyh_custom_clip_top(void) {
+    hagl_set_clip(&bitmap, 50, 50, 200, 200);
+    hagl_draw_vline_xyh(&bitmap, 75, 40, 20, 0xFFFF);
+
+    /* On line: top edge of clip window */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 75, 50));
+
+    /* On line: bottom endpoint of original line */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 75, 59));
+
+    /* Outside: just above clip window */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 75, 49));
+
+    /* Outside: just below original line end */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 75, 60));
+
+    /* Total: 10 pixels */
+    ASSERT_EQ(10, count_pixels(&bitmap, 0xFFFF));
+
+    PASS();
+}
+
 SUITE(vline_suite) {
     SET_SETUP(setup_callback, NULL);
     SET_TEARDOWN(teardown_callback, NULL);
@@ -345,6 +371,7 @@ SUITE(vline_suite) {
     RUN_TEST(test_draw_vline_xyh_outside);
     RUN_TEST(test_draw_vline_xyh_custom_clip);
     RUN_TEST(test_draw_vline_xyh_custom_clip_regression);
+    RUN_TEST(test_draw_vline_xyh_custom_clip_top);
 }
 
 GREATEST_MAIN_DEFS();
