@@ -39,6 +39,7 @@ SPDX-License-Identifier: MIT
 #include "hagl/clip.h"
 #include "hagl/pixel.h"
 #include "hagl/vline.h"
+#include "save_image.h"
 
 #define TEST_WIDTH 320
 #define TEST_HEIGHT 240
@@ -62,6 +63,12 @@ static uint32_t count_pixels(hagl_bitmap_t *bitmap, hagl_color_t color) {
 static void setup_callback(void *data) {
     memset(buffer, 0, sizeof(buffer));
     hagl_bitmap_init(&bitmap, TEST_WIDTH, TEST_HEIGHT, TEST_DEPTH, buffer);
+}
+
+static void teardown_callback(void *data) {
+    char filename[256];
+    snprintf(filename, sizeof(filename), "output/%s.png", greatest_info.name_buf);
+    save_image(&bitmap, filename);
 }
 
 /*
@@ -323,6 +330,7 @@ TEST test_draw_vline_xyh_custom_clip_regression(void) {
 
 SUITE(vline_suite) {
     SET_SETUP(setup_callback, NULL);
+    SET_TEARDOWN(teardown_callback, NULL);
     RUN_TEST(test_draw_vline_xyh);
     RUN_TEST(test_draw_vline_xyh_regression);
     RUN_TEST(test_draw_vline_xyh_single_pixel);
