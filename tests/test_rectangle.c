@@ -384,9 +384,9 @@ TEST test_draw_rectangle_xyxy_custom_clip(void) {
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 80, 50));
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 80, 65));
 
-    /* On outline: hline/vline extend to clip boundary */
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 100, 80));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 80, 100));
+    /* On outline: hline/vline end at rectangle edge, not clip boundary */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 100, 80));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 80, 100));
 
     /* Inside: interior is empty */
     ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 65, 65));
@@ -401,8 +401,8 @@ TEST test_draw_rectangle_xyxy_custom_clip(void) {
     ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 49, 80));
     ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 80, 49));
 
-    /* Total: right vline 51 + bottom hline 51 - corner 1 = 101 */
-    ASSERT_EQ(101, count_pixels(&bitmap, 0xFFFF));
+    /* Total: right vline 31 + bottom hline 31 - corner 1 = 61 */
+    ASSERT_EQ(61, count_pixels(&bitmap, 0xFFFF));
 
     PASS();
 }
@@ -413,7 +413,7 @@ TEST test_draw_rectangle_xyxy_custom_clip_regression(void) {
 
     uint32_t crc = crc32(bitmap.buffer, bitmap.size);
 
-    ASSERT_EQ(0x876AD58F, crc);
+    ASSERT_EQ(0x17F93E43, crc);
     PASS();
 }
 
