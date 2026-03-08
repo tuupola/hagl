@@ -38,6 +38,7 @@ SPDX-License-Identifier: MIT
 #include "hagl/bitmap.h"
 #include "hagl/blit.h"
 #include "hagl/pixel.h"
+#include "save_image.h"
 
 #define TEST_WIDTH 320
 #define TEST_HEIGHT 240
@@ -71,6 +72,12 @@ static void setup_callback(void *data) {
     /* Fill source bitmap with all-white pixels. */
     memset(src_buffer, 0xFF, sizeof(src_buffer));
     hagl_bitmap_init(&source, SOURCE_WIDTH, SOURCE_HEIGHT, TEST_DEPTH, src_buffer);
+}
+
+static void teardown_callback(void *data) {
+    char filename[256];
+    snprintf(filename, sizeof(filename), "output/%s.png", greatest_info.name_buf);
+    save_image(&bitmap, filename);
 }
 
 /*
@@ -181,6 +188,7 @@ TEST test_blit_xyxy_reversed(void) {
 
 SUITE(blit_suite) {
     SET_SETUP(setup_callback, NULL);
+    SET_TEARDOWN(teardown_callback, NULL);
     RUN_TEST(test_blit_xy);
     RUN_TEST(test_blit_xywh);
     RUN_TEST(test_blit_xyxy_match_xywh);

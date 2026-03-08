@@ -35,6 +35,7 @@ SPDX-License-Identifier: MIT
 #include <string.h>
 
 #include "greatest.h"
+#include "save_image.h"
 
 #include "fontx.h"
 #include "hagl/bitmap.h"
@@ -78,6 +79,12 @@ static void setup_callback(void *data) {
     memset(glyph_buffer, 0, sizeof(glyph_buffer));
     memset(&bitmap, 0, sizeof(bitmap));
     bitmap.buffer = glyph_buffer;
+}
+
+static void teardown_callback(void *data) {
+    char filename[256];
+    snprintf(filename, sizeof(filename), "output/%s.png", greatest_info.name_buf);
+    save_image(&surface, filename);
 }
 
 TEST test_get_glyph_bitmap_dimensions(void) {
@@ -324,6 +331,7 @@ TEST test_put_text_cr(void) {
 
 SUITE(char_suite) {
     SET_SETUP(setup_callback, NULL);
+    SET_TEARDOWN(teardown_callback, NULL);
     RUN_TEST(test_get_glyph_bitmap_dimensions);
     RUN_TEST(test_get_glyph_content);
     RUN_TEST(test_get_glyph_invalid_code);
