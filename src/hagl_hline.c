@@ -52,7 +52,7 @@ void hagl_draw_hline_xyw(
 
         /* x0 is left of clip window, ignore start part. */
         if (x0 < surface->clip.x0) {
-            width = width + x0;
+            width = width - (surface->clip.x0 - x0);
             x0 = surface->clip.x0;
         }
 

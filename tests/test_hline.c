@@ -337,6 +337,36 @@ TEST test_draw_hline_xyw_custom_clip_regression(void) {
     PASS();
 }
 
+/*
+ * Line clipped by left edge of custom clip window only:
+ * Line from x=40 to x=59 (width 20) at y=75.
+ * Clip window (50,50)-(200,200). Only x=50..59 visible.
+ *
+ * (40,75)----[50,75)=====(59,75)
+ *             ^clip.x0
+ */
+TEST test_draw_hline_xyw_custom_clip_left(void) {
+    hagl_set_clip(&bitmap, 50, 50, 200, 200);
+    hagl_draw_hline_xyw(&bitmap, 40, 75, 20, 0xFFFF);
+
+    /* On line: left edge of clip window */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 50, 75));
+
+    /* On line: right endpoint of original line */
+    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 59, 75));
+
+    /* Outside: just left of clip window */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 49, 75));
+
+    /* Outside: just right of original line end */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 60, 75));
+
+    /* Total: 10 pixels */
+    ASSERT_EQ(10, count_pixels(&bitmap, 0xFFFF));
+
+    PASS();
+}
+
 SUITE(hline_suite) {
     SET_SETUP(setup_callback, NULL);
     SET_TEARDOWN(teardown_callback, NULL);
@@ -354,6 +384,7 @@ SUITE(hline_suite) {
     RUN_TEST(test_draw_hline_xyw_outside);
     RUN_TEST(test_draw_hline_xyw_custom_clip);
     RUN_TEST(test_draw_hline_xyw_custom_clip_regression);
+    RUN_TEST(test_draw_hline_xyw_custom_clip_left);
 }
 
 GREATEST_MAIN_DEFS();
