@@ -17,6 +17,8 @@ All notable changes to this project will be documented in this file, in reverse 
 - Blit parameters are now sorted ([#160](https://github.com/tuupola/hagl/pull/160)).
 - Blit with zero width or height did not return early ([#161](https://github.com/tuupola/hagl/pull/161)).
 - Off by one error in blit clip check ([#162](https://github.com/tuupola/hagl/pull/162)).
+- Horizontal line width with custom clip window ([#167](https://github.com/tuupola/hagl/pull/167)).
+- Vertical line height with custom clip window ([#168](https://github.com/tuupola/hagl/pull/168)).
 
 ### Changed
 - Polygon functions now require at least three vertices ([#132](https://github.com/tuupola/hagl/pull/132)).
