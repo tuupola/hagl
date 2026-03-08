@@ -84,5 +84,6 @@ test: test_fill_polygon test_polygon test_fill_rectangle test_rectangle test_pix
 
 clean:
 	rm -f test_fill_polygon test_polygon test_fill_rectangle test_rectangle test_pixel test_line test_hline test_vline test_circle test_ellipse test_fill_ellipse test_clip test_blit test_fontx test_char
+	rm -rf output
 
 .PHONY: all test clean
