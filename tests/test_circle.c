@@ -430,14 +430,16 @@ TEST test_fill_circle_custom_clip(void) {
     /* Inside clip: center is filled */
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 15, 15));
 
-    /* Inside clip: top corners are filled */
+    /* Inside clip: top-left corner is filled (distance ~7.07 < 10) */
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 10, 10));
-    ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 25, 10));
+
+    /* Outside circle: top-right corner (distance ~11.18 > 10) */
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 25, 10));
 
     /* Inside clip: bottom cardinal */
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 15, 25));
 
-    /* Inside clip: right edge */
+    /* Inside clip: right cardinal */
     ASSERT_EQ(0xFFFF, hagl_get_pixel(&bitmap, 25, 15));
 
     /* Outside clip: clipped cardinals */
@@ -448,8 +450,8 @@ TEST test_fill_circle_custom_clip(void) {
     ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 9, 15));
     ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 15, 9));
 
-    /* Total: 242 pixels */
-    ASSERT_EQ(242, count_pixels(&bitmap, 0xFFFF));
+    /* Total: 229 pixels */
+    ASSERT_EQ(229, count_pixels(&bitmap, 0xFFFF));
 
     PASS();
 }
@@ -460,7 +462,7 @@ TEST test_fill_circle_custom_clip_regression(void) {
 
     uint32_t crc = crc32(bitmap.buffer, bitmap.size);
 
-    ASSERT_EQ(0xD2A7217B, crc);
+    ASSERT_EQ(0xC468FB33, crc);
     PASS();
 }
 
