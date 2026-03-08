@@ -52,7 +52,7 @@ void hagl_draw_vline_xyh(
 
         /* y0 is top of clip window, ignore start part. */
         if (y0 < surface->clip.y0) {
-            height = height + y0;
+            height = height - (surface->clip.y0 - y0);
             y0 = surface->clip.y0;
         }
 
