@@ -18,7 +18,7 @@ SRCS = \
     ../src/hagl_blit.c \
     ../src/rgb565.c
 
-all: test_fill_polygon test_polygon test_fill_rectangle test_rectangle test_pixel test_line test_hline test_vline test_circle test_ellipse test_fill_ellipse test_clip test_blit test_fontx test_char test_fps
+all: test_fill_polygon test_polygon test_fill_rectangle test_rectangle test_pixel test_line test_hline test_vline test_circle test_ellipse test_fill_ellipse test_clip test_blit test_fontx test_char test_fps test_aps
 
 test_fill_polygon: test_fill_polygon.c save_image.c $(SRCS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
@@ -68,7 +68,10 @@ test_char: test_char.c save_image.c ../src/hagl_char.c ../src/fontx.c $(SRCS)
 test_fps: test_fps.c
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
-test: test_fill_polygon test_polygon test_fill_rectangle test_rectangle test_pixel test_line test_hline test_vline test_circle test_ellipse test_fill_ellipse test_clip test_blit test_fontx test_char test_fps
+test_aps: test_aps.c
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+test: test_fill_polygon test_polygon test_fill_rectangle test_rectangle test_pixel test_line test_hline test_vline test_circle test_ellipse test_fill_ellipse test_clip test_blit test_fontx test_char test_fps test_aps
 	./test_fill_polygon
 	./test_polygon
 	./test_fill_rectangle
@@ -87,7 +90,7 @@ test: test_fill_polygon test_polygon test_fill_rectangle test_rectangle test_pix
 	./test_fps
 
 clean:
-	rm -f test_fill_polygon test_polygon test_fill_rectangle test_rectangle test_pixel test_line test_hline test_vline test_circle test_ellipse test_fill_ellipse test_clip test_blit test_fontx test_char test_fps
+	rm -f test_fill_polygon test_polygon test_fill_rectangle test_rectangle test_pixel test_line test_hline test_vline test_circle test_ellipse test_fill_ellipse test_clip test_blit test_fontx test_char test_fps test_aps
 	rm -rf output
 
 .PHONY: all test clean
