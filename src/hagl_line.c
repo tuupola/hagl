@@ -56,7 +56,7 @@ void hagl_draw_line(
     int16_t dy;
     int16_t sy;
     int16_t err;
-    int16_t e2;
+    int16_t err2;
 
     dx = ABS(x1 - x0);
     sx = x0 < x1 ? 1 : -1;
@@ -67,18 +67,36 @@ void hagl_draw_line(
     while (1) {
         surface->put_pixel((void *)_surface, x0, y0, color);
 
-        if (x0 == x1 && y0 == y1) {
+        if ((x0 == x1) && (y0 == y1)) {
             break;
-        };
+        }
 
-        e2 = err + err;
+        err2 = err + err;
 
-        if (e2 > -dx) {
+        if (err2 > -dx) {
             err -= dy;
             x0 += sx;
         }
 
-        if (e2 < dy) {
+        if (err2 < dy) {
+            err += dx;
+            y0 += sy;
+        }
+
+        surface->put_pixel((void *)_surface, x0, y0, color);
+
+        if ((x0 == x1) && (y0 == y1)) {
+            break;
+        }
+
+        err2 = err + err;
+
+        if (err2 > -dx) {
+            err -= dy;
+            x0 += sx;
+        }
+
+        if (err2 < dy) {
             err += dx;
             y0 += sy;
         }
