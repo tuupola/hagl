@@ -56,7 +56,7 @@ void hagl_draw_line(
     int16_t dy;
     int16_t sy;
     int16_t err;
-    int16_t err2;
+    int16_t e2;
 
     dx = ABS(x1 - x0);
     sx = x0 < x1 ? 1 : -1;
@@ -71,14 +71,14 @@ void hagl_draw_line(
             break;
         }
 
-        err2 = err + err;
+        e2 = err + err;
 
-        if (err2 > -dx) {
+        if (e2 > -dx) {
             err -= dy;
             x0 += sx;
         }
 
-        if (err2 < dy) {
+        if (e2 < dy) {
             err += dx;
             y0 += sy;
         }
@@ -89,14 +89,14 @@ void hagl_draw_line(
             break;
         }
 
-        err2 = err + err;
+        e2 = err + err;
 
-        if (err2 > -dx) {
+        if (e2 > -dx) {
             err -= dy;
             x0 += sx;
         }
 
-        if (err2 < dy) {
+        if (e2 < dy) {
             err += dx;
             y0 += sy;
         }
