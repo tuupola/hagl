@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2018-2023 Mika Tuupola
+Copyright (c) 2018-2026 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -54,16 +54,16 @@ typedef struct {
     uint16_t height;
     uint8_t depth;
     hagl_window_t clip;
-    void (*put_pixel)(void *self, int16_t x0, int16_t y0, hagl_color_t color);
-    hagl_color_t (*get_pixel)(void *self, int16_t x0, int16_t y0);
-    hagl_color_t (*color)(void *self, uint8_t r, uint8_t g, uint8_t b);
-    void (*blit)(void *self, int16_t x0, int16_t y0, void *src);
+    void (*put_pixel)(const void *self, int16_t x0, int16_t y0, hagl_color_t color);
+    hagl_color_t (*get_pixel)(const void *self, int16_t x0, int16_t y0);
+    hagl_color_t (*color)(const void *self, uint8_t r, uint8_t g, uint8_t b);
+    void (*blit)(const void *self, int16_t x0, int16_t y0, const void *src);
     void (*scale_blit)(
-        void *self, int16_t x0, int16_t y0, uint16_t w, uint16_t h, void *src
+        const void *self, int16_t x0, int16_t y0, uint16_t w, uint16_t h, const void *src
     );
-    void (*hline)(void *self, int16_t x0, int16_t y0, uint16_t width, hagl_color_t color);
+    void (*hline)(const void *self, int16_t x0, int16_t y0, uint16_t width, hagl_color_t color);
     void (*vline)(
-        void *self, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color
+        const void *self, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color
     );
 
     uint16_t pitch;
