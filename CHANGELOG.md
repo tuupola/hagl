@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## [0.8.0](https://github.com/tuupola/hagl/compare/0.7.0...master) - unreleased
+## [0.8.0](https://github.com/tuupola/hagl/compare/0.7.0...0.8.0) - 2026-04-01
 
 ### Fixed
 - Wrong image guard in `image.h`  ([#113](https://github.com/tuupola/hagl/pull/113)).
