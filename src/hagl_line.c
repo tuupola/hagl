@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2018-2023 Mika Tuupola
+Copyright (c) 2018-2026 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -65,11 +65,29 @@ void hagl_draw_line(
     err = (dx > dy ? dx : -dy) / 2;
 
     while (1) {
-        hagl_put_pixel(surface, x0, y0, color);
+        surface->put_pixel(_surface, x0, y0, color);
 
-        if (x0 == x1 && y0 == y1) {
+        if ((x0 == x1) && (y0 == y1)) {
             break;
-        };
+        }
+
+        e2 = err + err;
+
+        if (e2 > -dx) {
+            err -= dy;
+            x0 += sx;
+        }
+
+        if (e2 < dy) {
+            err += dx;
+            y0 += sy;
+        }
+
+        surface->put_pixel(_surface, x0, y0, color);
+
+        if ((x0 == x1) && (y0 == y1)) {
+            break;
+        }
 
         e2 = err + err;
 

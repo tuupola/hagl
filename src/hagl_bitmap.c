@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2018-2023 Mika Tuupola
+Copyright (c) 2018-2026 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -42,22 +42,24 @@ SPDX-License-Identifier: MIT
 #include "hagl_hal.h"
 #include <stdio.h>
 
-static void put_pixel(void *_bitmap, int16_t x0, int16_t y0, hagl_color_t color) {
-    hagl_bitmap_t *bitmap = _bitmap;
+static void put_pixel(const void *_bitmap, int16_t x0, int16_t y0, hagl_color_t color) {
+    const hagl_bitmap_t *bitmap = _bitmap;
 
     hagl_color_t *ptr =
         (hagl_color_t *)(bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
     *ptr = color;
 }
 
-static hagl_color_t get_pixel(void *_bitmap, int16_t x0, int16_t y0) {
-    hagl_bitmap_t *bitmap = _bitmap;
+static hagl_color_t get_pixel(const void *_bitmap, int16_t x0, int16_t y0) {
+    const hagl_bitmap_t *bitmap = _bitmap;
     return *(hagl_color_t *)(bitmap->buffer + bitmap->pitch * y0 +
                              (bitmap->depth / 8) * x0);
 }
 
-void hline(void *_bitmap, int16_t x0, int16_t y0, uint16_t width, hagl_color_t color) {
-    hagl_bitmap_t *bitmap = _bitmap;
+void hline(
+    const void *_bitmap, int16_t x0, int16_t y0, uint16_t width, hagl_color_t color
+) {
+    const hagl_bitmap_t *bitmap = _bitmap;
 
     hagl_color_t *ptr =
         (hagl_color_t *)(bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
@@ -66,8 +68,10 @@ void hline(void *_bitmap, int16_t x0, int16_t y0, uint16_t width, hagl_color_t c
     }
 }
 
-void vline(void *_bitmap, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color) {
-    hagl_bitmap_t *bitmap = _bitmap;
+void vline(
+    const void *_bitmap, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color
+) {
+    const hagl_bitmap_t *bitmap = _bitmap;
 
     hagl_color_t *ptr =
         (hagl_color_t *)(bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
@@ -81,9 +85,9 @@ void vline(void *_bitmap, int16_t x0, int16_t y0, uint16_t height, hagl_color_t 
  * Blit source bitmap to a destination bitmap->
  */
 
-static void blit(void *_dst, int16_t x0, int16_t y0, void *_src) {
-    hagl_bitmap_t *dst = _dst;
-    hagl_bitmap_t *src = _src;
+static void blit(const void *_dst, int16_t x0, int16_t y0, const void *_src) {
+    const hagl_bitmap_t *dst = _dst;
+    const hagl_bitmap_t *src = _src;
 
     int16_t srcw = src->width;
     int16_t srch = src->height;
@@ -149,10 +153,12 @@ static void blit(void *_dst, int16_t x0, int16_t y0, void *_src) {
  * http://www.davdata.nl/math/bmresize.html
  */
 
-static void
-scale_blit(void *_dst, int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth, void *_src) {
-    hagl_bitmap_t *dst = _dst;
-    hagl_bitmap_t *src = _src;
+static void scale_blit(
+    const void *_dst, int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth,
+    const void *_src
+) {
+    const hagl_bitmap_t *dst = _dst;
+    const hagl_bitmap_t *src = _src;
 
     uint16_t px, py;
 

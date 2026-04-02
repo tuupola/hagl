@@ -83,13 +83,16 @@ void hagl_draw_circle(
 void hagl_fill_circle(
     void const *surface, int16_t x0, int16_t y0, int16_t r, hagl_color_t color
 ) {
+    if (0 == r) {
+        hagl_put_pixel(surface, x0, y0, color);
+        return;
+    }
+
     int16_t x = 0;
     int16_t y = r;
     int16_t d = 3 - 2 * r;
 
     while (y >= x) {
-        hagl_draw_hline(surface, x0 - x, y0 + y, x * 2 + 1, color);
-        hagl_draw_hline(surface, x0 - x, y0 - y, x * 2 + 1, color);
         hagl_draw_hline(surface, x0 - y, y0 + x, y * 2 + 1, color);
         hagl_draw_hline(surface, x0 - y, y0 - x, y * 2 + 1, color);
 
@@ -97,6 +100,10 @@ void hagl_fill_circle(
             d = d + 4 * x + 6;
             x++;
         } else {
+            if (x != y) {
+                hagl_draw_hline(surface, x0 - x, y0 + y, x * 2 + 1, color);
+                hagl_draw_hline(surface, x0 - x, y0 - y, x * 2 + 1, color);
+            }
             d = d + 4 * (x - y) + 10;
             x++;
             y--;
