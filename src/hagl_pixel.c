@@ -51,7 +51,7 @@ void hagl_put_pixel(void const *_surface, int16_t x0, int16_t y0, hagl_color_t c
     }
 
     /* If still in bounds set the pixel. */
-    surface->put_pixel((void *)_surface, x0, y0, color);
+    surface->put_pixel(_surface, x0, y0, color);
 }
 
 hagl_color_t hagl_get_pixel(void const *_surface, int16_t x0, int16_t y0) {
@@ -67,7 +67,7 @@ hagl_color_t hagl_get_pixel(void const *_surface, int16_t x0, int16_t y0) {
     }
 
     if (surface->get_pixel) {
-        return surface->get_pixel((void *)_surface, x0, y0);
+        return surface->get_pixel(_surface, x0, y0);
     }
 
     return hagl_color(surface, 0, 0, 0);
