@@ -115,19 +115,15 @@ void hagl_fill_polygon(
             j = i;
         }
 
-        /* Sort the nodes, via a simple “Bubble” sort. */
-        int16_t i = 0;
-        while (i < count - 1) {
-            if (nodes[i] > nodes[i + 1]) {
-                int16_t swap = nodes[i];
-                nodes[i] = nodes[i + 1];
-                nodes[i + 1] = swap;
-                if (i) {
-                    i--;
-                }
-            } else {
-                i++;
+        /* Sort the nodes, via insertion sort. */
+        for (int16_t i = 1; i < count; i++) {
+            int16_t key = nodes[i];
+            int16_t j = i - 1;
+            while (j >= 0 && nodes[j] > key) {
+                nodes[j + 1] = nodes[j];
+                j--;
             }
+            nodes[j + 1] = key;
         }
 
         /* Draw lines between nodes. */
