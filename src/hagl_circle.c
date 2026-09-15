@@ -48,35 +48,31 @@ void hagl_draw_circle(
 
     int16_t x = 0;
     int16_t y = r;
-    int16_t d = 3 - 2 * r;
+    int32_t d = 3 - 2 * r;
 
-    hagl_put_pixel(surface, xc + x, yc + y, color);
-    hagl_put_pixel(surface, xc - x, yc + y, color);
-    hagl_put_pixel(surface, xc + x, yc - y, color);
-    hagl_put_pixel(surface, xc - x, yc - y, color);
-    hagl_put_pixel(surface, xc + y, yc + x, color);
-    hagl_put_pixel(surface, xc - y, yc + x, color);
-    hagl_put_pixel(surface, xc + y, yc - x, color);
-    hagl_put_pixel(surface, xc - y, yc - x, color);
-
-    while (y >= x) {
-        if (d > 0) {
-            d = d + 4 * (x - y) + 10;
-            y--;
-            x++;
-        } else {
-            d = d + 4 * x + 6;
-            x++;
+    while (x <= y) {
+        hagl_put_pixel(surface, xc + x, yc + y, color);
+        hagl_put_pixel(surface, xc + x, yc - y, color);
+        if (x != 0) {
+            hagl_put_pixel(surface, xc - x, yc + y, color);
+            hagl_put_pixel(surface, xc - x, yc - y, color);
+        }
+        if (x != y) {
+            hagl_put_pixel(surface, xc + y, yc + x, color);
+            hagl_put_pixel(surface, xc - y, yc + x, color);
+            if (x != 0) {
+                hagl_put_pixel(surface, xc + y, yc - x, color);
+                hagl_put_pixel(surface, xc - y, yc - x, color);
+            }
         }
 
-        hagl_put_pixel(surface, xc + x, yc + y, color);
-        hagl_put_pixel(surface, xc - x, yc + y, color);
-        hagl_put_pixel(surface, xc + x, yc - y, color);
-        hagl_put_pixel(surface, xc - x, yc - y, color);
-        hagl_put_pixel(surface, xc + y, yc + x, color);
-        hagl_put_pixel(surface, xc - y, yc + x, color);
-        hagl_put_pixel(surface, xc + y, yc - x, color);
-        hagl_put_pixel(surface, xc - y, yc - x, color);
+        if (d <= 0) {
+            d = d + 4 * x + 6;
+        } else {
+            d = d + 4 * (x - y) + 10;
+            y--;
+        }
+        x++;
     }
 }
 
