@@ -73,7 +73,7 @@ void hagl_fill_polygon(
     const hagl_surface_t *surface = _surface;
     int16_t nodes[64];
     int16_t y, miny, maxy;
-    float x0, y0, x1, y1;
+    int16_t x0, y0, x1, y1;
 
     if (amount < 3) {
         return;
@@ -116,9 +116,9 @@ void hagl_fill_polygon(
             x1 = vertices[(j << 1) + 0];
             y1 = vertices[(j << 1) + 1];
 
-            if ((y0 < (float)y && y1 >= (float)y) || (y1 < (float)y && y0 >= (float)y)) {
+            if ((y0 < y && y1 >= y) || (y1 < y && y0 >= y)) {
                 if (count < 64) {
-                    nodes[count] = (int16_t)(x0 + (y - y0) / (y1 - y0) * (x1 - x0));
+                    nodes[count] = (int16_t)(x0 + (int32_t)(y - y0) * (x1 - x0) / (y1 - y0));
                     count++;
                 }
             } else if (y == y0 && y == y1) {
