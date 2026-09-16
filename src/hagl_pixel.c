@@ -35,6 +35,7 @@ SPDX-License-Identifier: MIT
 #include <stdint.h>
 
 #include "hagl/color.h"
+#include "hagl/pixel.h"
 #include "hagl/surface.h"
 
 hagl_color_t hagl_get_pixel(void const *_surface, int16_t x0, int16_t y0) {
