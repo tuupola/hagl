@@ -79,16 +79,28 @@ void hagl_fill_polygon(
         return;
     }
 
-    miny = surface->height;
-    maxy = 0;
+    miny = vertices[1];
+    maxy = vertices[1];
 
-    for (uint8_t i = 0; i < amount; i++) {
-        if (miny > vertices[(i << 1) + 1]) {
-            miny = vertices[(i << 1) + 1];
+    for (int16_t i = 1; i < amount; i++) {
+        int16_t vy = vertices[(i << 1) + 1];
+        if (miny > vy) {
+            miny = vy;
         }
-        if (maxy < vertices[(i << 1) + 1]) {
-            maxy = vertices[(i << 1) + 1];
+        if (maxy < vy) {
+            maxy = vy;
         }
+    }
+
+    if ((maxy < surface->clip.y0) || (miny > surface->clip.y1)) {
+        return;
+    }
+
+    if (miny < surface->clip.y0) {
+        miny = surface->clip.y0;
+    }
+    if (maxy > surface->clip.y1) {
+        maxy = surface->clip.y1;
     }
 
     /*  Loop through the rows of the image. */
