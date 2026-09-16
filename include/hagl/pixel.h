@@ -39,6 +39,7 @@ SPDX-License-Identifier: MIT
 #include <stdint.h>
 
 #include "hagl/color.h"
+#include "hagl/surface.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -54,7 +55,14 @@ extern "C" {
  * @param y0 Y coordinate
  * @param color pixel color
  */
-void hagl_put_pixel(void const *surface, int16_t x0, int16_t y0, hagl_color_t color);
+static inline void
+hagl_put_pixel(void const *surface, int16_t x0, int16_t y0, hagl_color_t color) {
+    const hagl_surface_t *s = surface;
+    if (x0 < s->clip.x0 || x0 > s->clip.x1 || y0 < s->clip.y0 || y0 > s->clip.y1) {
+        return;
+    }
+    s->put_pixel(surface, x0, y0, color);
+}
 
 /**
  * Get a single pixel
