@@ -123,6 +123,20 @@ bool hagl_clip_line(
 void hagl_set_clip(void *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1) {
     hagl_surface_t *surface = _surface;
 
+    /* Make sure x0 is smaller than x1. */
+    if (x0 > x1) {
+        x0 = x0 + x1;
+        x1 = x0 - x1;
+        x0 = x0 - x1;
+    }
+
+    /* Make sure y0 is smaller than y1. */
+    if (y0 > y1) {
+        y0 = y0 + y1;
+        y1 = y0 - y1;
+        y0 = y0 - y1;
+    }
+
     surface->clip.x0 = x0;
     surface->clip.y0 = y0;
     surface->clip.x1 = x1;
