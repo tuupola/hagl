@@ -53,7 +53,7 @@ bool hagl_clip_line(
  *
  * Clip window restricts the drawable area. It does not affect
  * the coordinates. Opposite corners may be given in any order.
- * The window is inclusive.
+ * Coordinates are clamped to the surface. The window is inclusive.
  *
  * @param surface
  * @param x0
