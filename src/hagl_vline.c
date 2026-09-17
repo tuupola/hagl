@@ -66,7 +66,7 @@ void hagl_draw_vline_xyh(
             height = height - (y0 + height - 1 - surface->clip.y1);
         }
 
-        surface->vline((void *)_surface, x0, y0, height, color);
+        surface->vline(_surface, x0, y0, height, color);
     } else {
         hagl_draw_line(surface, x0, y0, x0, y0 + h - 1, color);
     }
