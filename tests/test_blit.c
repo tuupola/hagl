@@ -186,6 +186,36 @@ TEST test_blit_xyxy_reversed(void) {
     PASS();
 }
 
+/*
+ * 1:1 scale blit of a source larger than 256 pixels must not wrap the
+ * source index (previously truncated to uint8_t).
+ */
+TEST test_blit_xywh_large_source(void) {
+    enum { LARGE_WIDTH = 20, LARGE_HEIGHT = 20 };
+    static uint8_t large_buffer[LARGE_WIDTH * LARGE_HEIGHT * (TEST_DEPTH / 8)];
+    hagl_bitmap_t large;
+
+    hagl_bitmap_init(&large, LARGE_WIDTH, LARGE_HEIGHT, TEST_DEPTH, large_buffer);
+
+    for (int16_t y = 0; y < LARGE_HEIGHT; y++) {
+        for (int16_t x = 0; x < LARGE_WIDTH; x++) {
+            hagl_put_pixel(&large, x, y, (y << 8) | x);
+        }
+    }
+
+    hagl_blit_xy(&bitmap, 0, 0, &large);
+    uint32_t crc_xy = crc32(bitmap.buffer, bitmap.size);
+
+    memset(bitmap.buffer, 0, bitmap.size);
+    hagl_blit_xywh(&bitmap, 0, 0, LARGE_WIDTH, LARGE_HEIGHT, &large);
+    uint32_t crc_xywh = crc32(bitmap.buffer, bitmap.size);
+
+    ASSERT_EQ(crc_xy, crc_xywh);
+    ASSERT_EQ((13 << 8) | 0, hagl_get_pixel(&bitmap, 0, 13));
+
+    PASS();
+}
+
 SUITE(blit_suite) {
     SET_SETUP(setup_callback, NULL);
     SET_TEARDOWN(teardown_callback, NULL);
@@ -193,6 +223,7 @@ SUITE(blit_suite) {
     RUN_TEST(test_blit_xywh);
     RUN_TEST(test_blit_xyxy_match_xywh);
     RUN_TEST(test_blit_xyxy_reversed);
+    RUN_TEST(test_blit_xywh_large_source);
 }
 
 GREATEST_MAIN_DEFS();

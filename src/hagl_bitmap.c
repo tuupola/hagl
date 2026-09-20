@@ -207,7 +207,7 @@ static void scale_blit(
             for (uint16_t x = 0; x < dstw; x++) {
                 px = ((x * x_ratio) >> 16);
                 py = ((y * y_ratio) >> 16);
-                *(dstptr++) = srcptr[(uint8_t)((py * srcw) + px)];
+                *(dstptr++) = srcptr[(uint32_t)py * srcw + px];
             }
             dstptr += dst->pitch / (dst->depth / 8) - dstw;
         }
@@ -220,7 +220,7 @@ static void scale_blit(
             for (uint16_t x = 0; x < dstw; x++) {
                 px = ((x * x_ratio) >> 16);
                 py = ((y * y_ratio) >> 16);
-                *(dstptr++) = srcptr[(uint8_t)((py * srcw) + px)];
+                *(dstptr++) = srcptr[(uint32_t)py * srcw + px];
             }
             dstptr += dst->pitch / (dst->depth / 8) - dstw;
         }
