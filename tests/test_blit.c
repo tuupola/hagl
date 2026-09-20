@@ -280,6 +280,51 @@ TEST test_blit_xy_padded_pitch(void) {
     PASS();
 }
 
+/* 1:1 scale blit at x0 = -2 must skip the off-screen source columns. */
+TEST test_blit_xywh_negative_x(void) {
+    fill_unique_pattern(&source);
+
+    hagl_blit_xywh(&bitmap, -2, 10, SOURCE_WIDTH, SOURCE_HEIGHT, &source);
+
+    ASSERT_EQ(0x0002, hagl_get_pixel(&bitmap, 0, 10));
+    ASSERT_EQ(0x0003, hagl_get_pixel(&bitmap, 1, 10));
+    ASSERT_EQ(0x0102, hagl_get_pixel(&bitmap, 0, 11));
+    ASSERT_EQ(0x0103, hagl_get_pixel(&bitmap, 1, 11));
+    ASSERT_EQ(0x0302, hagl_get_pixel(&bitmap, 0, 13));
+    ASSERT_EQ(0x0303, hagl_get_pixel(&bitmap, 1, 13));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 2, 10));
+
+    PASS();
+}
+
+/* 2x scale blit at x0 = -4 must sample source x = 2 at dest x = 0. */
+TEST test_blit_xywh_negative_x_scaled(void) {
+    fill_unique_pattern(&source);
+
+    hagl_blit_xywh(&bitmap, -4, 0, 8, 8, &source);
+
+    ASSERT_EQ(0x0002, hagl_get_pixel(&bitmap, 0, 0));
+    ASSERT_EQ(0x0003, hagl_get_pixel(&bitmap, 3, 0));
+    ASSERT_EQ(0x0302, hagl_get_pixel(&bitmap, 0, 7));
+    ASSERT_EQ(0x0303, hagl_get_pixel(&bitmap, 3, 7));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 4, 0));
+
+    PASS();
+}
+
+/* Scale blit fully left of the dest must draw nothing. */
+TEST test_blit_xywh_fully_offscreen(void) {
+    fill_unique_pattern(&source);
+
+    hagl_blit_xywh(&bitmap, -8, 10, 8, 8, &source);
+
+    ASSERT_EQ(0, count_pixels(&bitmap, 0x0002));
+    ASSERT_EQ(0, count_pixels(&bitmap, 0x0003));
+    ASSERT_EQ(0, count_pixels(&bitmap, 0x0303));
+
+    PASS();
+}
+
 SUITE(blit_suite) {
     SET_SETUP(setup_callback, NULL);
     SET_TEARDOWN(teardown_callback, NULL);
@@ -291,6 +336,9 @@ SUITE(blit_suite) {
     RUN_TEST(test_blit_xy_left_clip);
     RUN_TEST(test_blit_xy_right_clip);
     RUN_TEST(test_blit_xy_padded_pitch);
+    RUN_TEST(test_blit_xywh_negative_x);
+    RUN_TEST(test_blit_xywh_negative_x_scaled);
+    RUN_TEST(test_blit_xywh_fully_offscreen);
 }
 
 GREATEST_MAIN_DEFS();
