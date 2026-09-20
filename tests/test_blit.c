@@ -186,6 +186,100 @@ TEST test_blit_xyxy_reversed(void) {
     PASS();
 }
 
+/* 1:1 scale blit of a source larger than 256 pixels. */
+TEST test_blit_xywh_large_source(void) {
+    static uint8_t large_buffer[20 * 20 * (TEST_DEPTH / 8)];
+    hagl_bitmap_t large;
+
+    hagl_bitmap_init(&large, 20, 20, TEST_DEPTH, large_buffer);
+
+    for (int16_t y = 0; y < 20; y++) {
+        for (int16_t x = 0; x < 20; x++) {
+            hagl_put_pixel(&large, x, y, (y << 8) | x);
+        }
+    }
+
+    hagl_blit_xy(&bitmap, 0, 0, &large);
+    uint32_t crc_xy = crc32(bitmap.buffer, bitmap.size);
+
+    memset(bitmap.buffer, 0, bitmap.size);
+    hagl_blit_xywh(&bitmap, 0, 0, 20, 20, &large);
+    uint32_t crc_xywh = crc32(bitmap.buffer, bitmap.size);
+
+    ASSERT_EQ(crc_xy, crc_xywh);
+    ASSERT_EQ((13 << 8) | 0, hagl_get_pixel(&bitmap, 0, 13));
+
+    PASS();
+}
+
+static void fill_unique_pattern(hagl_bitmap_t *bmp) {
+    for (int16_t y = 0; y < bmp->height; y++) {
+        for (int16_t x = 0; x < bmp->width; x++) {
+            hagl_put_pixel(bmp, x, y, (y << 8) | x);
+        }
+    }
+}
+
+/* Left-clipped blit at x0 = -2 must start each row at source x = 2. */
+TEST test_blit_xy_left_clip(void) {
+    fill_unique_pattern(&source);
+
+    bitmap.blit(&bitmap, -2, 10, &source);
+
+    ASSERT_EQ(0x0002, hagl_get_pixel(&bitmap, 0, 10));
+    ASSERT_EQ(0x0003, hagl_get_pixel(&bitmap, 1, 10));
+    ASSERT_EQ(0x0102, hagl_get_pixel(&bitmap, 0, 11));
+    ASSERT_EQ(0x0103, hagl_get_pixel(&bitmap, 1, 11));
+    ASSERT_EQ(0x0302, hagl_get_pixel(&bitmap, 0, 13));
+    ASSERT_EQ(0x0303, hagl_get_pixel(&bitmap, 1, 13));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 2, 10));
+
+    PASS();
+}
+
+/* Right-clipped blit onto a narrower destination. */
+TEST test_blit_xy_right_clip(void) {
+    static uint8_t destination_buffer[3 * 3 * (TEST_DEPTH / 8)];
+    hagl_bitmap_t destination;
+
+    memset(destination_buffer, 0, sizeof(destination_buffer));
+    hagl_bitmap_init(&destination, 3, 3, TEST_DEPTH, destination_buffer);
+    fill_unique_pattern(&source);
+
+    destination.blit(&destination, 0, 0, &source);
+
+    ASSERT_EQ(0x0000, hagl_get_pixel(&destination, 0, 0));
+    ASSERT_EQ(0x0002, hagl_get_pixel(&destination, 2, 0));
+    ASSERT_EQ(0x0100, hagl_get_pixel(&destination, 0, 1));
+    ASSERT_EQ(0x0101, hagl_get_pixel(&destination, 1, 1));
+    ASSERT_EQ(0x0102, hagl_get_pixel(&destination, 2, 1));
+    ASSERT_EQ(0x0200, hagl_get_pixel(&destination, 0, 2));
+
+    PASS();
+}
+
+/* Source pitch wider than width * bpp must skip row padding. */
+TEST test_blit_xy_padded_pitch(void) {
+    static uint8_t padded_buffer[(4 + 4) * 4 * (TEST_DEPTH / 8)];
+    hagl_bitmap_t padded;
+
+    memset(padded_buffer, 0xAA, sizeof(padded_buffer));
+    hagl_bitmap_init(&padded, 4, 4, TEST_DEPTH, padded_buffer);
+    padded.pitch = (4 + 4) * (TEST_DEPTH / 8);
+    fill_unique_pattern(&padded);
+
+    hagl_blit_xy(&bitmap, 10, 10, &padded);
+
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 10, 10));
+    ASSERT_EQ(0x0003, hagl_get_pixel(&bitmap, 13, 10));
+    ASSERT_EQ(0x0100, hagl_get_pixel(&bitmap, 10, 11));
+    ASSERT_EQ(0x0303, hagl_get_pixel(&bitmap, 13, 13));
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 14, 10));
+    ASSERT_EQ(0, count_pixels(&bitmap, 0xAAAA));
+
+    PASS();
+}
+
 SUITE(blit_suite) {
     SET_SETUP(setup_callback, NULL);
     SET_TEARDOWN(teardown_callback, NULL);
@@ -193,6 +287,10 @@ SUITE(blit_suite) {
     RUN_TEST(test_blit_xywh);
     RUN_TEST(test_blit_xyxy_match_xywh);
     RUN_TEST(test_blit_xyxy_reversed);
+    RUN_TEST(test_blit_xywh_large_source);
+    RUN_TEST(test_blit_xy_left_clip);
+    RUN_TEST(test_blit_xy_right_clip);
+    RUN_TEST(test_blit_xy_padded_pitch);
 }
 
 GREATEST_MAIN_DEFS();
