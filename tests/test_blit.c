@@ -246,7 +246,7 @@ TEST test_blit_xy_right_clip(void) {
     hagl_bitmap_init(&destination, 3, 3, TEST_DEPTH, destination_buffer);
     fill_unique_pattern(&source);
 
-    dest.blit(&destination, 0, 0, &source);
+    destination.blit(&destination, 0, 0, &source);
 
     ASSERT_EQ(0x0000, hagl_get_pixel(&destination, 0, 0));
     ASSERT_EQ(0x0002, hagl_get_pixel(&destination, 2, 0));
