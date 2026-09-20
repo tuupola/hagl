@@ -131,10 +131,11 @@ static void blit(const void *_dst, int16_t x0, int16_t y0, const void *_src) {
     uint8_t *dstptr =
         (uint8_t *)(dst->buffer + (dst->pitch * y0) + ((dst->depth / 8) * x0));
     uint8_t *srcptr =
-        (uint8_t *)(src->buffer + (src->pitch * y1) + ((dst->depth / 8) * x1));
+        (uint8_t *)(src->buffer + (src->pitch * y1) + ((src->depth / 8) * x1));
 
     /* Bytes per pixel. */
     uint8_t bytes = dst->depth / 8;
+    uint8_t src_bytes = src->depth / 8;
     for (uint16_t y = 0; y < srch; y++) {
         for (uint16_t x = 0; x < srcw; x++) {
             for (uint16_t z = 0; z < bytes; z++) {
@@ -142,6 +143,7 @@ static void blit(const void *_dst, int16_t x0, int16_t y0, const void *_src) {
             }
         }
         dstptr += (dst->pitch / (dst->depth / 8) - srcw) * bytes;
+        srcptr += src->pitch - srcw * src_bytes;
     }
 }
 
