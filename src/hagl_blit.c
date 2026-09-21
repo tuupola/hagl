@@ -42,7 +42,7 @@ SPDX-License-Identifier: MIT
 void hagl_blit_xy(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source) {
     const hagl_surface_t *surface = _surface;
 
-    if (surface->blit) {
+    if (surface->blit_xy) {
         /* Check if bitmap is inside clip windows bounds */
         if ((x0 < surface->clip.x0) || (y0 < surface->clip.y0) ||
             (x0 + source->width - 1 > surface->clip.x1) ||
@@ -59,7 +59,7 @@ void hagl_blit_xy(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *s
             }
         } else {
             /* Inside of bounds, can use HAL provided blit. */
-            surface->blit(_surface, x0, y0, source);
+            surface->blit_xy(_surface, x0, y0, source);
         }
     } else {
         hagl_color_t color;

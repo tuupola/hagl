@@ -250,6 +250,6 @@ void hagl_bitmap_init(
     bitmap->get_pixel = get_pixel;
     bitmap->hline = hline;
     bitmap->vline = vline;
-    bitmap->blit = blit;
+    bitmap->blit_xy = blit;
     bitmap->scale_blit = scale_blit;
 }
