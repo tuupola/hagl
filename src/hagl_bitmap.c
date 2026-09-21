@@ -56,7 +56,7 @@ static hagl_color_t get_pixel(const void *_bitmap, int16_t x0, int16_t y0) {
                              (bitmap->depth / 8) * x0);
 }
 
-void hline(
+static void hline(
     const void *_bitmap, int16_t x0, int16_t y0, uint16_t width, hagl_color_t color
 ) {
     const hagl_bitmap_t *bitmap = _bitmap;
@@ -68,7 +68,7 @@ void hline(
     }
 }
 
-void vline(
+static void line_xyh(
     const void *_bitmap, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color
 ) {
     const hagl_bitmap_t *bitmap = _bitmap;
@@ -249,7 +249,7 @@ void hagl_bitmap_init(
     bitmap->put_pixel = put_pixel;
     bitmap->get_pixel = get_pixel;
     bitmap->hline = hline;
-    bitmap->vline = vline;
+    bitmap->line_xyh = line_xyh;
     bitmap->blit_xy = blit_xy;
     bitmap->blit_xywh = blit_xywh;
 }

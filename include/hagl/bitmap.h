@@ -62,7 +62,7 @@ typedef struct {
         const void *self, int16_t x0, int16_t y0, uint16_t w, uint16_t h, const void *src
     );
     void (*hline)(const void *self, int16_t x0, int16_t y0, uint16_t width, hagl_color_t color);
-    void (*vline)(
+    void (*line_xyh)(
         const void *self, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color
     );
 
