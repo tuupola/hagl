@@ -85,7 +85,7 @@ void vline(
  * Blit source bitmap to a destination bitmap->
  */
 
-static void blit(const void *_dst, int16_t x0, int16_t y0, const void *_src) {
+static void blit_xy(const void *_dst, int16_t x0, int16_t y0, const void *_src) {
     const hagl_bitmap_t *dst = _dst;
     const hagl_bitmap_t *src = _src;
 
@@ -155,7 +155,7 @@ static void blit(const void *_dst, int16_t x0, int16_t y0, const void *_src) {
  * http://www.davdata.nl/math/bmresize.html
  */
 
-static void scale_blit(
+static void blit_xywh(
     const void *_dst, int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth,
     const void *_src
 ) {
@@ -250,6 +250,6 @@ void hagl_bitmap_init(
     bitmap->get_pixel = get_pixel;
     bitmap->hline = hline;
     bitmap->vline = vline;
-    bitmap->blit_xy = blit;
-    bitmap->scale_blit = scale_blit;
+    bitmap->blit_xy = blit_xy;
+    bitmap->blit_xywh = blit_xywh;
 }

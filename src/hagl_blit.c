@@ -90,7 +90,7 @@ void hagl_blit_xywh(
     x_ratio = (uint32_t)((source->width << 16) / w);
     y_ratio = (uint32_t)((source->height << 16) / h);
 
-    if (surface->scale_blit) {
+    if (surface->blit_xywh) {
         /* Check if bitmap is inside clip windows bounds */
         if ((x0 < surface->clip.x0) || (y0 < surface->clip.y0) ||
             (x0 + w - 1 > surface->clip.x1) || (y0 + h - 1 > surface->clip.y1)) {
@@ -105,10 +105,10 @@ void hagl_blit_xywh(
             }
         } else {
             /* Inside of bounds, can use HAL provided blit. */
-            surface->scale_blit(_surface, x0, y0, w, h, source);
+            surface->blit_xywh(_surface, x0, y0, w, h, source);
         }
     } else {
-        /* HAL does not have scale_blit, use local putpixel fallback. */
+        /* HAL does not have blit_xywh, use local putpixel fallback. */
         for (uint16_t y = 0; y < h; y++) {
             for (uint16_t x = 0; x < w; x++) {
                 uint16_t px = ((x * x_ratio) >> 16);
