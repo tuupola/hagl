@@ -224,7 +224,7 @@ static void fill_unique_pattern(hagl_bitmap_t *bmp) {
 TEST test_blit_xy_left_clip(void) {
     fill_unique_pattern(&source);
 
-    bitmap.blit(&bitmap, -2, 10, &source);
+    bitmap.blit_xy(&bitmap, -2, 10, &source);
 
     ASSERT_EQ(0x0002, hagl_get_pixel(&bitmap, 0, 10));
     ASSERT_EQ(0x0003, hagl_get_pixel(&bitmap, 1, 10));
@@ -246,7 +246,7 @@ TEST test_blit_xy_right_clip(void) {
     hagl_bitmap_init(&destination, 3, 3, TEST_DEPTH, destination_buffer);
     fill_unique_pattern(&source);
 
-    destination.blit(&destination, 0, 0, &source);
+    destination.blit_xy(&destination, 0, 0, &source);
 
     ASSERT_EQ(0x0000, hagl_get_pixel(&destination, 0, 0));
     ASSERT_EQ(0x0002, hagl_get_pixel(&destination, 2, 0));
