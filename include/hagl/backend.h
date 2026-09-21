@@ -55,7 +55,7 @@ typedef struct {
     hagl_color_t (*get_pixel)(const void *self, int16_t x0, int16_t y0);
     hagl_color_t (*color)(const void *self, uint8_t r, uint8_t g, uint8_t b);
     void (*blit_xy)(const void *self, int16_t x0, int16_t y0, const void *src);
-    void (*scale_blit)(
+    void (*blit_xywh)(
         const void *self, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h,
         const void *src
     );
