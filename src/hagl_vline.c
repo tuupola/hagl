@@ -41,7 +41,7 @@ void hagl_draw_vline_xyh(
 ) {
     const hagl_surface_t *surface = _surface;
 
-    if (surface->vline) {
+    if (surface->line_xyh) {
         int16_t height = h;
 
         /* x0 or y0 is over the edge, nothing to do. */
@@ -66,7 +66,7 @@ void hagl_draw_vline_xyh(
             height = height - (y0 + height - 1 - surface->clip.y1);
         }
 
-        surface->vline(_surface, x0, y0, height, color);
+        surface->line_xyh(_surface, x0, y0, height, color);
     } else {
         hagl_draw_line(surface, x0, y0, x0, y0 + h - 1, color);
     }
