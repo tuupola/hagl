@@ -41,7 +41,7 @@ void hagl_draw_hline_xyw(
 ) {
     const hagl_surface_t *surface = _surface;
 
-    if (surface->hline) {
+    if (surface->line_xyw) {
         int16_t width = w;
 
         /* x0 or y0 is over the edge, nothing to do. */
@@ -66,7 +66,7 @@ void hagl_draw_hline_xyw(
             width = width - (x0 + width - 1 - surface->clip.x1);
         }
 
-        surface->hline(_surface, x0, y0, width, color);
+        surface->line_xyw(_surface, x0, y0, width, color);
     } else {
         hagl_draw_line(surface, x0, y0, x0 + w - 1, y0, color);
     }
