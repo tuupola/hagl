@@ -32,15 +32,12 @@ SPDX-License-Identifier: MIT
 
 */
 
-#include <math.h>
 #include <stdint.h>
-#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "hagl/bitmap.h"
-
 #include "hagl_hal.h"
-#include <stdio.h>
 
 static void put_pixel(const void *_bitmap, int16_t x0, int16_t y0, hagl_color_t color) {
     const hagl_bitmap_t *bitmap = _bitmap;
@@ -72,9 +69,9 @@ static void line_xyh(
     const void *_bitmap, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color
 ) {
     const hagl_bitmap_t *bitmap = _bitmap;
-
     hagl_color_t *ptr =
         (hagl_color_t *)(bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
+
     for (uint16_t y = 0; y < height; y++) {
         *ptr = color;
         ptr += bitmap->pitch / (bitmap->depth / 8);
@@ -89,61 +86,21 @@ static void blit_xy(const void *_dst, int16_t x0, int16_t y0, const void *_src) 
     const hagl_bitmap_t *dst = _dst;
     const hagl_bitmap_t *src = _src;
 
-    int16_t srcw = src->width;
-    int16_t srch = src->height;
-    int16_t x1 = 0;
-    int16_t y1 = 0;
-
-    /* x0 or y0 is over the edge, nothing to do. */
-    if ((x0 > dst->width) || (y0 > dst->height)) {
-        return;
-    }
-
-    /* x0 is negative, ignore parts outside of screen. */
-    if (x0 < 0) {
-        srcw = srcw + x0;
-        x1 = abs(x0);
-        x0 = 0;
-    }
-
-    /* y0 is negative, ignore parts outside of screen. */
-    if (y0 < 0) {
-        srch = srch + y0;
-        y1 = abs(y0);
-        y0 = 0;
-    }
-
-    /* Ignore everything going over right edge. */
-    if (srcw > dst->width - x0) {
-        srcw = dst->width - x0;
-    }
-
-    /* Ignore everything going over bottom edge. */
-    if (srch > dst->height - y0) {
-        srch = dst->height - y0;
-    }
-
-    /* Everthing outside viewport, nothing to do. */
-    if ((srcw < 0) || (srch < 0)) {
-        return;
-    }
-
-    uint8_t *dstptr =
-        (uint8_t *)(dst->buffer + (dst->pitch * y0) + ((dst->depth / 8) * x0));
-    uint8_t *srcptr =
-        (uint8_t *)(src->buffer + (src->pitch * y1) + ((src->depth / 8) * x1));
-
     /* Bytes per pixel. */
     uint8_t bytes = dst->depth / 8;
     uint8_t src_bytes = src->depth / 8;
-    for (uint16_t y = 0; y < srch; y++) {
-        for (uint16_t x = 0; x < srcw; x++) {
+
+    uint8_t *dstptr = (uint8_t *)(dst->buffer + (dst->pitch * y0) + (bytes * x0));
+    uint8_t *srcptr = (uint8_t *)src->buffer;
+
+    for (uint16_t y = 0; y < src->height; y++) {
+        for (uint16_t x = 0; x < src->width; x++) {
             for (uint16_t z = 0; z < bytes; z++) {
                 *(dstptr++) = *(srcptr++);
             }
         }
-        dstptr += (dst->pitch / (dst->depth / 8) - srcw) * bytes;
-        srcptr += src->pitch - srcw * src_bytes;
+        dstptr += (dst->pitch / bytes - src->width) * bytes;
+        srcptr += src->pitch - src->width * src_bytes;
     }
 }
 
@@ -168,33 +125,6 @@ static void blit_xywh(
     uint16_t srch = src->height;
     uint32_t x_ratio = (uint32_t)((srcw << 16) / dstw);
     uint32_t y_ratio = (uint32_t)((srch << 16) / dsth);
-
-    /* x0 or y0 is over the edge, nothing to do. */
-    if ((x0 > dst->width) || (y0 > dst->height)) {
-        return;
-    }
-
-    /* x0 is negative, ignore parts outside of screen. */
-    if (x0 < 0) {
-        dstw = dstw + x0;
-        x0 = 0;
-    }
-
-    /* y0 is negative, ignore parts outside of screen. */
-    if (y0 < 0) {
-        dsth = dsth + y0;
-        y0 = 0;
-    }
-
-    /* Ignore everything going over right edge. */
-    if (dstw > (dst->width - x0)) {
-        dstw = dst->width - x0;
-    }
-
-    /* Ignore everything going over bottom edge. */
-    if (dsth > (dst->height - y0)) {
-        dsth = dst->height - y0;
-    }
 
     /* Bytes per pixel. */
     uint8_t bytes = dst->depth / 8;
