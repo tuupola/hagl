@@ -86,21 +86,24 @@ static void blit_xy(const void *_dst, int16_t x0, int16_t y0, const void *_src) 
     const hagl_bitmap_t *dst = _dst;
     const hagl_bitmap_t *src = _src;
 
-    /* Bytes per pixel. */
-    uint8_t bytes = dst->depth / 8;
-    uint8_t src_bytes = src->depth / 8;
+    uint16_t srcw = src->width;
+    uint16_t srch = src->height;
 
-    uint8_t *dstptr = (uint8_t *)(dst->buffer + (dst->pitch * y0) + (bytes * x0));
+    /* Bytes per pixel. */
+    uint8_t dstbpp = dst->depth / 8;
+    uint8_t srcbpp = src->depth / 8;
+
+    uint8_t *dstptr = (uint8_t *)(dst->buffer + (dst->pitch * y0) + (dstbpp * x0));
     uint8_t *srcptr = (uint8_t *)src->buffer;
 
-    for (uint16_t y = 0; y < src->height; y++) {
-        for (uint16_t x = 0; x < src->width; x++) {
-            for (uint16_t z = 0; z < bytes; z++) {
+    for (uint16_t y = 0; y < srch; y++) {
+        for (uint16_t x = 0; x < srcw; x++) {
+            for (uint16_t z = 0; z < dstbpp; z++) {
                 *(dstptr++) = *(srcptr++);
             }
         }
-        dstptr += (dst->pitch / bytes - src->width) * bytes;
-        srcptr += src->pitch - src->width * src_bytes;
+        dstptr += (dst->pitch / dstbpp - srcw) * dstbpp;
+        srcptr += src->pitch - srcw * srcbpp;
     }
 }
 
@@ -127,11 +130,11 @@ static void blit_xywh(
     uint32_t y_ratio = (uint32_t)((srch << 16) / dsth);
 
     /* Bytes per pixel. */
-    uint8_t bytes = dst->depth / 8;
+    uint8_t dstbpp = dst->depth / 8;
 
     /* If sentence here is not the most elegant thing, but makes */
     /* the pointer maths much more easy to read. */
-    if (2 == bytes) {
+    if (2 == dstbpp) {
         uint16_t *dstptr =
             (uint16_t *)(dst->buffer + dst->pitch * y0 + (dst->depth / 8) * x0);
         uint16_t *srcptr = (uint16_t *)src->buffer;
