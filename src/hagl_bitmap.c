@@ -164,7 +164,7 @@ static void blit_xywh(
 
 /* Initialise bitmap with given buffer. */
 void hagl_bitmap_init(
-    hagl_bitmap_t *bitmap, int16_t width, uint16_t height, uint8_t depth, void *buffer
+    hagl_bitmap_t *bitmap, int16_t width, int16_t height, uint8_t depth, void *buffer
 ) {
     bitmap->width = width;
     bitmap->height = height;

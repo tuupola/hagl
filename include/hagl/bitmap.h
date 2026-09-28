@@ -50,8 +50,8 @@ Pitch is bytes per row. Depth is number of bits per pixel. Size is size
 in bytes.
 */
 typedef struct {
-    uint16_t width;
-    uint16_t height;
+    int16_t width;
+    int16_t height;
     uint8_t depth;
     hagl_window_t clip;
     void (*put_pixel)(const void *self, int16_t x0, int16_t y0, hagl_color_t color);
@@ -72,7 +72,7 @@ typedef struct {
 } hagl_bitmap_t;
 
 void hagl_bitmap_init(
-    hagl_bitmap_t *bitmap, int16_t width, uint16_t height, uint8_t depth, void *buffer
+    hagl_bitmap_t *bitmap, int16_t width, int16_t height, uint8_t depth, void *buffer
 );
 
 #ifdef __cplusplus
