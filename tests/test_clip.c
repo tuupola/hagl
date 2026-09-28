@@ -32,9 +32,18 @@ SPDX-License-Identifier: MIT
 */
 
 #include <stdbool.h>
+#include <stdint.h>
 
 #include "greatest.h"
+#include "hagl/bitmap.h"
 #include "hagl/clip.h"
+
+#define TEST_WIDTH 320
+#define TEST_HEIGHT 240
+#define TEST_DEPTH 16
+
+static hagl_bitmap_t bitmap;
+static uint8_t buffer[TEST_WIDTH * TEST_HEIGHT * (TEST_DEPTH / 8)];
 
 /*
  * All tests use the same clip window (10,10)-(50,50).
@@ -325,6 +334,45 @@ TEST test_clip_line_clip_both_edges_reversed(void) {
     PASS();
 }
 
+TEST test_set_clip_orders_corners(void) {
+    hagl_bitmap_init(&bitmap, TEST_WIDTH, TEST_HEIGHT, TEST_DEPTH, buffer);
+
+    hagl_set_clip(&bitmap, 80, 60, 20, 30);
+
+    ASSERT_EQ(20, bitmap.clip.x0);
+    ASSERT_EQ(30, bitmap.clip.y0);
+    ASSERT_EQ(80, bitmap.clip.x1);
+    ASSERT_EQ(60, bitmap.clip.y1);
+
+    PASS();
+}
+
+TEST test_set_clip_clamps_negative(void) {
+    hagl_bitmap_init(&bitmap, TEST_WIDTH, TEST_HEIGHT, TEST_DEPTH, buffer);
+
+    hagl_set_clip(&bitmap, -50, -20, 80, 60);
+
+    ASSERT_EQ(0, bitmap.clip.x0);
+    ASSERT_EQ(0, bitmap.clip.y0);
+    ASSERT_EQ(80, bitmap.clip.x1);
+    ASSERT_EQ(60, bitmap.clip.y1);
+
+    PASS();
+}
+
+TEST test_set_clip_clamps_oversize(void) {
+    hagl_bitmap_init(&bitmap, TEST_WIDTH, TEST_HEIGHT, TEST_DEPTH, buffer);
+
+    hagl_set_clip(&bitmap, 2, 3, 400, 300);
+
+    ASSERT_EQ(2, bitmap.clip.x0);
+    ASSERT_EQ(3, bitmap.clip.y0);
+    ASSERT_EQ(319, bitmap.clip.x1);
+    ASSERT_EQ(239, bitmap.clip.y1);
+
+    PASS();
+}
+
 SUITE(clip_suite) {
     RUN_TEST(test_clip_line_inside);
     RUN_TEST(test_clip_line_boundary);
@@ -333,6 +381,9 @@ SUITE(clip_suite) {
     RUN_TEST(test_clip_line_clip_both_edges);
     RUN_TEST(test_clip_line_clip_both_edges_reversed);
     RUN_TEST(test_clip_line_point);
+    RUN_TEST(test_set_clip_orders_corners);
+    RUN_TEST(test_set_clip_clamps_negative);
+    RUN_TEST(test_set_clip_clamps_oversize);
 }
 
 GREATEST_MAIN_DEFS();

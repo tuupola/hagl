@@ -42,7 +42,7 @@ SPDX-License-Identifier: MIT
 void hagl_blit_xy(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source) {
     const hagl_surface_t *surface = _surface;
 
-    if (surface->blit) {
+    if (surface->blit_xy) {
         /* Check if bitmap is inside clip windows bounds */
         if ((x0 < surface->clip.x0) || (y0 < surface->clip.y0) ||
             (x0 + source->width - 1 > surface->clip.x1) ||
@@ -59,7 +59,7 @@ void hagl_blit_xy(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *s
             }
         } else {
             /* Inside of bounds, can use HAL provided blit. */
-            surface->blit((void *)_surface, x0, y0, source);
+            surface->blit_xy(_surface, x0, y0, source);
         }
     } else {
         hagl_color_t color;
@@ -75,23 +75,40 @@ void hagl_blit_xy(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *s
 }
 
 void hagl_blit_xywh(
-    void const *_surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h,
+    void const *_surface, int16_t x0, int16_t y0, uint16_t w, uint16_t h,
     hagl_bitmap_t *source
 ) {
     const hagl_surface_t *surface = _surface;
+    hagl_color_t color, *ptr;
+    uint32_t x_ratio, y_ratio;
 
     if (0 == w || 0 == h) {
         return;
     }
 
-    if (surface->scale_blit) {
-        surface->scale_blit((void *)_surface, x0, y0, w, h, source);
-    } else {
-        hagl_color_t color;
-        hagl_color_t *ptr = (hagl_color_t *)source->buffer;
-        uint32_t x_ratio = (uint32_t)((source->width << 16) / w);
-        uint32_t y_ratio = (uint32_t)((source->height << 16) / h);
+    ptr = (hagl_color_t *)source->buffer;
+    x_ratio = (uint32_t)((source->width << 16) / w);
+    y_ratio = (uint32_t)((source->height << 16) / h);
 
+    if (surface->blit_xywh) {
+        /* Check if bitmap is inside clip windows bounds */
+        if ((x0 < surface->clip.x0) || (y0 < surface->clip.y0) ||
+            (x0 + w - 1 > surface->clip.x1) || (y0 + h - 1 > surface->clip.y1)) {
+            /* Out of bounds, use local putpixel fallback. */
+            for (uint16_t y = 0; y < h; y++) {
+                for (uint16_t x = 0; x < w; x++) {
+                    uint16_t px = ((x * x_ratio) >> 16);
+                    uint16_t py = ((y * y_ratio) >> 16);
+                    color = *(ptr + (py * source->width) + px);
+                    hagl_put_pixel(surface, x0 + x, y0 + y, color);
+                }
+            }
+        } else {
+            /* Inside of bounds, can use HAL provided blit. */
+            surface->blit_xywh(_surface, x0, y0, w, h, source);
+        }
+    } else {
+        /* HAL does not have blit_xywh, use local putpixel fallback. */
         for (uint16_t y = 0; y < h; y++) {
             for (uint16_t x = 0; x < w; x++) {
                 uint16_t px = ((x * x_ratio) >> 16);

@@ -85,7 +85,7 @@ hagl_blit(void const *surface, int16_t x0, int16_t y0, hagl_bitmap_t *source) {
  * @param source pointer to a bitmap
  */
 void hagl_blit_xywh(
-    void const *surface, uint16_t x0, uint16_t y0, uint16_t w, uint16_t h,
+    void const *surface, int16_t x0, int16_t y0, uint16_t w, uint16_t h,
     hagl_bitmap_t *source
 );
 
@@ -102,13 +102,13 @@ void hagl_blit_xywh(
  * @param source pointer to a bitmap
  */
 static inline void hagl_blit_xyxy(
-    void const *surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
+    void const *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1,
     hagl_bitmap_t *source
 ) {
-    uint16_t min_x = (x0 < x1) ? x0 : x1;
-    uint16_t min_y = (y0 < y1) ? y0 : y1;
-    uint16_t max_x = (x0 > x1) ? x0 : x1;
-    uint16_t max_y = (y0 > y1) ? y0 : y1;
+    int16_t min_x = (x0 < x1) ? x0 : x1;
+    int16_t min_y = (y0 < y1) ? y0 : y1;
+    int16_t max_x = (x0 > x1) ? x0 : x1;
+    int16_t max_y = (y0 > y1) ? y0 : y1;
     hagl_blit_xywh(surface, min_x, min_y, max_x - min_x + 1, max_y - min_y + 1, source);
 }
 
