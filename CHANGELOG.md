@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ## [0.9.0](https://github.com/tuupola/hagl/compare/0.8.0...hagl-090) - unreleased
 
+This release breaks BC and HALs need updating. Surface callbacks now take `const void *`. All coordinates are now signed. Surface functions were renamed to be more descriptive. See an example pull request of [required HAL changes](https://github.com/tuupola/hagl_esp_mipi/pull/57/changes) for this release.
+
 ### Fixed
 
 - Clip window coordinates are now ordered and clamped ([#185](https://github.com/tuupola/hagl/pull/185)).
@@ -12,16 +14,15 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- Optimize line drawing ([#172](https://github.com/tuupola/hagl/pull/172)).
+- Optimized line drawing ([#172](https://github.com/tuupola/hagl/pull/172)).
 - Surface callbacks now take `const void *` ([#173](https://github.com/tuupola/hagl/pull/173), [#175](https://github.com/tuupola/hagl/pull/175)).
-- Optimize filled circle ([#176](https://github.com/tuupola/hagl/pull/176), [#179](https://github.com/tuupola/hagl/pull/179)).
-- Optimize circle ([#178](https://github.com/tuupola/hagl/pull/178)).
-- Optimize filled polygon ([#180](https://github.com/tuupola/hagl/pull/180), [#181](https://github.com/tuupola/hagl/pull/181), [#182](https://github.com/tuupola/hagl/pull/182)).
-- Make `hagl_put_pixel()` static inline ([#183](https://github.com/tuupola/hagl/pull/183)).
-- Clip window coordinates are now signed ([#184](https://github.com/tuupola/hagl/pull/184)).
-- Renamed surface function names to be more descriptive ([#188](https://github.com/tuupola/hagl/pull/188), [#189](https://github.com/tuupola/hagl/pull/189), [#190](https://github.com/tuupola/hagl/pull/190), [#191](https://github.com/tuupola/hagl/pull/191)).
-- Remove double bitmap clipping ([#192](https://github.com/tuupola/hagl/pull/192)).
-- Blit coordinates are now signed ([#193](https://github.com/tuupola/hagl/pull/193)).
+- Optimized filled circle ([#176](https://github.com/tuupola/hagl/pull/176), [#179](https://github.com/tuupola/hagl/pull/179)).
+- Optimized circle ([#178](https://github.com/tuupola/hagl/pull/178)).
+- Optimized filled polygon ([#180](https://github.com/tuupola/hagl/pull/180), [#181](https://github.com/tuupola/hagl/pull/181), [#182](https://github.com/tuupola/hagl/pull/182)).
+- `hagl_put_pixel()` is now static inline ([#183](https://github.com/tuupola/hagl/pull/183)).
+- All coordinates are now signed ([#184](https://github.com/tuupola/hagl/pull/184),[#193](https://github.com/tuupola/hagl/pull/193), [#194](https://github.com/tuupola/hagl/pull/194))
+- Surface functions were renamed to be more descriptive ([#188](https://github.com/tuupola/hagl/pull/188), [#189](https://github.com/tuupola/hagl/pull/189), [#190](https://github.com/tuupola/hagl/pull/190), [#191](https://github.com/tuupola/hagl/pull/191)).
+- Removed double bitmap clipping ([#192](https://github.com/tuupola/hagl/pull/192)).
 
 ## [0.8.0](https://github.com/tuupola/hagl/compare/0.7.0...0.8.0) - 2026-04-01
 
