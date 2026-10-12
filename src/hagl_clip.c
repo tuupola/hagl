@@ -40,6 +40,9 @@ https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm
 #include "hagl/surface.h"
 #include "hagl/window.h"
 
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+
 static const uint8_t INSIDE = 0b0000;
 static const uint8_t LEFT = 0b0001;
 static const uint8_t RIGHT = 0b0010;
@@ -120,8 +123,28 @@ bool hagl_clip_line(
     return accept;
 }
 
-void hagl_set_clip(void *_surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
+void hagl_set_clip(void *_surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1) {
     hagl_surface_t *surface = _surface;
+
+    /* Make sure x0 is smaller than x1. */
+    if (x0 > x1) {
+        x0 = x0 + x1;
+        x1 = x0 - x1;
+        x0 = x0 - x1;
+    }
+
+    /* Make sure y0 is smaller than y1. */
+    if (y0 > y1) {
+        y0 = y0 + y1;
+        y1 = y0 - y1;
+        y0 = y0 - y1;
+    }
+
+    /* Clamp to surface dimensions. */
+    x0 = MAX(0, MIN(x0, surface->width - 1));
+    y0 = MAX(0, MIN(y0, surface->height - 1));
+    x1 = MAX(0, MIN(x1, surface->width - 1));
+    y1 = MAX(0, MIN(y1, surface->height - 1));
 
     surface->clip.x0 = x0;
     surface->clip.y0 = y0;

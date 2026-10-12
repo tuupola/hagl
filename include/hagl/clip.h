@@ -51,8 +51,9 @@ bool hagl_clip_line(
 /**
  * Set the clip window
  *
- * Clip windows restricts the drawable area. It does not affect
- * the coordinates.
+ * Clip window restricts the drawable area. It does not affect
+ * the coordinates. Opposite corners may be given in any order.
+ * Coordinates are clamped to the surface. The window is inclusive.
  *
  * @param surface
  * @param x0
@@ -60,7 +61,7 @@ bool hagl_clip_line(
  * @param x1
  * @param y1
  */
-void hagl_set_clip(void *surface, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+void hagl_set_clip(void *surface, int16_t x0, int16_t y0, int16_t x1, int16_t y1);
 
 #ifdef __cplusplus
 }

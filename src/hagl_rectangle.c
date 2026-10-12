@@ -123,9 +123,9 @@ void hagl_fill_rectangle_xyxy(
     height = y1 - y0 + 1;
 
     for (uint16_t i = 0; i < height; i++) {
-        if (surface->hline) {
+        if (surface->line_xyw) {
             /* Already clipped so can call HAL directly. */
-            surface->hline((void *)_surface, x0, y0 + i, width, color);
+            surface->line_xyw(_surface, x0, y0 + i, width, color);
         } else {
             hagl_draw_hline(surface, x0, y0 + i, width, color);
         }

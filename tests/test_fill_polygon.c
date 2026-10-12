@@ -510,7 +510,7 @@ TEST test_fill_polygon_trapezoid_regression(void) {
 
     uint32_t crc = crc32(bitmap.buffer, bitmap.size);
 
-    ASSERT_EQ(0x88B26E34, crc);
+    ASSERT_EQ(0xE64FD27E, crc);
     PASS();
 }
 

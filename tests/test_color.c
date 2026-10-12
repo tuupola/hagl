@@ -48,7 +48,7 @@ static uint8_t buffer[TEST_WIDTH * TEST_HEIGHT * (TEST_DEPTH / 8)];
 static uint8_t last_r, last_g, last_b;
 static hagl_color_t mock_color_result;
 
-static hagl_color_t mock_color(void *self, uint8_t r, uint8_t g, uint8_t b) {
+static hagl_color_t mock_color(const void *self, uint8_t r, uint8_t g, uint8_t b) {
     last_r = r;
     last_g = g;
     last_b = b;
