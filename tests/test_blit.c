@@ -280,6 +280,47 @@ TEST test_blit_xy_padded_pitch(void) {
     PASS();
 }
 
+/* Clipped blits must also skip source row padding in the put-pixel fallback. */
+TEST test_blit_xy_padded_pitch_left_clip(void) {
+    static uint8_t padded_buffer[(4 + 4) * 4 * (TEST_DEPTH / 8)];
+    hagl_bitmap_t padded;
+
+    memset(padded_buffer, 0xAA, sizeof(padded_buffer));
+    hagl_bitmap_init(&padded, 4, 4, TEST_DEPTH, padded_buffer);
+    padded.pitch = (4 + 4) * (TEST_DEPTH / 8);
+    fill_unique_pattern(&padded);
+
+    hagl_blit_xy(&bitmap, -2, 10, &padded);
+
+    ASSERT_EQ(0x0002, hagl_get_pixel(&bitmap, 0, 10));
+    ASSERT_EQ(0x0102, hagl_get_pixel(&bitmap, 0, 11));
+    ASSERT_EQ(0x0303, hagl_get_pixel(&bitmap, 1, 13));
+    ASSERT_EQ(0, count_pixels(&bitmap, 0xAAAA));
+
+    PASS();
+}
+
+/* Scaled blits must use pitch rather than assuming tightly packed source rows. */
+TEST test_blit_xywh_padded_pitch(void) {
+    static uint8_t padded_buffer[(4 + 4) * 4 * (TEST_DEPTH / 8)];
+    hagl_bitmap_t padded;
+
+    memset(padded_buffer, 0xAA, sizeof(padded_buffer));
+    hagl_bitmap_init(&padded, 4, 4, TEST_DEPTH, padded_buffer);
+    padded.pitch = (4 + 4) * (TEST_DEPTH / 8);
+    fill_unique_pattern(&padded);
+
+    hagl_blit_xywh(&bitmap, 10, 10, 8, 8, &padded);
+
+    ASSERT_EQ(0x0000, hagl_get_pixel(&bitmap, 10, 10));
+    ASSERT_EQ(0x0100, hagl_get_pixel(&bitmap, 10, 12));
+    ASSERT_EQ(0x0202, hagl_get_pixel(&bitmap, 14, 14));
+    ASSERT_EQ(0x0303, hagl_get_pixel(&bitmap, 17, 17));
+    ASSERT_EQ(0, count_pixels(&bitmap, 0xAAAA));
+
+    PASS();
+}
+
 /* 1:1 scale blit at x0 = -2 must skip the off-screen source columns. */
 TEST test_blit_xywh_negative_x(void) {
     fill_unique_pattern(&source);
@@ -336,6 +377,8 @@ SUITE(blit_suite) {
     RUN_TEST(test_blit_xy_left_clip);
     RUN_TEST(test_blit_xy_right_clip);
     RUN_TEST(test_blit_xy_padded_pitch);
+    RUN_TEST(test_blit_xy_padded_pitch_left_clip);
+    RUN_TEST(test_blit_xywh_padded_pitch);
     RUN_TEST(test_blit_xywh_negative_x);
     RUN_TEST(test_blit_xywh_negative_x_scaled);
     RUN_TEST(test_blit_xywh_fully_offscreen);

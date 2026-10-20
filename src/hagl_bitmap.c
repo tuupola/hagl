@@ -131,6 +131,8 @@ static void blit_xywh(
 
     /* Bytes per pixel. */
     uint8_t dstbpp = dst->depth / 8;
+    uint8_t srcbpp = src->depth / 8;
+    uint16_t src_stride = src->pitch / srcbpp;
 
     /* If sentence here is not the most elegant thing, but makes */
     /* the pointer maths much more easy to read. */
@@ -142,7 +144,7 @@ static void blit_xywh(
             for (uint16_t x = 0; x < dstw; x++) {
                 px = ((x * x_ratio) >> 16);
                 py = ((y * y_ratio) >> 16);
-                *(dstptr++) = srcptr[(uint32_t)py * srcw + px];
+                *(dstptr++) = srcptr[(uint32_t)py * src_stride + px];
             }
             dstptr += dst->pitch / (dst->depth / 8) - dstw;
         }
@@ -155,7 +157,7 @@ static void blit_xywh(
             for (uint16_t x = 0; x < dstw; x++) {
                 px = ((x * x_ratio) >> 16);
                 py = ((y * y_ratio) >> 16);
-                *(dstptr++) = srcptr[(uint32_t)py * srcw + px];
+                *(dstptr++) = srcptr[(uint32_t)py * src_stride + px];
             }
             dstptr += dst->pitch / (dst->depth / 8) - dstw;
         }

@@ -39,6 +39,11 @@ SPDX-License-Identifier: MIT
 #include "hagl/pixel.h"
 #include "hagl/surface.h"
 
+static hagl_color_t source_pixel(const hagl_bitmap_t *source, uint16_t x, uint16_t y) {
+    const hagl_color_t *row = (const hagl_color_t *)(source->buffer + y * source->pitch);
+    return row[x];
+}
+
 void hagl_blit_xy(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *source) {
     const hagl_surface_t *surface = _surface;
 
@@ -49,11 +54,10 @@ void hagl_blit_xy(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *s
             (y0 + source->height - 1 > surface->clip.y1)) {
             /* Out of bounds, use local putpixel fallback. */
             hagl_color_t color;
-            hagl_color_t *ptr = (hagl_color_t *)source->buffer;
 
             for (uint16_t y = 0; y < source->height; y++) {
                 for (uint16_t x = 0; x < source->width; x++) {
-                    color = *(ptr++);
+                    color = source_pixel(source, x, y);
                     hagl_put_pixel(surface, x0 + x, y0 + y, color);
                 }
             }
@@ -63,11 +67,10 @@ void hagl_blit_xy(void const *_surface, int16_t x0, int16_t y0, hagl_bitmap_t *s
         }
     } else {
         hagl_color_t color;
-        hagl_color_t *ptr = (hagl_color_t *)source->buffer;
 
         for (uint16_t y = 0; y < source->height; y++) {
             for (uint16_t x = 0; x < source->width; x++) {
-                color = *(ptr++);
+                color = source_pixel(source, x, y);
                 hagl_put_pixel(surface, x0 + x, y0 + y, color);
             }
         }
@@ -79,14 +82,13 @@ void hagl_blit_xywh(
     hagl_bitmap_t *source
 ) {
     const hagl_surface_t *surface = _surface;
-    hagl_color_t color, *ptr;
+    hagl_color_t color;
     uint32_t x_ratio, y_ratio;
 
     if (0 == w || 0 == h) {
         return;
     }
 
-    ptr = (hagl_color_t *)source->buffer;
     x_ratio = (uint32_t)((source->width << 16) / w);
     y_ratio = (uint32_t)((source->height << 16) / h);
 
@@ -99,7 +101,7 @@ void hagl_blit_xywh(
                 for (uint16_t x = 0; x < w; x++) {
                     uint16_t px = ((x * x_ratio) >> 16);
                     uint16_t py = ((y * y_ratio) >> 16);
-                    color = *(ptr + (py * source->width) + px);
+                    color = source_pixel(source, px, py);
                     hagl_put_pixel(surface, x0 + x, y0 + y, color);
                 }
             }
@@ -113,7 +115,7 @@ void hagl_blit_xywh(
             for (uint16_t x = 0; x < w; x++) {
                 uint16_t px = ((x * x_ratio) >> 16);
                 uint16_t py = ((y * y_ratio) >> 16);
-                color = *(ptr + (py * source->width) + px);
+                color = source_pixel(source, px, py);
                 hagl_put_pixel(surface, x0 + x, y0 + y, color);
             }
         }
